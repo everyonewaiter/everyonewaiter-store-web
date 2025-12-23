@@ -8,9 +8,9 @@ function Dialog({ ...props }: React.ComponentProps<typeof DialogPrimitive.Root>)
   return <DialogPrimitive.Root data-slot="dialog" {...props} />;
 }
 
-Dialog.Trigger = function DialogTrigger({
+Dialog.Trigger = ({
   ...props
-}: React.ComponentProps<typeof DialogPrimitive.Trigger>) {
+}: React.ComponentProps<typeof DialogPrimitive.Trigger>) => {
   return <DialogPrimitive.Trigger data-slot="dialog-trigger" {...props} />;
 };
 
@@ -18,9 +18,9 @@ function DialogPortal({ ...props }: React.ComponentProps<typeof DialogPrimitive.
   return <DialogPrimitive.Portal data-slot="dialog-portal" {...props} />;
 }
 
-Dialog.Close = function DialogClose({
+Dialog.Close = ({
   ...props
-}: React.ComponentProps<typeof DialogPrimitive.Close>) {
+}: React.ComponentProps<typeof DialogPrimitive.Close>) =>  {
   return <DialogPrimitive.Close data-slot="dialog-close" {...props} />;
 };
 
@@ -40,7 +40,7 @@ function DialogOverlay({
   );
 }
 
-Dialog.Wrapper = function DialogWrapper({
+Dialog.Wrapper = ({
   className,
   children,
   gap,
@@ -55,7 +55,7 @@ Dialog.Wrapper = function DialogWrapper({
   flexDirection?: "col" | "row";
   height?: number;
   title?: React.ReactNode;
-}) {
+}) => {
   return (
     <DialogPortal data-slot="dialog-portal">
       <DialogOverlay />
@@ -77,11 +77,11 @@ Dialog.Wrapper = function DialogWrapper({
   );
 };
 
-Dialog.Title = function DialogTitle({
+Dialog.Title = ({
   className,
   children,
   ...props
-}: React.ComponentProps<typeof DialogPrimitive.Title>) {
+}: React.ComponentProps<typeof DialogPrimitive.Title>) => {
   return (
     <DialogPrimitive.Title
       className={cn("flex flex-col items-center justify-center gap-3 py-6", className)}
@@ -92,7 +92,7 @@ Dialog.Title = function DialogTitle({
   );
 };
 
-Dialog.Header = function DialogHeader({ className, ...props }: React.ComponentProps<"div">) {
+Dialog.Header = ({ className, ...props }: React.ComponentProps<"div">) => {
   return (
     <div
       data-slot="dialog-header"
@@ -102,7 +102,7 @@ Dialog.Header = function DialogHeader({ className, ...props }: React.ComponentPr
   );
 };
 
-Dialog.Footer = function DialogFooter({
+Dialog.Footer = ({
   className,
   children,
   layout = "balanced",
@@ -132,7 +132,7 @@ Dialog.Footer = function DialogFooter({
     hide?: boolean;
   };
   buttonSize?: ButtonSize;
-}) {
+}) => {
   const getButtonSize = () => `button-${buttonSize}`;
 
   return (

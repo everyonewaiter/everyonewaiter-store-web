@@ -13,7 +13,7 @@ function Table({ className, ...props }: React.ComponentProps<"table">) {
   );
 }
 
-Table.Header = function TableHeader({ className, ...props }: React.ComponentProps<"thead">) {
+Table.Header = ({ className, ...props }: React.ComponentProps<"thead">) =>  {
   return (
     <thead
       data-slot="table-header"
@@ -23,14 +23,14 @@ Table.Header = function TableHeader({ className, ...props }: React.ComponentProp
   );
 };
 
-Table.Body = function TableBody({ className, ...props }: React.ComponentProps<"tbody">) {
+Table.Body = ({ className, ...props }: React.ComponentProps<"tbody">) => {
   return <tbody data-slot="table-body" className={cn("w-full", className)} {...props} />;
 };
 
-Table.Row = function TableRow({
+Table.Row = ({
   className,
   ...props
-}: React.ComponentProps<"tr"> & { isHead?: boolean }) {
+}: React.ComponentProps<"tr"> & { isHead?: boolean }) => {
   return (
     <tr
       data-slot="table-row"
@@ -43,7 +43,7 @@ Table.Row = function TableRow({
   );
 };
 
-Table.Head = function TableHead({ className, ...props }: React.ComponentProps<"th">) {
+Table.Head = ({ className, ...props }: React.ComponentProps<"th">) => {
   return (
     <th
       data-slot="table-head"
@@ -56,7 +56,7 @@ Table.Head = function TableHead({ className, ...props }: React.ComponentProps<"t
   );
 };
 
-Table.Cell = function TableCell({ className, ...props }: React.ComponentProps<"td">) {
+Table.Cell = ({ className, ...props }: React.ComponentProps<"td">) => {
   return (
     <td
       data-slot="table-cell"

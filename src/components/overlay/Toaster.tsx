@@ -19,7 +19,7 @@ import { Toaster as Sonner, type ToasterProps } from "sonner"
  *   })
  * }}
  */
-const Toaster = ({ ...props }: ToasterProps) => {
+function Toaster({ ...props }: ToasterProps) {
   return (
     <Sonner
       className="toaster group"
@@ -43,4 +43,4 @@ const Toaster = ({ ...props }: ToasterProps) => {
   )
 }
 
-export { Toaster }
+export default Toaster;

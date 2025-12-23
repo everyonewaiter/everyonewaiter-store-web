@@ -18,7 +18,13 @@ module.exports = {
   rules: {
     // React
     'react/react-in-jsx-scope': 'off',
-    'react/function-component-definition': 'off',
+    'react/function-component-definition': [
+      'error',
+      {
+        namedComponents: 'function-declaration',
+        unnamedComponents: 'arrow-function',
+      },
+    ],
     'react/require-default-props': 'off',
     'react/jsx-props-no-spreading': 'off',
 
@@ -46,7 +52,7 @@ module.exports = {
     'jsx-a11y/no-noninteractive-element-interactions': 'off',
     'jsx-a11y/anchor-has-content': 'off',
 
-        "arrow-body-style": "off"
+    "arrow-body-style": "off"
   },
 
   settings: {
