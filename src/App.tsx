@@ -1,9 +1,17 @@
-import { BrowserRouter, Routes } from "react-router-dom";
+import { lazy } from "react";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import Layout from "./pages/layout";
+
+const LoginPage = lazy(() => import("./pages/login/LoginPage"));
 
 function App() {
   return (
     <BrowserRouter>
-      <Routes>{/* <Route index element={<Home />} /> */}</Routes>
+      <Routes>
+        <Route element={<Layout />}>
+          <Route path="login" element={<LoginPage />} />
+        </Route>
+      </Routes>
     </BrowserRouter>
   );
 }
