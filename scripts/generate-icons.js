@@ -6,7 +6,7 @@ import * as path from 'path'
 const SVG_DIR = path.join(process.cwd(), 'src/assets/icons')
 const COMPONENT_DIR = path.join(
   process.cwd(),
-  'src/components/common/icons/svgs',
+  'src/components/icons/svgs',
 )
 
 program
