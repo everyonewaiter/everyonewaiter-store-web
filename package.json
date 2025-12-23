@@ -10,7 +10,7 @@
     "preview": "vite preview",
     "test": "vitest",
     "generate:icons": "node scripts/generate-icons.js",
-    "prepare": "husky && husky install"
+    "prepare": "husky"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
