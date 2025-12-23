@@ -12,6 +12,7 @@ export default function Image({
   src,
   onError,
   fallbackSrc,
+  alt,
   ...props
 }: ImageProps) {
   const [useFallback, setUseFallback] = useState(false);
@@ -32,5 +33,5 @@ export default function Image({
     return null;
   }
 
-  return <img src={currentSrc} loading={loading} onError={handleError} {...props} />;
+  return <img src={currentSrc} loading={loading} onError={handleError} alt={alt} {...props} />;
 }

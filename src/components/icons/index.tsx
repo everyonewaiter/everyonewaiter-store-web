@@ -1,2 +1,1 @@
-// eslint-disable-next-line react-refresh/only-export-components
-export * from './svgs/index.ts';
+export * from './svgs/index.tsx';

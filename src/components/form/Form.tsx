@@ -29,12 +29,12 @@ const FormFieldContext = React.createContext<FormFieldContextValue>(
 
 const FormField = <
   TFieldValues extends FieldValues = FieldValues,
-  TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
+  TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,  
 >({
   ...props
 }: ControllerProps<TFieldValues, TName>) => {
   return (
-    <FormFieldContext.Provider value={{ name: props.name }}>
+    <FormFieldContext.Provider value={React.useMemo(() => ({ name: props.name }), [props.name])}>
       <Controller {...props} />
     </FormFieldContext.Provider>
   );
@@ -42,7 +42,6 @@ const FormField = <
 
 const useFormField = () => {
   const fieldContext = React.useContext(FormFieldContext);
-  const itemContext = React.useContext(FormItemContext);
   const { getFieldState } = useFormContext();
   const formState = useFormState({ name: fieldContext.name });
   const fieldState = getFieldState(fieldContext.name, formState);
@@ -51,16 +50,13 @@ const useFormField = () => {
     throw new Error("useFormField should be used within <FormField>");
   }
 
-  const { id } = itemContext;
-
-  return {
-    id,
+  return React.useMemo(() => ({
     name: fieldContext.name,
-    formItemId: `${id}-form-item`,
-    formDescriptionId: `${id}-form-item-description`,
-    formMessageId: `${id}-form-item-message`,
+    formItemId: `${fieldContext.name}-form-item`,
+    formDescriptionId: `${fieldContext.name}-form-item-description`,
+    formMessageId: `${fieldContext.name}-form-item-message`,
     ...fieldState,
-  };
+  }), [fieldContext.name, fieldState]);
 };
 
 type FormItemContextValue = {
@@ -75,7 +71,7 @@ function FormItem({ className, ...props }: React.ComponentProps<"div">) {
   const id = React.useId();
 
   return (
-    <FormItemContext.Provider value={{ id }}>
+    <FormItemContext.Provider value={React.useMemo(() => ({ id }), [id])}>
       <div
         data-slot="form-item"
         className={cn("grid gap-2", className)}

@@ -20,8 +20,8 @@ export default function Loading() {
       <div className="flex h-dvh w-dvw flex-col items-center justify-center gap-3">
         {isLottieSupported ? <Lottie
           animationData={riceWhite}
-          loop={true}
-          autoplay={true}
+          loop
+          autoplay
           rendererSettings={{
             preserveAspectRatio: "xMidYMid slice",
           }}

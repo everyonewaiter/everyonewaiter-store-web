@@ -42,7 +42,7 @@ function SkeletonFieldGroup({ total }: { total: number }) {
       {Array.from({ length: total })
         .fill(0)
         .map((_, i) => (
-          <div className="flex flex-col gap-2.5" key={i}>
+          <div className="flex flex-col gap-2.5" key={`skeleton-field-group-${i + 1}`}>
             <SkeletonLabel />
             <SkeletonInput />
           </div>
