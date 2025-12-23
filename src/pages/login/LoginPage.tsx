@@ -32,8 +32,8 @@ function LoginPage() {
 	})
 
 	return (
-		<div className='w-dvw h-dvh flex items-center px-5 md:pl-[24px] lg:pl-[60px] overflow-hidden'>
-			<div className='w-full flex-col center md:px-[62px] md:py-[32px] lg:px-[114px] lg:py-[64px] gap-10 lg:gap-12'>
+		<div className='w-dvw h-dvh flex items-center md:pl-[24px] lg:pl-[60px] overflow-hidden'>
+			<div className='w-full flex-col center px-5 md:px-[62px] md:py-[32px] lg:px-[114px] lg:py-[64px] gap-10 lg:gap-12'>
 				<img src={logoTextHorizontal} alt="logo text horizontal" className='w-[160px] md:w-[37%] max-w-[200px]' />
 				<Form {...form}>
 					<form className='w-full flex-col' onSubmit={handleSubmit}>
