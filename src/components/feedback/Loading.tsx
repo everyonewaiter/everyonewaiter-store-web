@@ -16,7 +16,7 @@ export default function Loading() {
   }, []);
 
   return (
-    <div className="fixed inset-0 z-[9999] bg-black/60">
+    <div className="fixed inset-0 z-9999 bg-black/60">
       <div className="flex h-dvh w-dvw flex-col items-center justify-center gap-3">
         {isLottieSupported ? <Lottie
           animationData={riceWhite}

@@ -35,7 +35,7 @@ Table.Row = ({
     <tr
       data-slot="table-row"
       className={cn(
-        "h-16 w-full cursor-pointer border-b border-gray-600 [&:last-child]:border-none",
+        "h-16 w-full cursor-pointer border-b border-gray-600 last:border-none",
         className
       )}
       {...props}

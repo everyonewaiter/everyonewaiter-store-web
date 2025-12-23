@@ -174,7 +174,7 @@ function FormErrorMessage({ className, ...props }: React.ComponentProps<"p">) {
       )}
       {...props}
     >
-      <Info className="stroke-status-error mb-[1px] h-4 w-4" />
+      <Info className="stroke-status-error mb-px h-4 w-4" />
       {body}
     </span>
   );

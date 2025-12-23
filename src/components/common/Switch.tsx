@@ -43,8 +43,8 @@ const Switch = forwardRef<
     >
       <SwitchPrimitives.Thumb
         className={cn(
-          "pointer-events-none block translate-x-0 rounded-full ring-0 transition-transform duration-200 ease-out data-[state=checked]:translate-x-[var(--travel-x)]",
-          "data-[state=checked]:bg-primary bg-white data-[disabled]:data-[state=checked]:bg-white"
+          "pointer-events-none block translate-x-0 rounded-full ring-0 transition-transform duration-200 ease-out data-[state=checked]:translate-x-(--travel-x)",
+          "data-[state=checked]:bg-primary bg-white data-disabled:data-[state=checked]:bg-white"
         )}
         style={{
           width: thumbSize,
