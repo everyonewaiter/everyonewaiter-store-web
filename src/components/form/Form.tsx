@@ -11,6 +11,7 @@ import {
   useFormState,
 } from "react-hook-form";
 import { Info } from "@/components/icons";
+import Input from "@/components/ui/Input";
 import Label from "@/components/ui/Label";
 import cn from "@/lib/utils";
 
@@ -87,7 +88,7 @@ function FormLabel({
     <Label
       data-slot="form-label"
       data-error={!!error}
-      className={cn("data-[error=true]:text-destructive mb-1", className)}
+      className={cn("data-[error=true]:text-destructive mb-[4px]", className)}
       htmlFor={formItemId}
       disabled={labelDisabled}
       {...props}
@@ -123,9 +124,9 @@ function FormDescription({ className, ...props }: ComponentProps<"p">) {
 }
 
 function FormMessage({ className, ...props }: ComponentProps<"p">) {
-  const { formMessageId } = useFormField();
+  const { formMessageId, error } = useFormField();
 
-  if (!props.children) {
+  if (!error?.message) {
     return null;
   }
 
@@ -136,8 +137,15 @@ function FormMessage({ className, ...props }: ComponentProps<"p">) {
       className={cn("lg:text-s flex items-center gap-0.5 text-xs text-gray-400", className)}
       {...props}
     >
-      {props.children}
+      {error?.message}
     </div>
+  );
+}
+
+function FormInput({ ...props }: ComponentProps<typeof Input>) {
+  const { error } = useFormField();
+  return (
+    <Input {...props} className={cn(props.className, error?.message && "border-status-error")} />
   );
 }
 
@@ -156,7 +164,7 @@ function FormErrorMessage({ className, ...props }: ComponentProps<"p">) {
       className={cn("lg:text-s text-status-error flex items-center gap-0.5 text-xs", className)}
       {...props}
     >
-      <Info className="stroke-status-error mb-px h-4 w-4" />
+      <Info className="stroke-status-error mb-px size-4" />
       {body}
     </span>
   );
@@ -171,4 +179,5 @@ export {
   FormMessage,
   FormField,
   FormErrorMessage,
+  FormInput,
 };

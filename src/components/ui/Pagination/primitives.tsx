@@ -1,6 +1,5 @@
 import type { ComponentProps } from "react";
 import { ChevronLeft, ChevronRight } from "@/components/icons";
-import Button from "@/components/ui/Button/Button";
 import { buttonVariants } from "@/components/ui/Button/Button.styles";
 import cn from "@/lib/utils";
 
@@ -32,13 +31,11 @@ function PaginationItem({ ...props }: Readonly<ComponentProps<"li">>) {
 
 type PaginationLinkProps = {
   isActive?: boolean;
-} & Pick<ComponentProps<typeof Button>, "size"> &
-  ComponentProps<"a">;
+} & ComponentProps<"a">;
 
 function PaginationLink({
   className,
   isActive,
-  size = "icon",
   children,
   "aria-label": ariaLabel,
   ...props
@@ -55,7 +52,6 @@ function PaginationLink({
       className={cn(
         buttonVariants({
           variant: isActive ? "outline" : "ghost",
-          size,
         }),
         className
       )}

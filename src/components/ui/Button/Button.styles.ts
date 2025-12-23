@@ -19,21 +19,10 @@ export const buttonVariants = cva(
         approve: "",
         reapply: "",
       },
-      size: {
-        sm: "button-sm",
-        md: "button-md",
-        lg: "button-lg",
-        xl: "button-xl",
-        icon: "size-5",
-        "icon-sm": "size-4",
-        "icon-lg": "size-8",
-        custom: "",
-      },
     },
     defaultVariants: {
       variant: "default",
       color: ColorName.PRIMARY,
-      size: "md",
     },
     compoundVariants: [
       {
