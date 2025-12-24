@@ -25,7 +25,7 @@ function SkeletonInput({ className, ...props }: ComponentProps<"div">) {
 }
 
 function SkeletonLabel({ className, ...props }: ComponentProps<"div">) {
-  return <Skeleton className={cn("h-[12px] w-20 lg:h-[13px]", className)} {...props} />;
+  return <Skeleton className={cn("h-3 w-20 lg:h-[13px]", className)} {...props} />;
 }
 
 function SkeletonFieldGroup({ total }: Readonly<{ total: number }>) {

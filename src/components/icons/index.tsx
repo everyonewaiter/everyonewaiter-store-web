@@ -1,1 +1,1 @@
-export * from "@/components/icons/svgs";
+export * from "@/components/icons/__svgs__";
