@@ -11,7 +11,7 @@ function Skeleton({ className, ...props }: ComponentProps<"div">) {
   );
 }
 
-function SkeletonWrapper({ children }: PropsWithChildren) {
+function SkeletonWrapper({ children }: Readonly<PropsWithChildren>) {
   return <div className="flex flex-col gap-2.5">{children}</div>;
 }
 
@@ -28,7 +28,7 @@ function SkeletonLabel({ className, ...props }: ComponentProps<"div">) {
   return <Skeleton className={cn("h-[12px] w-20 lg:h-[13px]", className)} {...props} />;
 }
 
-function SkeletonFieldGroup({ total }: { total: number }) {
+function SkeletonFieldGroup({ total }: Readonly<{ total: number }>) {
   return (
     <>
       {Array.from({ length: total })

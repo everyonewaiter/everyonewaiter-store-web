@@ -99,7 +99,7 @@ function Alert({
               noResponsive={noResponsive}
               className="flex-1"
               disabled={disabled || isSubmitted}
-              color={(primaryButton.color as Color) || "primary"}
+              color={primaryButton.color || "primary"}
               {...primaryButton}
               customButtonStyle={primaryButton.customButtonStyle || ""}
             >

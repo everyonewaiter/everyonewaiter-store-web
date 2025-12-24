@@ -1,4 +1,4 @@
-import { createContext, useContext, useId, useMemo, type ComponentProps } from "react";
+import { type ComponentProps, createContext, useContext, useId, useMemo } from "react";
 import * as LabelPrimitive from "@radix-ui/react-label";
 import { Slot } from "@radix-ui/react-slot";
 import {
@@ -102,7 +102,7 @@ function FormControl({ ...props }: ComponentProps<typeof Slot>) {
     <Slot
       data-slot="form-control"
       id={formItemId}
-      aria-describedby={!error ? `${formDescriptionId}` : `${formDescriptionId} ${formMessageId}`}
+      aria-describedby={error ? `${formDescriptionId} ${formMessageId}` : `${formDescriptionId}`}
       aria-invalid={!!error}
       {...props}
     />
