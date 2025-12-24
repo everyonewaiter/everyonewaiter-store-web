@@ -20,7 +20,7 @@ const Switch = forwardRef<ComponentRef<typeof SwitchPrimitives.Root>, SwitchProp
     return (
       <SwitchPrimitives.Root
         className={cn(
-          "peer focus-visible:ring-ring focus-visible:ring-offset-background data-[state=checked]:border-primary inline-flex h-[24px] w-[48px] shrink-0 items-center justify-start rounded-full border transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed data-[state=checked]:bg-white disabled:data-[state=checked]:border-transparent disabled:data-[state=checked]:bg-[#F2202030] data-[state=unchecked]:border-gray-600 data-[state=unchecked]:bg-gray-600",
+          "peer focus-visible:ring-ring focus-visible:ring-offset-background data-[state=checked]:border-primary inline-flex h-6 w-12 shrink-0 items-center justify-start rounded-full border transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed data-[state=checked]:bg-white disabled:data-[state=checked]:border-transparent disabled:data-[state=checked]:bg-[#F2202030] data-[state=unchecked]:border-gray-600 data-[state=unchecked]:bg-gray-600",
           className
         )}
         style={{

@@ -6,12 +6,12 @@ interface CheckboxProps extends CheckboxPrimitive.CheckboxProps {
   size?: number;
 }
 
-function Checkbox({ hasError, size = 18, ...props }: CheckboxProps) {
+function Checkbox({ hasError, size = 18, ...props }: Readonly<CheckboxProps>) {
   return (
     <CheckboxPrimitive.Root
       data-slot="checkbox"
       className={cn(
-        "hover:border-primary data-[state=checked]:bg-primary [data-state=checked]:border-primary shrink-0 cursor-pointer rounded-[4px] border border-gray-400 outline-none disabled:cursor-default disabled:border-gray-400 disabled:bg-gray-600 data-[state=checked]:disabled:opacity-40",
+        "hover:border-primary data-[state=checked]:bg-primary [data-state=checked]:border-primary shrink-0 cursor-pointer rounded-sm border border-gray-400 outline-none disabled:cursor-default disabled:border-gray-400 disabled:bg-gray-600 data-[state=checked]:disabled:opacity-40",
         hasError && "border-status-error bg-white"
       )}
       style={{ width: size, height: size }}

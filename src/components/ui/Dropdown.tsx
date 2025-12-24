@@ -39,9 +39,9 @@ function Dropdown({
             "flex h-12 flex-row items-center border border-gray-600 pr-3 pl-4 text-sm font-normal transition-colors hover:border-gray-500 focus:outline-none disabled:border-gray-600 disabled:bg-gray-700 disabled:text-gray-300",
             hasError && "border-status-error",
             type === "chip"
-              ? "h-9.5 w-fit justify-center gap-2.5 rounded-[40px]"
+              ? "h-9.5 w-fit justify-center gap-2.5 rounded-full"
               : "h-12 w-full justify-between rounded-xl py-2.5",
-            disabled ? "!cursor-default" : "!cursor-pointer"
+            disabled ? "cursor-default!" : "cursor-pointer!"
           )}
         >
           {selectedItem ? selectedItem.name : defaultText}
@@ -57,7 +57,7 @@ function Dropdown({
           <DropdownMenu.Content
             sideOffset={4}
             className={cn(
-              "z-[9999] mt-1 flex flex-col gap-1 rounded-2xl bg-white px-2 py-3 text-left shadow-[0px_2px_10px_rgba(0,0,0,0.08)]"
+              "z-9999 mt-1 flex flex-col gap-1 rounded-2xl bg-white px-2 py-3 text-left shadow-[0px_2px_10px_rgba(0,0,0,0.08)]"
             )}
             style={{ minWidth: "var(--radix-dropdown-menu-trigger-width)" }}
           >

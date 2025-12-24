@@ -112,19 +112,19 @@
 }
 
 .button-sm {
-  @apply text-s h-[36px] rounded-[8px] px-[16px] font-medium;
+  @apply text-s h-9 rounded-lg px-4 font-medium;
 }
 
 .button-md {
-  @apply h-[44px] rounded-[8px] px-[24px] text-sm font-medium;
+  @apply h-11 rounded-lg px-6 text-sm font-medium;
 }
 
 .button-lg {
-  @apply h-[48px] rounded-[12px] px-[24px] text-[15px] font-semibold;
+  @apply h-12 rounded-xl px-6 text-[15px] font-semibold;
 }
 
 .button-xl {
-  @apply h-[56px] rounded-[12px] px-[32px] !text-base !font-semibold;
+  @apply h-14 rounded-xl px-8 text-base font-semibold;
 }
 
 .scrollbar-hide {

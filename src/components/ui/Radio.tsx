@@ -4,7 +4,7 @@ import { cva } from "class-variance-authority";
 import cn from "@/lib/utils";
 
 const radioVariants = cva(
-  "focus-visible:ring-ring aspect-square h-[18px] w-[18px] rounded-full border focus:outline-none focus-visible:ring-1 disabled:cursor-not-allowed cursor-pointer",
+  "focus-visible:ring-ring aspect-square h-4.5 w-4.5 rounded-full border focus:outline-none focus-visible:ring-1 disabled:cursor-not-allowed cursor-pointer lg:h-6 lg:w-6",
   {
     variants: {
       variant: {
@@ -50,7 +50,7 @@ const RadioGroupItem = forwardRef<
     {...props}
   >
     <RadioGroupPrimitive.Indicator className="flex items-center justify-center">
-      <div className="bg-primary h-[10px] w-[10px] rounded-full" />
+      <div className="bg-primary h-2.5 w-2.5 rounded-full" />
     </RadioGroupPrimitive.Indicator>
   </RadioGroupPrimitive.Item>
 ));

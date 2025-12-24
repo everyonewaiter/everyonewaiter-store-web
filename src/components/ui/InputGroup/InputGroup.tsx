@@ -68,6 +68,8 @@ const inputGroupAddonVariants = cva(
 function InputGroupAddon({
   className,
   align = "inline-start",
+  onClick: onClickProp,
+  onKeyDown: onKeyDownProp,
   ...props
 }: Readonly<ComponentProps<"div"> & VariantProps<typeof inputGroupAddonVariants>>) {
   return (
@@ -78,18 +80,22 @@ function InputGroupAddon({
       className={cn(inputGroupAddonVariants({ align }), className)}
       onClick={(e) => {
         if ((e.target as HTMLElement).closest("button")) {
+          onClickProp?.(e);
           return;
         }
         e.currentTarget.parentElement?.querySelector("input")?.focus();
+        onClickProp?.(e);
       }}
       onKeyDown={(e) => {
         if (e.key === "Enter" || e.key === " ") {
           if ((e.target as HTMLElement).closest("button")) {
+            onKeyDownProp?.(e);
             return;
           }
           e.currentTarget.parentElement?.querySelector("input")?.focus();
           e.preventDefault();
         }
+        onKeyDownProp?.(e);
       }}
       {...props}
     />
