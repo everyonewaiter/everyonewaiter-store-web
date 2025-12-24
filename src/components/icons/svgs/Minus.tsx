@@ -1,5 +1,5 @@
-import type { SVGProps } from 'react'
-import cn from '@/lib/utils'
+import type { SVGProps } from "react";
+import cn from "@/lib/utils";
 
 function Minus({ className, ...props }: SVGProps<SVGSVGElement>) {
   return (
@@ -21,6 +21,6 @@ function Minus({ className, ...props }: SVGProps<SVGSVGElement>) {
         d="M16.395 9.375H3.603c-.321 0-.582.28-.582.625s.26.625.582.625h12.792c.321 0 .582-.28.582-.625s-.26-.625-.582-.625"
       />
     </svg>
-  )
+  );
 }
-export default Minus
+export default Minus;

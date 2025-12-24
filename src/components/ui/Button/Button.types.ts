@@ -1,7 +1,8 @@
+import type { ButtonHTMLAttributes } from "react";
+import { type VariantProps } from "class-variance-authority";
 import { buttonVariants } from "@/components/ui/Button/Button.styles";
 import type { BaseSize } from "@/types/size";
 import type { valueOf } from "@/types/type";
-import { type VariantProps } from "class-variance-authority";
 
 export const ColorName = {
   PRIMARY: "primary",
@@ -12,7 +13,6 @@ export const ColorName = {
   REJECT: "reject",
   REAPPLY: "reapply",
 } as const;
-
 
 type ScreenSize = BaseSize;
 
@@ -28,8 +28,7 @@ type ButtonColor = Extract<
 type ButtonVariant = VariantProps<typeof buttonVariants>;
 
 interface BaseButtonProps
-  extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "color">,
-    ButtonVariant {
+  extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, "color">, ButtonVariant {
   asChild?: boolean;
 }
 

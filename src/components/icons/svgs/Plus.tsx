@@ -1,5 +1,5 @@
-import type { SVGProps } from 'react'
-import cn from '@/lib/utils'
+import type { SVGProps } from "react";
+import cn from "@/lib/utils";
 
 function Plus({ className, ...props }: SVGProps<SVGSVGElement>) {
   return (
@@ -19,6 +19,6 @@ function Plus({ className, ...props }: SVGProps<SVGSVGElement>) {
         clipRule="evenodd"
       />
     </svg>
-  )
+  );
 }
-export default Plus
+export default Plus;

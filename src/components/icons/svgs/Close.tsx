@@ -1,5 +1,5 @@
-import type { SVGProps } from 'react'
-import cn from '@/lib/utils'
+import type { SVGProps } from "react";
+import cn from "@/lib/utils";
 
 function Close({ className, ...props }: SVGProps<SVGSVGElement>) {
   return (
@@ -19,6 +19,6 @@ function Close({ className, ...props }: SVGProps<SVGSVGElement>) {
         d="m7.515 7.515 16.97 16.97m-16.97 0 16.97-16.97"
       />
     </svg>
-  )
+  );
 }
-export default Close
+export default Close;

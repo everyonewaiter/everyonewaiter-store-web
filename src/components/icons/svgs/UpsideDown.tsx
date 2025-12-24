@@ -1,5 +1,5 @@
-import type { SVGProps } from 'react'
-import cn from '@/lib/utils'
+import type { SVGProps } from "react";
+import cn from "@/lib/utils";
 
 function UpsideDown({ className, ...props }: SVGProps<SVGSVGElement>) {
   return (
@@ -20,6 +20,6 @@ function UpsideDown({ className, ...props }: SVGProps<SVGSVGElement>) {
         d="m11.667 5.833 2.5-2.5m0 0 2.5 2.5m-2.5-2.5v13.334m-5.833-2.5-2.5 2.5m0 0-2.5-2.5m2.5 2.5V3.333"
       />
     </svg>
-  )
+  );
 }
-export default UpsideDown
+export default UpsideDown;

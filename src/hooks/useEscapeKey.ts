@@ -20,9 +20,9 @@ export default function useEscapeKey({ handler }: UseEscapeKeyProps) {
       }
     };
 
-    document.addEventListener("keydown", listener);
+    globalThis.document.addEventListener("keydown", listener);
     return () => {
-      document.removeEventListener("keydown", listener);
+      globalThis.document.removeEventListener("keydown", listener);
     };
   }, [handler]);
 }

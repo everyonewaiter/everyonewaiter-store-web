@@ -1,5 +1,5 @@
-import type { SVGProps } from 'react'
-import cn from '@/lib/utils'
+import type { SVGProps } from "react";
+import cn from "@/lib/utils";
 
 function User({ className, ...props }: SVGProps<SVGSVGElement>) {
   return (
@@ -23,6 +23,6 @@ function User({ className, ...props }: SVGProps<SVGSVGElement>) {
         d="M21.283 21.126c2.451 1.394 3.867 3.807 3.867 3.807a.81.81 0 0 0 .73.4.8.8 0 0 0 .38-.107.8.8 0 0 0 .297-1.093c-1.633-2.785-4.462-4.392-4.462-4.392C19.266 18.133 16 18.133 16 18.133c-3.267 0-6.096 1.608-6.096 1.608-2.829 1.607-4.462 4.392-4.462 4.392a.8.8 0 0 0-.109.4v.015q.001.098.028.193c.056.204.192.38.378.485a.823.823 0 0 0 1.11-.293c1.416-2.413 3.868-3.807 3.868-3.807C13.168 19.733 16 19.733 16 19.733c2.83 0 5.283 1.393 5.283 1.393"
       />
     </svg>
-  )
+  );
 }
-export default User
+export default User;

@@ -1,8 +1,9 @@
 import { type PropsWithChildren, useRef, useState } from "react";
-// import { useModalCloseTriggers } from "@/hooks/useModalCloseTriggers";
-import cn from "@/lib/utils";
+import Spinner from "@/components/feedback/Spinner";
 import type { ButtonColor } from "@/components/ui/Button/Button.types";
-import Spinner from "@/components/feedback/Spinner";  
+import useEscapeKey from "@/hooks/useEscapeKey";
+import useOutsideClick from "@/hooks/useOutSideClick";
+import cn from "@/lib/utils";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -52,7 +53,15 @@ function Alert({
   const ref = useRef<HTMLDivElement>(null);
   const [open, setOpen] = useState(true);
 
-  // useModalCloseTriggers<HTMLDivElement>({ ref, onClose });
+  useOutsideClick({
+    ref,
+    handler: () => {
+      onClose();
+    },
+  });
+  useEscapeKey({
+    handler: onClose,
+  });
 
   const handleClose = () => {
     setOpen(false);

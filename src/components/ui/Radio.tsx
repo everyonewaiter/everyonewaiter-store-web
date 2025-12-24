@@ -1,7 +1,7 @@
 import { type ComponentPropsWithoutRef, type ComponentRef, forwardRef } from "react";
 import * as RadioGroupPrimitive from "@radix-ui/react-radio-group";
-import cn from "@/lib/utils";
 import { cva } from "class-variance-authority";
+import cn from "@/lib/utils";
 
 const radioVariants = cva(
   "focus-visible:ring-ring aspect-square h-[18px] w-[18px] rounded-full border focus:outline-none focus-visible:ring-1 disabled:cursor-not-allowed cursor-pointer",
@@ -39,20 +39,21 @@ type RadioGroupItemProps = ComponentPropsWithoutRef<typeof RadioGroupPrimitive.I
   variant?: "default" | "focused" | "error" | "disabled";
 };
 
-const RadioGroupItem = forwardRef<ComponentRef<typeof RadioGroupPrimitive.Item>, RadioGroupItemProps>(
-  ({ className, variant = "default", ...props }, ref) => (
-    <RadioGroupPrimitive.Item
-      ref={ref}
-      disabled={props.disabled || variant === "disabled"}
-      className={cn(radioVariants({ variant }), className)}
-      {...props}
-    >
-      <RadioGroupPrimitive.Indicator className="flex items-center justify-center">
-        <div className="bg-primary h-[10px] w-[10px] rounded-full" />
-      </RadioGroupPrimitive.Indicator>
-    </RadioGroupPrimitive.Item>
-  )
-);
+const RadioGroupItem = forwardRef<
+  ComponentRef<typeof RadioGroupPrimitive.Item>,
+  RadioGroupItemProps
+>(({ className, variant = "default", ...props }, ref) => (
+  <RadioGroupPrimitive.Item
+    ref={ref}
+    disabled={props.disabled || variant === "disabled"}
+    className={cn(radioVariants({ variant }), className)}
+    {...props}
+  >
+    <RadioGroupPrimitive.Indicator className="flex items-center justify-center">
+      <div className="bg-primary h-[10px] w-[10px] rounded-full" />
+    </RadioGroupPrimitive.Indicator>
+  </RadioGroupPrimitive.Item>
+));
 
 RadioGroupItem.displayName = RadioGroupPrimitive.Item.displayName;
 

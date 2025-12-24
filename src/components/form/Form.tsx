@@ -1,6 +1,6 @@
+import { createContext, useContext, useId, useMemo, type ComponentProps } from "react";
 import * as LabelPrimitive from "@radix-ui/react-label";
 import { Slot } from "@radix-ui/react-slot";
-import * as React from "react";
 import {
   Controller,
   type ControllerProps,
@@ -10,9 +10,9 @@ import {
   useFormContext,
   useFormState,
 } from "react-hook-form";
+import { Info } from "@/components/icons";
 import Label from "@/components/ui/Label";
 import cn from "@/lib/utils";
-import { Info } from "@/components/icons";
 
 const Form = FormProvider;
 
@@ -23,25 +23,21 @@ type FormFieldContextValue<
   name: TName;
 };
 
-const FormFieldContext = React.createContext<FormFieldContextValue>(
-  {} as FormFieldContextValue
-);
+const FormFieldContext = createContext<FormFieldContextValue>({} as FormFieldContextValue);
 
 function FormField<
   TFieldValues extends FieldValues = FieldValues,
-  TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,  
->({
-  ...props
-}: ControllerProps<TFieldValues, TName>) {
+  TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
+>({ ...props }: ControllerProps<TFieldValues, TName>) {
   return (
-    <FormFieldContext.Provider value={React.useMemo(() => ({ name: props.name }), [props.name])}>
+    <FormFieldContext.Provider value={useMemo(() => ({ name: props.name }), [props.name])}>
       <Controller {...props} />
     </FormFieldContext.Provider>
   );
-};
+}
 
 const useFormField = () => {
-  const fieldContext = React.useContext(FormFieldContext);
+  const fieldContext = useContext(FormFieldContext);
   const { getFieldState } = useFormContext();
   const formState = useFormState({ name: fieldContext.name });
   const fieldState = getFieldState(fieldContext.name, formState);
@@ -50,33 +46,30 @@ const useFormField = () => {
     throw new Error("useFormField should be used within <FormField>");
   }
 
-  return React.useMemo(() => ({
-    name: fieldContext.name,
-    formItemId: `${fieldContext.name}-form-item`,
-    formDescriptionId: `${fieldContext.name}-form-item-description`,
-    formMessageId: `${fieldContext.name}-form-item-message`,
-    ...fieldState,
-  }), [fieldContext.name, fieldState]);
+  return useMemo(
+    () => ({
+      name: fieldContext.name,
+      formItemId: `${fieldContext.name}-form-item`,
+      formDescriptionId: `${fieldContext.name}-form-item-description`,
+      formMessageId: `${fieldContext.name}-form-item-message`,
+      ...fieldState,
+    }),
+    [fieldContext.name, fieldState]
+  );
 };
 
 type FormItemContextValue = {
   id: string;
 };
 
-const FormItemContext = React.createContext<FormItemContextValue>(
-  {} as FormItemContextValue
-);
+const FormItemContext = createContext<FormItemContextValue>({} as FormItemContextValue);
 
-function FormItem({ className, ...props }: React.ComponentProps<"div">) {
-  const id = React.useId();
+function FormItem({ className, ...props }: ComponentProps<"div">) {
+  const id = useId();
 
   return (
-    <FormItemContext.Provider value={React.useMemo(() => ({ id }), [id])}>
-      <div
-        data-slot="form-item"
-        className={cn("grid gap-2", className)}
-        {...props}
-      />
+    <FormItemContext.Provider value={useMemo(() => ({ id }), [id])}>
+      <div data-slot="form-item" className={cn("grid gap-2", className)} {...props} />
     </FormItemContext.Provider>
   );
 }
@@ -85,7 +78,7 @@ function FormLabel({
   className,
   labelDisabled,
   ...props
-}: React.ComponentProps<typeof LabelPrimitive.Root> & {
+}: ComponentProps<typeof LabelPrimitive.Root> & {
   labelDisabled?: boolean;
 }) {
   const { error, formItemId } = useFormField();
@@ -102,26 +95,21 @@ function FormLabel({
   );
 }
 
-function FormControl({ ...props }: React.ComponentProps<typeof Slot>) {
-  const { error, formItemId, formDescriptionId, formMessageId } =
-    useFormField();
+function FormControl({ ...props }: ComponentProps<typeof Slot>) {
+  const { error, formItemId, formDescriptionId, formMessageId } = useFormField();
 
   return (
     <Slot
       data-slot="form-control"
       id={formItemId}
-      aria-describedby={
-        !error
-          ? `${formDescriptionId}`
-          : `${formDescriptionId} ${formMessageId}`
-      }
+      aria-describedby={!error ? `${formDescriptionId}` : `${formDescriptionId} ${formMessageId}`}
       aria-invalid={!!error}
       {...props}
     />
   );
 }
 
-function FormDescription({ className, ...props }: React.ComponentProps<"p">) {
+function FormDescription({ className, ...props }: ComponentProps<"p">) {
   const { formDescriptionId } = useFormField();
 
   return (
@@ -134,7 +122,7 @@ function FormDescription({ className, ...props }: React.ComponentProps<"p">) {
   );
 }
 
-function FormMessage({ className, ...props }: React.ComponentProps<"p">) {
+function FormMessage({ className, ...props }: ComponentProps<"p">) {
   const { formMessageId } = useFormField();
 
   if (!props.children) {
@@ -145,10 +133,7 @@ function FormMessage({ className, ...props }: React.ComponentProps<"p">) {
     <div
       data-slot="form-message"
       id={formMessageId}
-      className={cn(
-        "lg:text-s flex items-center gap-0.5 text-xs text-gray-400",
-        className
-      )}
+      className={cn("lg:text-s flex items-center gap-0.5 text-xs text-gray-400", className)}
       {...props}
     >
       {props.children}
@@ -156,7 +141,7 @@ function FormMessage({ className, ...props }: React.ComponentProps<"p">) {
   );
 }
 
-function FormErrorMessage({ className, ...props }: React.ComponentProps<"p">) {
+function FormErrorMessage({ className, ...props }: ComponentProps<"p">) {
   const { error, formMessageId } = useFormField();
   const body = error ? String(error?.message ?? "") : props.children;
 
@@ -168,10 +153,7 @@ function FormErrorMessage({ className, ...props }: React.ComponentProps<"p">) {
     <span
       data-slot="form-message"
       id={formMessageId}
-      className={cn(
-        "lg:text-s text-status-error flex items-center gap-0.5 text-xs",
-        className
-      )}
+      className={cn("lg:text-s text-status-error flex items-center gap-0.5 text-xs", className)}
       {...props}
     >
       <Info className="stroke-status-error mb-px h-4 w-4" />

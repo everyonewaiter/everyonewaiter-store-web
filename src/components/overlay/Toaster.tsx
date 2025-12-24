@@ -1,14 +1,15 @@
+import type { CSSProperties } from "react";
 import {
   CircleCheckIcon,
   InfoIcon,
   Loader2Icon,
   OctagonXIcon,
   TriangleAlertIcon,
-} from "lucide-react"
-import { Toaster as Sonner, type ToasterProps } from "sonner"
+} from "lucide-react";
+import { Toaster as Sonner, type ToasterProps } from "sonner";
 
 /**
- * 
+ *
  * @example
  * onClick={() => {
  *   toast.success("Success", {
@@ -19,7 +20,7 @@ import { Toaster as Sonner, type ToasterProps } from "sonner"
  *   })
  * }}
  */
-function Toaster({ ...props }: ToasterProps) {
+function Toaster({ ...props }: Readonly<ToasterProps>) {
   return (
     <Sonner
       className="toaster group"
@@ -36,11 +37,11 @@ function Toaster({ ...props }: ToasterProps) {
           "--normal-text": "var(--popover-foreground)",
           "--normal-border": "var(--border)",
           "--border-radius": "var(--radius)",
-        } as React.CSSProperties
+        } as CSSProperties
       }
       {...props}
     />
-  )
+  );
 }
 
 export default Toaster;

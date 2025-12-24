@@ -1,1 +1,1 @@
-export * from './svgs/index.tsx';
+export * from "./svgs/index.tsx";

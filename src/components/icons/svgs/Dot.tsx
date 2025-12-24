@@ -1,5 +1,5 @@
-import type { SVGProps } from 'react'
-import cn from '@/lib/utils'
+import type { SVGProps } from "react";
+import cn from "@/lib/utils";
 
 function Dot({ className, ...props }: SVGProps<SVGSVGElement>) {
   return (
@@ -17,6 +17,6 @@ function Dot({ className, ...props }: SVGProps<SVGSVGElement>) {
         d="M13.542 12.108c0 .837-.69 1.516-1.54 1.516s-1.541-.679-1.541-1.516.69-1.516 1.54-1.516 1.541.679 1.541 1.516m0-7.368c0 .838-.69 1.517-1.54 1.517s-1.541-.68-1.541-1.516c0-.838.69-1.516 1.54-1.516s1.541.678 1.541 1.516m0 14.519c0 .837-.69 1.515-1.54 1.515s-1.541-.678-1.541-1.516c0-.837.69-1.516 1.54-1.516s1.541.68 1.541 1.516"
       />
     </svg>
-  )
+  );
 }
-export default Dot
+export default Dot;

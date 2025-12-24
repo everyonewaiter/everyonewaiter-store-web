@@ -1,5 +1,5 @@
-import type { SVGProps } from 'react'
-import cn from '@/lib/utils'
+import type { SVGProps } from "react";
+import cn from "@/lib/utils";
 
 function DragDrop({ className, ...props }: SVGProps<SVGSVGElement>) {
   return (
@@ -19,6 +19,6 @@ function DragDrop({ className, ...props }: SVGProps<SVGSVGElement>) {
       <circle cx={9} cy={18} r={1.5} fill="#333" />
       <circle cx={15} cy={18} r={1.5} fill="#333" />
     </svg>
-  )
+  );
 }
-export default DragDrop
+export default DragDrop;

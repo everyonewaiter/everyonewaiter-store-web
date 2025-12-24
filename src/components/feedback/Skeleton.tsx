@@ -1,7 +1,7 @@
+import type { ComponentProps, PropsWithChildren } from "react";
 import cn from "@/lib/utils";
-import type { PropsWithChildren } from "react";
 
-function Skeleton({ className, ...props }: React.ComponentProps<"div">) {
+function Skeleton({ className, ...props }: ComponentProps<"div">) {
   return (
     <div
       data-slot="skeleton"
@@ -15,25 +15,17 @@ function SkeletonWrapper({ children }: PropsWithChildren) {
   return <div className="flex flex-col gap-2.5">{children}</div>;
 }
 
-function SkeletonInput({ className, ...props }: React.ComponentProps<"div">) {
+function SkeletonInput({ className, ...props }: ComponentProps<"div">) {
   return (
     <Skeleton
-      className={cn(
-        "h-9 w-full rounded-lg md:w-full lg:h-12 lg:rounded-xl",
-        className
-      )}
+      className={cn("h-9 w-full rounded-lg md:w-full lg:h-12 lg:rounded-xl", className)}
       {...props}
     />
   );
 }
 
-function SkeletonLabel({ className, ...props }: React.ComponentProps<"div">) {
-  return (
-    <Skeleton
-      className={cn("h-[12px] w-20 lg:h-[13px]", className)}
-      {...props}
-    />
-  );
+function SkeletonLabel({ className, ...props }: ComponentProps<"div">) {
+  return <Skeleton className={cn("h-[12px] w-20 lg:h-[13px]", className)} {...props} />;
 }
 
 function SkeletonFieldGroup({ total }: { total: number }) {

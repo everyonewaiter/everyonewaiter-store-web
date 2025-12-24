@@ -14,10 +14,7 @@ interface UseOutsideClickProps {
  *  @param ref - 외부 클릭을 감지할 대상 요소의 `RefObject`.
  *  @param handler - 외부 클릭이 발생시 특정 동작을 실행하는 함수
  */
-export default function useOutsideClick({
-  ref,
-  handler,
-}: UseOutsideClickProps) {
+export default function useOutsideClick({ ref, handler }: UseOutsideClickProps) {
   useEffect(() => {
     const listener = (event: MouseEvent) => {
       // NOTE - 요소 외부 클릭 감지
@@ -28,9 +25,9 @@ export default function useOutsideClick({
       handler(event);
     };
 
-    document.addEventListener("mousedown", listener);
+    globalThis.document.addEventListener("mousedown", listener);
     return () => {
-      document.removeEventListener("mousedown", listener);
+      globalThis.document.removeEventListener("mousedown", listener);
     };
   }, [ref, handler]);
 }

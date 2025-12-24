@@ -1,33 +1,37 @@
-import * as React from "react";
+import { forwardRef, type ComponentProps, type ComponentRef, type ReactNode } from "react";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import Button from "@/components/ui/Button/Button";
 import type { ButtonColor, ButtonSize } from "@/components/ui/Button/Button.types";
 import cn from "@/lib/utils";
 
-function Dialog({ ...props }: React.ComponentProps<typeof DialogPrimitive.Root>) {
+function Dialog({ ...props }: Readonly<ComponentProps<typeof DialogPrimitive.Root>>) {
   return <DialogPrimitive.Root data-slot="dialog" {...props} />;
 }
 
-Dialog.Trigger = ({
-  ...props
-}: React.ComponentProps<typeof DialogPrimitive.Trigger>) => {
+Dialog.Trigger = forwardRef<
+  ComponentProps<typeof DialogPrimitive.Trigger>,
+  Readonly<ComponentProps<typeof DialogPrimitive.Trigger>>
+>(({ ...props }) => {
   return <DialogPrimitive.Trigger data-slot="dialog-trigger" {...props} />;
-};
+});
+Dialog.Trigger.displayName = DialogPrimitive.Trigger.displayName;
 
-function DialogPortal({ ...props }: React.ComponentProps<typeof DialogPrimitive.Portal>) {
+function DialogPortal({ ...props }: Readonly<ComponentProps<typeof DialogPrimitive.Portal>>) {
   return <DialogPrimitive.Portal data-slot="dialog-portal" {...props} />;
 }
 
-Dialog.Close = ({
-  ...props
-}: React.ComponentProps<typeof DialogPrimitive.Close>) =>  {
+Dialog.Close = forwardRef<
+  ComponentRef<typeof DialogPrimitive.Close>,
+  Readonly<ComponentProps<typeof DialogPrimitive.Close>>
+>(({ ...props }) => {
   return <DialogPrimitive.Close data-slot="dialog-close" {...props} />;
-};
+});
+Dialog.Close.displayName = DialogPrimitive.Close.displayName;
 
 function DialogOverlay({
   className,
   ...props
-}: React.ComponentProps<typeof DialogPrimitive.Overlay>) {
+}: Readonly<ComponentProps<typeof DialogPrimitive.Overlay>>) {
   return (
     <DialogPrimitive.Overlay
       data-slot="dialog-overlay"
@@ -40,7 +44,7 @@ function DialogOverlay({
   );
 }
 
-Dialog.Wrapper = ({
+function DialogWrapper({
   className,
   children,
   gap,
@@ -49,13 +53,13 @@ Dialog.Wrapper = ({
   height,
   title,
   ...props
-}: React.ComponentProps<typeof DialogPrimitive.Content> & {
+}: Readonly<ComponentProps<typeof DialogPrimitive.Content>> & {
   gap?: number;
   width?: number;
   flexDirection?: "col" | "row";
   height?: number;
-  title?: React.ReactNode;
-}) => {
+  title?: ReactNode;
+}) {
   return (
     <DialogPortal data-slot="dialog-portal">
       <DialogOverlay />
@@ -75,13 +79,15 @@ Dialog.Wrapper = ({
       </DialogPrimitive.Content>
     </DialogPortal>
   );
-};
+}
+Dialog.Wrapper = DialogWrapper;
+DialogWrapper.displayName = "Dialog.Wrapper";
 
-Dialog.Title = ({
+function DialogTitle({
   className,
   children,
   ...props
-}: React.ComponentProps<typeof DialogPrimitive.Title>) => {
+}: ComponentProps<typeof DialogPrimitive.Title>) {
   return (
     <DialogPrimitive.Title
       className={cn("flex flex-col items-center justify-center gap-3 py-6", className)}
@@ -90,9 +96,11 @@ Dialog.Title = ({
       {children}
     </DialogPrimitive.Title>
   );
-};
+}
+Dialog.Title = DialogTitle;
+DialogTitle.displayName = DialogPrimitive.Title.displayName;
 
-Dialog.Header = ({ className, ...props }: React.ComponentProps<"div">) => {
+function DialogHeader({ className, ...props }: ComponentProps<"div">) {
   return (
     <div
       data-slot="dialog-header"
@@ -100,9 +108,11 @@ Dialog.Header = ({ className, ...props }: React.ComponentProps<"div">) => {
       {...props}
     />
   );
-};
+}
+Dialog.Header = DialogHeader;
+DialogHeader.displayName = "Dialog.Header";
 
-Dialog.Footer = ({
+function DialogFooter({
   className,
   children,
   layout = "balanced",
@@ -111,8 +121,8 @@ Dialog.Footer = ({
   secondaryButton,
   buttonSize = "lg",
   ...props
-}: React.ComponentProps<"div"> & {
-  children?: React.ReactNode;
+}: ComponentProps<"div"> & {
+  children?: ReactNode;
   layout?: "balanced" | "unbalanced";
   buttonClassName?: string;
   primaryButton?: {
@@ -132,7 +142,7 @@ Dialog.Footer = ({
     hide?: boolean;
   };
   buttonSize?: ButtonSize;
-}) => {
+}) {
   const getButtonSize = () => `button-${buttonSize}`;
 
   return (
@@ -172,6 +182,9 @@ Dialog.Footer = ({
       )}
     </div>
   );
-};
+}
+
+Dialog.Footer = DialogFooter;
+DialogFooter.displayName = "Dialog.Footer";
 
 export { Dialog, DialogOverlay, DialogPortal };

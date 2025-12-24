@@ -1,13 +1,13 @@
-import { forwardRef, type ReactElement } from "react";
-import type { ControllerFieldState } from "react-hook-form";
+import { forwardRef, type ComponentProps, type ReactElement } from "react";
 import cn from "@/lib/utils";
+import type { ControllerFieldState } from "react-hook-form";
 
 interface InputProps {
   prefix?: ReactElement;
   fieldState?: ControllerFieldState;
 }
 
-type CombineInputProps = Omit<React.ComponentProps<"input">, "prefix"> & InputProps;
+type CombineInputProps = Omit<ComponentProps<"input">, "prefix"> & InputProps;
 
 const Input = forwardRef<HTMLInputElement, CombineInputProps>(
   ({ className, prefix, fieldState, ...props }, ref) => {
@@ -28,7 +28,7 @@ const Input = forwardRef<HTMLInputElement, CombineInputProps>(
             className={cn(
               "text-gray-0 text-s h-9 w-full rounded-lg border py-2.5 pr-3 pl-3 font-normal outline-none placeholder:text-gray-300 disabled:border-gray-500 disabled:bg-gray-700 disabled:text-gray-300 disabled:placeholder:text-gray-400 lg:h-12 lg:rounded-xl lg:pl-4 lg:text-[15px]",
               hasError ? "border-status-error" : "border-gray-600",
-              prefix && "!pl-10",
+              prefix && "pl-10!",
               className
             )}
             {...props}

@@ -1,5 +1,5 @@
-import type { SVGProps } from 'react'
-import cn from '@/lib/utils'
+import type { SVGProps } from "react";
+import cn from "@/lib/utils";
 
 function Settings({ className, ...props }: SVGProps<SVGSVGElement>) {
   return (
@@ -25,6 +25,6 @@ function Settings({ className, ...props }: SVGProps<SVGSVGElement>) {
         clipRule="evenodd"
       />
     </svg>
-  )
+  );
 }
-export default Settings
+export default Settings;

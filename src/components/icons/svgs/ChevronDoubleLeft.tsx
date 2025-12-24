@@ -1,5 +1,5 @@
-import type { SVGProps } from 'react'
-import cn from '@/lib/utils'
+import type { SVGProps } from "react";
+import cn from "@/lib/utils";
 
 function ChevronDoubleLeft({ className, ...props }: SVGProps<SVGSVGElement>) {
   return (
@@ -20,6 +20,6 @@ function ChevronDoubleLeft({ className, ...props }: SVGProps<SVGSVGElement>) {
         d="m13.4 5.8 5.6 5.6-5.6 5.6M5 5.8l5.6 5.6L5 17"
       />
     </svg>
-  )
+  );
 }
-export default ChevronDoubleLeft
+export default ChevronDoubleLeft;

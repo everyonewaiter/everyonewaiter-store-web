@@ -2,12 +2,8 @@ import React from "react";
 import { Slot } from "@radix-ui/react-slot";
 import cn from "@/lib/utils";
 import { buttonVariants } from "./Button.styles";
-import type {
-  ButtonSize,
-  ResponsiveButtonProps,
-  ScreenSize,
-} from "./Button.types";
 import { ColorName } from "./Button.types";
+import type { ButtonSize, ResponsiveButtonProps, ScreenSize } from "./Button.types";
 
 function ResponsiveButton(
   {
