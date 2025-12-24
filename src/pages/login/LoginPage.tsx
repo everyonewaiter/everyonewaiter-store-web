@@ -30,12 +30,12 @@ function LoginPage() {
   });
 
   return (
-    <div className="flex h-dvh w-dvw items-center overflow-hidden md:pl-[24px] lg:pl-[60px]">
-      <div className="center w-full flex-col gap-10 px-5 md:px-[62px] md:py-[32px] lg:gap-12 lg:px-[114px] lg:py-[64px]">
+    <div className="flex h-dvh w-dvw items-center overflow-hidden md:pl-6 lg:pl-15">
+      <div className="center w-full flex-col gap-10 px-5 md:px-15.5 md:py-8 lg:gap-12 lg:px-28.5 lg:py-16">
         <img
           src={logoTextHorizontal}
           alt="logo text horizontal"
-          className="w-[160px] max-w-[200px] md:w-[37%]"
+          className="w-40 max-w-50 md:w-[37%]"
         />
         <Form {...form}>
           <form className="w-full flex-col" onSubmit={handleSubmit}>
