@@ -1,7 +1,7 @@
-import { forwardRef, type ForwardedRef } from "react";
-import ResponsiveButton from "./ResponsiveButton";
-import SimpleButton from "./SimpleButton";
-import type { ResponsiveButtonProps, SimpleButtonProps } from "./Button.types";
+import { type ForwardedRef, forwardRef } from "react";
+import type { ResponsiveButtonProps, SimpleButtonProps } from "@/components/ui/Button/Button.types";
+import ResponsiveButton from "@/components/ui/Button/ResponsiveButton";
+import SimpleButton from "@/components/ui/Button/SimpleButton";
 
 export type ButtonProps = ResponsiveButtonProps | SimpleButtonProps;
 

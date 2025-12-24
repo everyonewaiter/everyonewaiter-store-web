@@ -1,9 +1,9 @@
 import React from "react";
 import { Slot } from "@radix-ui/react-slot";
+import { buttonVariants } from "@/components/ui/Button/Button.styles";
+import type { SimpleButtonProps } from "@/components/ui/Button/Button.types";
+import { ColorName } from "@/components/ui/Button/Button.types";
 import cn from "@/lib/utils";
-import { buttonVariants } from "./Button.styles";
-import { ColorName } from "./Button.types";
-import type { SimpleButtonProps } from "./Button.types";
 
 function SimpleButton(
   {

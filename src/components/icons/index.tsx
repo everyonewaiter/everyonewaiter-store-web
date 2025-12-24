@@ -1,1 +1,1 @@
-export * from "./svgs/index.tsx";
+export * from "@/components/icons/svgs";
