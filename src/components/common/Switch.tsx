@@ -1,7 +1,7 @@
 import type { ComponentPropsWithoutRef, ComponentRef } from "react";
 import { forwardRef, useMemo } from "react";
 import * as SwitchPrimitives from "@radix-ui/react-switch";
-import cn from "../../lib/utils";
+import cn from "@/lib/utils";
 
 interface SwitchProps extends ComponentPropsWithoutRef<typeof SwitchPrimitives.Root> {
   width?: number; // 전체 width

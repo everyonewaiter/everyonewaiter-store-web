@@ -1,10 +1,10 @@
 import type { ComponentProps } from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 import Button from "@/components/ui/Button/Button";
+import type { ResponsiveButtonProps } from "@/components/ui/Button/Button.types";
 import Input from "@/components/ui/Input";
 import Textarea from "@/components/ui/TextArea";
 import cn from "@/lib/utils";
-import type { ResponsiveButtonProps } from "../Button/Button.types";
 
 /**
  *

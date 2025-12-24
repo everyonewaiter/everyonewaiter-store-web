@@ -12,7 +12,7 @@ interface IProps {
   currentPage: number;
 }
 
-export default function Paginations({ className, currentPage }: IProps) {
+export default function Paginations({ className, currentPage }: Readonly<IProps>) {
   return (
     <Pagination className={className}>
       <PaginationContent>
