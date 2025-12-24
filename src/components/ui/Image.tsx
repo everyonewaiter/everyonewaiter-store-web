@@ -14,7 +14,7 @@ export default function Image({
   fallbackSrc,
   alt,
   ...props
-}: ImageProps) {
+}: Readonly<ImageProps>) {
   const [useFallback, setUseFallback] = useState(false);
 
   const cdnSrc = src && src.trim() !== "" ? `${import.meta.env.VITE_API_PUBLIC_CDN}/${src}` : "";

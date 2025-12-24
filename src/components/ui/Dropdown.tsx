@@ -27,7 +27,7 @@ function Dropdown({
   disabled,
   onChange,
   ...props
-}: DropdownProps) {
+}: Readonly<DropdownProps>) {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<DropdownItem | null>(null);
 
