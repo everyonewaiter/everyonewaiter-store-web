@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, useWatch } from "react-hook-form";
 import { Form, FormErrorMessage } from "@/components/form/Form";
@@ -21,6 +22,15 @@ function SignupPage() {
       agreeToTerms: false,
     },
   });
+
+  useEffect(() => {
+    const errors = form.formState.errors;
+    if (Object.keys(errors).length > 0) {
+      const firstErrorField = Object.keys(errors)[0] as keyof SignupSchema;
+      form.setFocus(firstErrorField);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [form.formState.errors]);
 
   const onSubmit = (data: SignupSchema) => {
     console.log(data);
