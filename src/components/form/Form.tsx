@@ -111,13 +111,17 @@ function FormControl({ ...props }: ComponentProps<typeof Slot>) {
 }
 
 function FormDescription({ className, ...props }: ComponentProps<"p">) {
-  const { formDescriptionId } = useFormField();
+  const { formDescriptionId, error } = useFormField();
+
+  if (error?.message) {
+    return null;
+  }
 
   return (
     <p
       data-slot="form-description"
       id={formDescriptionId}
-      className={cn("text-muted-foreground text-sm", className)}
+      className={cn("lg:text-s text-gray-400 md:text-xs", className)}
       {...props}
     />
   );
@@ -134,7 +138,7 @@ function FormMessage({ className, ...props }: ComponentProps<"p">) {
     <div
       data-slot="form-message"
       id={formMessageId}
-      className={cn("lg:text-s flex items-center gap-0.5 text-xs text-gray-400", className)}
+      className={cn("flex items-center gap-0.5 text-xs text-gray-400 lg:text-xs", className)}
       {...props}
     >
       {error?.message}
