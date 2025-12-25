@@ -7,7 +7,7 @@ import {
   FormErrorMessage,
   FormInput,
 } from "@/components/form/Form";
-import Input from "../ui/Input";
+import Input from "@/components/ui/Input";
 import type { ControllerProps, FieldPath, FieldValues } from "react-hook-form";
 
 interface FormFieldProps<

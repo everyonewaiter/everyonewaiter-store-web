@@ -1,9 +1,5 @@
 import { type PropsWithChildren, useRef, useState } from "react";
 import Spinner from "@/components/feedback/Spinner";
-import type { ButtonColor } from "@/components/ui/Button/Button.types";
-import useEscapeKey from "@/hooks/useEscapeKey";
-import useOutsideClick from "@/hooks/useOutSideClick";
-import cn from "@/lib/utils";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -12,7 +8,11 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "./Alert.components";
+} from "@/components/overlay/Alert/Alert.components";
+import type { ButtonColor } from "@/components/ui/Button/Button.types";
+import useEscapeKey from "@/hooks/useEscapeKey";
+import useOutsideClick from "@/hooks/useOutSideClick";
+import cn from "@/lib/utils";
 
 type Color = ButtonColor | undefined;
 

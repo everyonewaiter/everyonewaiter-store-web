@@ -1,7 +1,7 @@
 import { lazy } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
-const LoginPage = lazy(() => import("./pages/login/LoginPage"));
+const LoginPage = lazy(() => import("@/pages/login/LoginPage"));
 
 function App() {
   return (

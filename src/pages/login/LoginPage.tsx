@@ -2,12 +2,12 @@ import { useLayoutEffect } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
+import loginBg from "@/assets/images/login-bg.png";
+import logoTextHorizontal from "@/assets/images/logo-text-horizontal.svg";
 import { Form } from "@/components/form/Form";
 import FormField from "@/components/form/FormField";
 import Button from "@/components/ui/Button/Button";
 import { loginSchema, type LoginSchema } from "@/schema/auth/login.schema";
-import loginBg from "../../assets/images/login-bg.png";
-import logoTextHorizontal from "../../assets/images/logo-text-horizontal.svg";
 
 function LoginPage() {
   const form = useForm<LoginSchema>({
