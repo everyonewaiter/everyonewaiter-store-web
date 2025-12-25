@@ -53,12 +53,11 @@ function InputGroupAddon({
   onClick: onClickProp,
   onKeyDown: onKeyDownProp,
   ...props
-}: Readonly<ComponentProps<"div"> & VariantProps<typeof inputGroupAddonVariants>>) {
+}: Readonly<ComponentProps<"button"> & VariantProps<typeof inputGroupAddonVariants>>) {
   return (
-    <div
+    <button
       data-slot="input-group-addon"
       data-align={align}
-      role="button"
       tabIndex={0}
       aria-label="Focus input field"
       className={cn(inputGroupAddonVariants({ align }), className)}
