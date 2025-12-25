@@ -57,6 +57,8 @@
   /* Shadow */
   --shadow-custom: -2px 0px 20px 0px rgba(0, 0, 0, 0.08);
   --shadow-floating: 0px 0px 24px 0px rgba(0, 0, 0, 0.08);
+
+  --font-pretendard: "Pretendard", sans-serif;
 }
 
 @layer {
@@ -98,6 +100,7 @@
   /* Firefox */
   input[type="number"] {
     -moz-appearance: textfield;
+    appearance: textfield;
   }
 
   [data-dnd-draggable] {
@@ -125,11 +128,4 @@
 
 .button-xl {
   @apply h-14 rounded-xl px-8 text-base font-semibold;
-}
-
-.scrollbar-hide {
-  -ms-overflow-style: none;
-}
-.scrollbar-hide::-webkit-scrollbar {
-  display: none;
 }
