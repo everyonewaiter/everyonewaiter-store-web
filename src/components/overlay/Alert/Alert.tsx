@@ -8,7 +8,7 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@/components/overlay/Alert/primitives";
+} from "@/components/overlay/Alert/Alert.components";
 import type { ButtonColor } from "@/components/ui/Button/Button.types";
 import useEscapeKey from "@/hooks/useEscapeKey";
 import useOutsideClick from "@/hooks/useOutSideClick";

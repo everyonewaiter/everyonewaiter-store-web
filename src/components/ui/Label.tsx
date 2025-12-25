@@ -13,7 +13,7 @@ function Label({ className, disabled, ...props }: CombineLabelProps) {
     <LabelPrimitive.Root
       data-slot="label"
       className={cn(
-        "lg:text-s flex items-center gap-2 text-xs select-none",
+        "lg:text-s flex items-center gap-2 text-xs font-normal select-none leading-none",
         disabled ? "text-gray-300" : "text-gray-0",
         className
       )}

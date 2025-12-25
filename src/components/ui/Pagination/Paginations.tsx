@@ -5,7 +5,7 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-} from "@/components/ui/Pagination/primitives";
+} from "@/components/ui/Pagination/Pagination.components";
 
 interface IProps {
   className?: string;

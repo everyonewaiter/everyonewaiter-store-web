@@ -1,8 +1,12 @@
 import type { ComponentProps } from "react";
-import { cva, type VariantProps } from "class-variance-authority";
+import { type VariantProps } from "class-variance-authority";
 import Button from "@/components/ui/Button/Button";
 import type { ResponsiveButtonProps } from "@/components/ui/Button/Button.types";
 import Input from "@/components/ui/Input";
+import {
+  inputGroupAddonVariants,
+  inputGroupButtonVariants,
+} from "@/components/ui/InputGroup/InputGroup.styles";
 import Textarea from "@/components/ui/TextArea";
 import cn from "@/lib/utils";
 
@@ -46,37 +50,19 @@ function InputGroup({ className, ...props }: Readonly<ComponentProps<"fieldset">
   );
 }
 
-const inputGroupAddonVariants = cva(
-  "text-muted-foreground flex h-auto cursor-text items-center justify-center gap-2 py-1.5 text-sm font-medium select-none [&>svg:not([class*='size-'])]:size-4 [&>kbd]:rounded-[calc(var(--radius)-5px)] group-data-[disabled=true]/input-group:opacity-50",
-  {
-    variants: {
-      align: {
-        "inline-start": "order-first pl-3 has-[>button]:ml-[-0.45rem] has-[>kbd]:ml-[-0.35rem]",
-        "inline-end": "order-last pr-3 has-[>button]:mr-[-0.45rem] has-[>kbd]:mr-[-0.35rem]",
-        "block-start":
-          "order-first w-full justify-start px-3 pt-3 [.border-b]:pb-3 group-has-[>input]/input-group:pt-2.5",
-        "block-end":
-          "order-last w-full justify-start px-3 pb-3 [.border-t]:pt-3 group-has-[>input]/input-group:pb-2.5",
-      },
-    },
-    defaultVariants: {
-      align: "inline-start",
-    },
-  }
-);
-
 function InputGroupAddon({
   className,
   align = "inline-start",
   onClick: onClickProp,
   onKeyDown: onKeyDownProp,
   ...props
-}: Readonly<ComponentProps<"div"> & VariantProps<typeof inputGroupAddonVariants>>) {
+}: Readonly<ComponentProps<"button"> & VariantProps<typeof inputGroupAddonVariants>>) {
   return (
-    // eslint-disable-next-line jsx-a11y/no-static-element-interactions
-    <div
+    <button
       data-slot="input-group-addon"
       data-align={align}
+      tabIndex={0}
+      aria-label="Focus input field"
       className={cn(inputGroupAddonVariants({ align }), className)}
       onClick={(e) => {
         if ((e.target as HTMLElement).closest("button")) {
@@ -101,20 +87,8 @@ function InputGroupAddon({
     />
   );
 }
-
-const inputGroupButtonVariants = cva("text-sm shadow-none flex gap-2 items-center", {
-  variants: {
-    size: {
-      xs: "h-6 gap-1 px-2 rounded-[calc(var(--radius)-5px)] [&>svg:not([class*='size-'])]:size-3.5 has-[>svg]:px-2",
-      sm: "h-8 px-2.5 gap-1.5 rounded-md has-[>svg]:px-2.5",
-      "icon-xs": "size-6 rounded-[calc(var(--radius)-5px)] p-0 has-[>svg]:p-0",
-      "icon-sm": "size-8 p-0 has-[>svg]:p-0",
-    },
-  },
-  defaultVariants: {
-    size: "xs",
-  },
-});
+InputGroupAddon.displayName = "InputGroup.Addon";
+InputGroup.Addon = InputGroupAddon;
 
 function InputGroupButton({
   className,
@@ -133,6 +107,8 @@ function InputGroupButton({
     />
   );
 }
+InputGroupButton.displayName = "InputGroup.Button";
+InputGroup.Button = InputGroupButton;
 
 function InputGroupText({ className, ...props }: Readonly<ComponentProps<"span">>) {
   return (
@@ -145,6 +121,8 @@ function InputGroupText({ className, ...props }: Readonly<ComponentProps<"span">
     />
   );
 }
+InputGroupText.displayName = "InputGroup.Text";
+InputGroup.Text = InputGroupText;
 
 function InputGroupInput({
   className,
@@ -161,6 +139,8 @@ function InputGroupInput({
     />
   );
 }
+InputGroupInput.displayName = "InputGroup.Input";
+InputGroup.Input = InputGroupInput;
 
 function InputGroupTextarea({ className, ...props }: Readonly<ComponentProps<"textarea">>) {
   return (
@@ -174,12 +154,7 @@ function InputGroupTextarea({ className, ...props }: Readonly<ComponentProps<"te
     />
   );
 }
+InputGroupTextarea.displayName = "InputGroup.Textarea";
+InputGroup.Textarea = InputGroupTextarea;
 
-export {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupButton,
-  InputGroupText,
-  InputGroupInput,
-  InputGroupTextarea,
-};
+export default InputGroup;
