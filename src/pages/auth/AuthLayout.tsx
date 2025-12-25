@@ -1,16 +1,10 @@
 import { Outlet } from "react-router-dom";
 import loginBg from "@/assets/images/login-bg.png";
-import logoTextHorizontal from "@/assets/images/logo-text-horizontal.svg";
 
 function AuthLayout() {
   return (
-    <div className="relative flex min-h-dvh w-dvw md:items-start md:pl-6 lg:items-center lg:pl-15">
-      <div className="center min-h-dvh flex-col gap-10 overflow-y-auto px-5 md:flex-[0.4] md:py-8 lg:gap-12 lg:py-16">
-        <img
-          src={logoTextHorizontal}
-          alt="logo text horizontal"
-          className="w-40 max-w-50 md:w-[37%]"
-        />
+    <div className="relative flex min-h-dvh w-dvw px-5 md:items-start md:pl-6 lg:items-center lg:pl-15">
+      <div className="center min-h-dvh w-full flex-col gap-10 overflow-y-auto md:flex-[0.4] md:py-8 lg:gap-12 lg:py-16">
         <Outlet />
       </div>
       <div className="top-0 hidden h-screen md:sticky md:block md:flex-[0.6] lg:relative">
