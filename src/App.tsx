@@ -12,7 +12,7 @@ function App() {
     <BrowserRouter>
       <div className="h-dvh w-dvw bg-white">
         <Routes>
-          <Route path="/" element={<AuthLayout />}>
+          <Route element={<AuthLayout />}>
             <Route path="login" element={<LoginPage />} />
             <Route path="signup" element={<SignupPage />} />
             <Route path="signup/loading" element={<SignupLoadingPage />} />
