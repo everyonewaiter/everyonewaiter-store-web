@@ -1,7 +1,7 @@
 import { lazy } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
-const AuthLayout = lazy(() => import("@/pages/auth/AuthLayout"));
+const PublicPageLayout = lazy(() => import("@/pages/auth/PublicPageLayout"));
 const LoginPage = lazy(() => import("@/pages/auth/login/LoginPage"));
 const SignupPage = lazy(() => import("@/pages/auth/signup/SignupPage"));
 const SignupLoadingPage = lazy(() => import("@/pages/auth/signup/result/SignupLoadingPage"));
@@ -12,7 +12,7 @@ function App() {
     <BrowserRouter>
       <div className="h-dvh w-dvw bg-white">
         <Routes>
-          <Route element={<AuthLayout />}>
+          <Route element={<PublicPageLayout />}>
             <Route path="login" element={<LoginPage />} />
             <Route path="signup" element={<SignupPage />} />
             <Route path="signup/loading" element={<SignupLoadingPage />} />
