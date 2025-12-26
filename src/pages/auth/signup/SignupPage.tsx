@@ -14,7 +14,7 @@ function SignupPage() {
 
   const form = useForm<SignupSchema>({
     mode: "onSubmit",
-    reValidateMode: "onSubmit",
+    reValidateMode: "onChange",
     resolver: zodResolver(signupSchema),
     defaultValues: {
       email: "",

@@ -10,7 +10,7 @@ import { loginSchema, type LoginSchema } from "@/schema/auth/login.schema";
 function LoginPage() {
   const form = useForm<LoginSchema>({
     mode: "onSubmit",
-    reValidateMode: "onSubmit",
+    reValidateMode: "onChange",
     resolver: zodResolver(loginSchema),
     defaultValues: {
       email: "",
