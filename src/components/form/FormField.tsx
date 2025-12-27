@@ -1,4 +1,4 @@
-import type { ComponentProps } from "react";
+import type { ComponentProps, ReactNode } from "react";
 import {
   FormField as FormFieldComponent,
   FormItem,
@@ -6,6 +6,7 @@ import {
   FormControl,
   FormErrorMessage,
   FormInput,
+  FormDescription,
 } from "@/components/form/Form";
 import Input from "@/components/ui/Input";
 import type { ControllerProps, FieldPath, FieldValues } from "react-hook-form";
@@ -19,6 +20,8 @@ interface FormFieldProps<
   inputProps?: ComponentProps<typeof Input>;
   labelProps?: ComponentProps<typeof FormLabel>;
   formItemClassName?: string;
+  postfix?: ReactNode;
+  description?: ReactNode;
 }
 
 function FormField<
@@ -29,18 +32,27 @@ function FormField<
   inputProps,
   labelProps,
   formItemClassName,
+  postfix,
+  description,
   ...props
 }: Readonly<FormFieldProps<TFieldValues, TName>>) {
   return (
     <FormFieldComponent
       {...props}
-      render={({ field }) => (
+      render={({ field, fieldState }) => (
         <FormItem className={formItemClassName}>
-          <FormLabel {...labelProps}>{label}</FormLabel>
+          {label && <FormLabel {...labelProps}>{label}</FormLabel>}
           <FormControl>
-            <FormInput {...field} {...inputProps} />
+            <div className="relative flex items-center gap-2">
+              <FormInput {...field} {...inputProps} />
+              {postfix}
+            </div>
           </FormControl>
-          <FormErrorMessage />
+          {fieldState.error ? (
+            <FormErrorMessage />
+          ) : (
+            description && <FormDescription>{description}</FormDescription>
+          )}
         </FormItem>
       )}
     />
