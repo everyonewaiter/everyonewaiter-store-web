@@ -33,18 +33,22 @@ function EmailPage() {
       };
 
   return (
-    <div className="center flex h-screen w-screen flex-col gap-10">
-      <img src={emailHourglass} alt="email hourglass" />
+    <div className="flex h-full w-full flex-col items-center justify-center gap-6 bg-blue-50 lg:gap-10">
+      <img src={emailHourglass} alt="email hourglass" className="h-35 w-35 lg:h-45 lg:w-45" />
 
-      <div className="flex w-111 flex-col gap-8">
-        <div className="flex flex-col gap-2 text-center">
-          <h1 className="text-gray-0 text-2xl font-semibold">{content.title}</h1>
-          <p className="text-base font-normal whitespace-pre-line text-gray-300">
+      <div className="flex w-111 flex-col gap-5 lg:gap-8">
+        <div className="flex flex-col gap-1 text-center lg:gap-2">
+          <h1 className="text-gray-0 text-lg font-semibold lg:text-2xl">{content.title}</h1>
+          <p className="text-sm font-normal whitespace-pre-line text-gray-300 lg:text-base">
             {content.description}
           </p>
         </div>
 
-        <Button color="black" responsive responsiveButtons={{ lg: { buttonSize: "lg" } }}>
+        <Button
+          color="black"
+          responsive
+          responsiveButtons={{ lg: { buttonSize: "lg" }, md: { buttonSize: "md" } }}
+        >
           이메일 재발송하기
         </Button>
       </div>
