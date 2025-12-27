@@ -6,6 +6,7 @@ const LoginPage = lazy(() => import("@/pages/auth/login/LoginPage"));
 const SignupPage = lazy(() => import("@/pages/auth/signup/SignupPage"));
 const SignupLoadingPage = lazy(() => import("@/pages/auth/signup/result/SignupLoadingPage"));
 const SignupResultPage = lazy(() => import("@/pages/auth/signup/result/SignupResultPage"));
+const EmailPage = lazy(() => import("@/pages/auth/email/EmailPage"));
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
             <Route path="signup/loading" element={<SignupLoadingPage />} />
             <Route path="signup/result" element={<SignupResultPage />} />
           </Route>
+          <Route path="email" element={<EmailPage />} />
         </Routes>
       </div>
     </BrowserRouter>

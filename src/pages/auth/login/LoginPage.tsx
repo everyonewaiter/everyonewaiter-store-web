@@ -22,6 +22,8 @@ function LoginPage() {
     // TODO: 로그인 요청
   });
 
+  // TODO: 이메일 인증을 하지 않고 로그인한 경우 /email?type=not-verified
+
   return (
     <>
       <img
