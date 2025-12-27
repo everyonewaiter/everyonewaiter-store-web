@@ -35,8 +35,8 @@ function SignupPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [form.formState.errors]);
 
-  const onSubmit = (data: SignupSchema) => {
-    console.log(data);
+  const onSubmit = () => {
+    // TODO: 회원가입 로직 구현
     navigate("/signup/loading");
   };
 
