@@ -20,17 +20,17 @@ const sidebarItems = [
   {
     label: "매장 정보",
     icon: Shop,
-    path: "/store",
+    path: "/stores",
   },
   {
     label: "메뉴 관리",
     icon: Category,
-    path: "/menu",
+    path: "/menus",
   },
   {
     label: "기기 관리",
     icon: Mobile,
-    path: "/device",
+    path: "/devices",
   },
   {
     label: "설정",
