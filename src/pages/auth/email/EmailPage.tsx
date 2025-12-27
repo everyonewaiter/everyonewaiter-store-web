@@ -33,7 +33,7 @@ function EmailPage() {
       };
 
   return (
-    <div className="flex h-full w-full flex-col items-center justify-center gap-6 bg-blue-50 lg:gap-10">
+    <div className="flex h-full w-full flex-col items-center justify-center gap-6 lg:gap-10">
       <img src={emailHourglass} alt="email hourglass" className="h-35 w-35 lg:h-45 lg:w-45" />
 
       <div className="flex w-111 flex-col gap-5 lg:gap-8">
