@@ -7,6 +7,7 @@ const SignupPage = lazy(() => import("@/pages/auth/signup/SignupPage"));
 const SignupLoadingPage = lazy(() => import("@/pages/auth/signup/result/SignupLoadingPage"));
 const SignupResultPage = lazy(() => import("@/pages/auth/signup/result/SignupResultPage"));
 
+const PublicPageLayout = lazy(() => import("@/pages/auth/PublicPageLayout"));
 const RootLayout = lazy(() => import("@/pages/main/RootLayout"));
 
 function App() {
@@ -14,10 +15,12 @@ function App() {
     <BrowserRouter>
       <div className="h-dvh w-dvw bg-white">
         <Routes>
-          <Route path="login" element={<LoginPage />} />
-          <Route path="signup" element={<SignupPage />} />
-          <Route path="signup/loading" element={<SignupLoadingPage />} />
-          <Route path="signup/result" element={<SignupResultPage />} />
+          <Route element={<PublicPageLayout />}>
+            <Route path="login" element={<LoginPage />} />
+            <Route path="signup" element={<SignupPage />} />
+            <Route path="signup/loading" element={<SignupLoadingPage />} />
+            <Route path="signup/result" element={<SignupResultPage />} />
+          </Route>
 
           <Route element={<RootLayout />}>
             <Route path="/" element={<HomePage />} />
