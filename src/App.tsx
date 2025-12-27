@@ -1,9 +1,13 @@
 import { lazy } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import HomePage from "@/pages/HomePage";
-import RootLayout from "@/pages/main/RootLayout";
 
-const LoginPage = lazy(() => import("@/pages/login/LoginPage"));
+const LoginPage = lazy(() => import("@/pages/auth/login/LoginPage"));
+const SignupPage = lazy(() => import("@/pages/auth/signup/SignupPage"));
+const SignupLoadingPage = lazy(() => import("@/pages/auth/signup/result/SignupLoadingPage"));
+const SignupResultPage = lazy(() => import("@/pages/auth/signup/result/SignupResultPage"));
+
+const RootLayout = lazy(() => import("@/pages/main/RootLayout"));
 
 function App() {
   return (
@@ -11,6 +15,9 @@ function App() {
       <div className="h-dvh w-dvw bg-white">
         <Routes>
           <Route path="login" element={<LoginPage />} />
+          <Route path="signup" element={<SignupPage />} />
+          <Route path="signup/loading" element={<SignupLoadingPage />} />
+          <Route path="signup/result" element={<SignupResultPage />} />
 
           <Route element={<RootLayout />}>
             <Route path="/" element={<HomePage />} />
