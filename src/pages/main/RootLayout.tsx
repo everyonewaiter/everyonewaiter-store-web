@@ -14,7 +14,7 @@ function RootLayout() {
       {/* 승인된 매장이 있을 경우 */}
       {isUser ? (
         <div className="flex h-dvh w-dvw flex-col bg-gray-700 md:flex-row md:gap-2.5 md:px-5 md:py-5 lg:gap-6 lg:px-15 lg:py-8">
-          <aside className="hidden h-auto flex-col rounded-[28px] bg-white md:flex md:w-[186px] md:gap-3 lg:w-[318px] lg:gap-4">
+          <aside className="hidden h-auto flex-col rounded-[28px] bg-white md:flex md:w-46.5 md:gap-3 lg:w-79.5 lg:gap-4">
             <Sidebar />
           </aside>
 

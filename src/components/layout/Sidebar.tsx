@@ -63,10 +63,10 @@ function Sidebar() {
               <div className="center relative w-1.5">
                 <div className="z-50 h-1.5 w-1.5 rounded-full bg-gray-600" />
                 {index !== sidebarItems.length - 1 && (
-                  <div className="absolute top-1/2 mt-[3px] h-[calc(100%-6px)] w-px bg-gray-600" />
+                  <div className="absolute top-1/2 mt-0.75 h-[calc(100%-6px)] w-px bg-gray-600" />
                 )}
               </div>
-              <div className="flex flex-1 items-center gap-1.5 py-[9px] pr-3 pl-2 lg:py-3 lg:pr-4 lg:pl-3">
+              <div className="flex flex-1 items-center gap-1.5 py-2.25 pr-3 pl-2 lg:py-3 lg:pr-4 lg:pl-3">
                 <IconComp Icon={item.icon} className="text-gray-300" />
                 <span className="text-s font-medium text-gray-300 lg:text-base">{item.label}</span>
               </div>
