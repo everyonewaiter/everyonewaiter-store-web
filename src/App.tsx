@@ -13,6 +13,7 @@ import SignupPage from "@/pages/auth/signup/SignupPage";
 import GuestApplicationPage from "@/pages/main/guest/application/GuestApplicationPage";
 import GuestCreatePage from "@/pages/main/guest/create/GuestCreatePage";
 import GuestPage from "@/pages/main/guest/GuestPage";
+import RootLayout from "@/pages/main/RootLayout";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -30,9 +31,11 @@ const router = createBrowserRouter(
         <Route path="signup/result" element={<SignupResultPage />} />
       </Route>
 
-      <Route path="/guest" element={<GuestPage />} />
-      <Route path="/guest/create" element={<GuestCreatePage />} />
-      <Route path="/guest/application" element={<GuestApplicationPage />} />
+      <Route element={<RootLayout />}>
+        <Route path="/guest" element={<GuestPage />} />
+        <Route path="/guest/create" element={<GuestCreatePage />} />
+        <Route path="/guest/application" element={<GuestApplicationPage />} />
+      </Route>
     </Route>
   )
 );
