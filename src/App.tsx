@@ -34,8 +34,8 @@ const router = createBrowserRouter(
       <Route element={<RootLayout />}>
         <Route path="/guest" element={<GuestPage />} />
         <Route path="/guest/create" element={<GuestCreatePage />} />
-        <Route path="/guest/application" element={<GuestApplicationPage />} />
       </Route>
+      <Route path="/guest/application" element={<GuestApplicationPage />} />
     </Route>
   )
 );

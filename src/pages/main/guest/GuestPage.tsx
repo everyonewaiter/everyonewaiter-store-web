@@ -24,7 +24,7 @@ const content = {
 
 function GuestPage() {
   // TODO: 매장 목록 확인 후 초기값, 대기, 반려 표시
-  const [status] = useState<"initial" | "pending" | "rejected">("pending");
+  const [status] = useState<"initial" | "pending" | "rejected">("initial");
 
   return (
     <div className="center h-full w-full bg-white md:bg-gray-700">
