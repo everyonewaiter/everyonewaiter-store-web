@@ -10,6 +10,7 @@ import PublicPageLayout from "@/pages/auth/PublicPageLayout";
 import SignupLoadingPage from "@/pages/auth/signup/result/SignupLoadingPage";
 import SignupResultPage from "@/pages/auth/signup/result/SignupResultPage";
 import SignupPage from "@/pages/auth/signup/SignupPage";
+import GuestApplicationPage from "@/pages/main/guest/application/GuestApplicationPage";
 import GuestCreatePage from "@/pages/main/guest/create/GuestCreatePage";
 import GuestPage from "@/pages/main/guest/GuestPage";
 
@@ -31,6 +32,7 @@ const router = createBrowserRouter(
 
       <Route path="/guest" element={<GuestPage />} />
       <Route path="/guest/create" element={<GuestCreatePage />} />
+      <Route path="/guest/application" element={<GuestApplicationPage />} />
     </Route>
   )
 );
