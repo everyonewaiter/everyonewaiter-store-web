@@ -1,4 +1,5 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { OverlayProvider } from "overlay-kit";
 import { createRoot } from "react-dom/client";
 import "@/index.css";
 import App from "@/App";
@@ -9,6 +10,8 @@ const queryClient = new QueryClient();
 createRoot(globalThis.document.getElementById("root")!).render(
   <QueryClientProvider client={queryClient}>
     <Toaster />
-    <App />
+    <OverlayProvider>
+      <App />
+    </OverlayProvider>
   </QueryClientProvider>
 );
