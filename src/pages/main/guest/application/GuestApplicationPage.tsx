@@ -73,11 +73,13 @@ function GuestApplicationPage() {
         <article className="hidden py-6 md:block">
           <Table>
             <Table.Header>
-              {columns.map((column) => (
-                <Table.Head key={column.label} style={{ flex: (column.flex / 1736) * 100 }}>
-                  {column.label}
-                </Table.Head>
-              ))}
+              <Table.Row>
+                {columns.map((column) => (
+                  <Table.Head key={column.label} style={{ flex: (column.flex / 1736) * 100 }}>
+                    {column.label}
+                  </Table.Head>
+                ))}
+              </Table.Row>
             </Table.Header>
             <Table.Body>
               {storeApplicationMock.map((application, index) => (
