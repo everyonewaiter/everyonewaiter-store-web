@@ -8,7 +8,7 @@ const createStoreSchema = z.object({
   landline: z
     .string()
     .min(1, "전화번호를 입력해주세요.")
-    .regex(/^0[1-9]\d{7,8}$/, "유효하지 않은 전화번호 형식입니다."),
+    .regex(/^0[1-9]-\d{3,4}-\d{4}$/, "유효하지 않은 전화번호 형식입니다."),
   license: z
     .string()
     .min(1, "사업자번호를 입력해주세요.")
