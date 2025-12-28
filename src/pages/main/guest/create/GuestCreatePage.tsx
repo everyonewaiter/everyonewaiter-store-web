@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import dashedBorder from "@/assets/images/dashed.svg";
 import logo from "@/assets/images/logo.svg";
@@ -16,6 +16,7 @@ import { createStoreSchema, type CreateStoreSchema } from "@/schema/create-store
 
 function GuestCreate() {
   const navigate = useNavigate();
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const form = useForm<CreateStoreSchema>({
@@ -45,19 +46,49 @@ function GuestCreate() {
     navigate("/guest");
   });
 
+  const handleFileChange = () => {
+    const file = fileInputRef.current?.files?.[0];
+    if (file) {
+      form.setValue("file", file, { shouldDirty: true });
+    }
+  };
+
+  const file = useWatch({ control: form.control, name: "file" });
+  const fileUrl = useMemo(() => {
+    if (file instanceof File) {
+      return URL.createObjectURL(file);
+    }
+    return null;
+  }, [file]);
+
+  useEffect(() => {
+    return () => {
+      if (fileUrl) {
+        URL.revokeObjectURL(fileUrl);
+      }
+    };
+  }, [fileUrl]);
+
   return (
-    <div className="flex h-full w-full items-center justify-center bg-gray-700">
-      <div className="flex justify-between rounded-4xl bg-white p-8 lg:w-222">
-        <div className="flex flex-col gap-10">
-          <img src={logo} alt="logo text horizontal" className="h-22.5 w-22.5" />
-          <div className="flex flex-col gap-3">
-            <h1 className="text-gray-0 text-4xl font-bold">매장 등록</h1>
-            <span className="text-[15px] font-normal whitespace-pre-line text-gray-300">{`첫 매장을 등록해볼까요?\n간단한 정보만 입력하면 바로 시작할 수 있어요!`}</span>
+    <div className="flex h-full w-full justify-center bg-white pt-5 md:items-start md:bg-gray-700 md:py-8 lg:items-center lg:py-0">
+      <div className="flex w-full flex-col gap-8 rounded-4xl bg-white px-5 md:h-full md:w-180 md:flex-row md:justify-between md:gap-0 md:p-5 lg:h-auto lg:w-222 lg:p-8">
+        <div className="hidden flex-col md:flex md:gap-5 lg:gap-10">
+          <img
+            src={logo}
+            alt="logo text horizontal"
+            className="md:h-15 md:w-15 lg:h-22.5 lg:w-22.5"
+          />
+          <div className="flex flex-col md:gap-2 lg:gap-3">
+            <h1 className="text-gray-0 font-bold md:text-xl lg:text-4xl">매장 등록</h1>
+            <span className="font-normal whitespace-pre-line text-gray-300 md:text-xs lg:text-[15px]">{`첫 매장을 등록해볼까요?\n간단한 정보만 입력하면 바로 시작할 수 있어요!`}</span>
           </div>
         </div>
+        <div className="block md:hidden">
+          <h1 className="text-gray-0 text-center text-xl font-bold">매장 등록</h1>
+        </div>
         <Form {...form}>
-          <form className="flex w-100 flex-col gap-8">
-            <div className="flex flex-col gap-4">
+          <form className="hide-scrollbar flex flex-col gap-6 overflow-y-auto md:w-87 md:gap-8 lg:w-100">
+            <div className="flex flex-col gap-3 lg:gap-4">
               <FormField
                 control={form.control}
                 name="name"
@@ -130,35 +161,62 @@ function GuestCreate() {
               />
               <button
                 type="button"
-                className="relative flex h-40 w-full flex-col items-center justify-center gap-3 rounded-2xl bg-gray-700"
+                className="relative flex h-35 w-full flex-col items-center justify-center gap-2 rounded-2xl border border-gray-600 bg-gray-700 md:h-40 md:gap-3 md:border-none"
+                onClick={() => fileInputRef.current?.click()}
               >
                 <img
                   src={dashedBorder}
                   alt=""
-                  className="pointer-events-none absolute inset-0 h-full w-full"
+                  className="pointer-events-none absolute inset-0 hidden h-full w-full rounded-2xl object-cover md:block"
                   aria-hidden="true"
                 />
-                <FileAttach className="h-10 w-10 text-gray-300" />
-                <div className="flex flex-col gap-1">
-                  <span className="text-base font-medium text-gray-100">
-                    사업자 등록증의 제출하세요
-                  </span>
-                  <span className="text-s font-normal text-gray-300">
-                    JPG, PNG, PDF로 제출 가능합니다.
-                  </span>
-                </div>
+                {(file?.type === "image/jpeg" ||
+                  file?.type === "image/jpg" ||
+                  file?.type === "image/png") &&
+                  fileUrl && (
+                    <img
+                      src={fileUrl}
+                      alt="사업자등록증 미리보기"
+                      className="h-full w-full rounded-2xl object-cover"
+                    />
+                  )}
+
+                {!file && (
+                  <>
+                    <FileAttach className="h-7 w-7 text-gray-300 md:h-10 md:w-10" />
+                    <div className="flex flex-col gap-0.5 md:gap-1">
+                      <span className="text-sm font-medium text-gray-100 lg:text-base">
+                        사업자 등록증을 제출하세요
+                      </span>
+                      <span className="lg:text-s text-xs font-normal text-gray-300">
+                        JPG, PNG, PDF로 제출 가능합니다.
+                      </span>
+                    </div>
+                  </>
+                )}
+                <input
+                  type="file"
+                  className="hidden"
+                  accept="image/jpg, image/png, application/pdf"
+                  ref={fileInputRef}
+                  onChange={handleFileChange}
+                />
               </button>
             </div>
-            <Button
-              type="submit"
-              responsive
-              responsiveButtons={{
-                lg: { buttonSize: "lg" },
-              }}
-              onClick={handleSubmit}
-            >
-              {isSubmitting ? <Spinner /> : "신청하기"}
-            </Button>
+            <div className="w-full shrink-0">
+              <Button
+                type="submit"
+                responsive
+                responsiveButtons={{
+                  sm: { buttonSize: "md", className: "w-full" },
+                  md: { buttonSize: "sm", className: "w-full" },
+                  lg: { buttonSize: "lg", className: "w-full" },
+                }}
+                onClick={handleSubmit}
+              >
+                {isSubmitting ? <Spinner /> : "신청하기"}
+              </Button>
+            </div>
           </form>
         </Form>
       </div>
