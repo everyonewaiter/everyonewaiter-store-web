@@ -9,6 +9,7 @@ import { Form } from "@/components/form/Form";
 import FormField from "@/components/form/FormField";
 import { FileAttach } from "@/components/icons";
 import Button from "@/components/ui/Button/Button";
+import { useFormBlocker } from "@/hooks/useLeavePageBlocker";
 import useOpenDaumPostcode from "@/hooks/useOpenDaumPostcode";
 import { formatBusinessNumber, formatStorePhoneNumber } from "@/lib/format";
 import { createStoreSchema, type CreateStoreSchema } from "@/schema/create-store.schema";
@@ -31,6 +32,8 @@ function GuestCreate() {
       file: null,
     },
   });
+
+  useFormBlocker(form.formState.isDirty && !isSubmitting);
 
   const { handleOpenAddress } = useOpenDaumPostcode((address) => {
     form.setValue("address", address, { shouldDirty: true });
