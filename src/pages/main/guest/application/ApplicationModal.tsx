@@ -68,6 +68,7 @@ function ApplicationModal({ application, isOpen, close }: Readonly<ApplicationMo
                 responsiveButtons={{
                   lg: { buttonSize: "xl", className: "w-full outline-none" },
                   md: { buttonSize: "sm", className: "w-full outline-none" },
+                  sm: { buttonSize: "sm", className: "w-full outline-none !h-10" },
                 }}
                 onClick={() => {
                   if (isEditing) {
@@ -82,7 +83,7 @@ function ApplicationModal({ application, isOpen, close }: Readonly<ApplicationMo
             ) : null,
         }}
       >
-        <div className="flex flex-col md:gap-3 lg:gap-4">
+        <div className="flex flex-col gap-3 lg:gap-4">
           <FormField control={form.control} name="name" label="상호명" disabled={!isEditing} />
           <FormField
             control={form.control}
@@ -130,7 +131,7 @@ function ApplicationModal({ application, isOpen, close }: Readonly<ApplicationMo
               }}
             />
           )}
-          <div className="flex flex-col">
+          <div className="mt-2 flex flex-col md:mt-0">
             <Label disabled={!isEditing}>사업자등록증</Label>
             <div className="center mt-2 w-full flex-col gap-3 rounded-2xl bg-gray-700 px-11.5 py-6">
               <Image
@@ -157,6 +158,7 @@ function ApplicationModal({ application, isOpen, close }: Readonly<ApplicationMo
                       className:
                         "w-full outline-none !font-normal hover:!bg-transparent hover:!text-gray-0",
                     },
+                    sm: { buttonSize: "sm", className: "w-full outline-none !h-10" },
                   }}
                   onClick={handleChangeImage}
                 >

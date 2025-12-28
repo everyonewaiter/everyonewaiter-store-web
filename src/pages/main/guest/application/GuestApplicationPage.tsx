@@ -101,7 +101,7 @@ function GuestApplicationPage() {
           {storeApplicationMock.map((mock, index) => (
             <MobileTable key={mock.registrationId}>
               {columns.map((column, columnIndex) => (
-                <MobileTable.Row key={column.label}>
+                <MobileTable.Row key={column.label} onClick={() => handleOpenModal(mock)}>
                   <MobileTable.Head>{column.label}</MobileTable.Head>
                   <MobileTable.Cell
                     className={

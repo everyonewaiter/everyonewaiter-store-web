@@ -21,17 +21,17 @@ function Modal({
 }: Readonly<PropsWithChildren<ModalProps>>) {
   return (
     <Dialog {...props}>
-      <Dialog.Wrapper className="flex h-125 w-80 flex-col gap-6 rounded-[20px] px-4 py-5 md:h-125 md:w-91 md:gap-6 md:p-5 lg:h-185 lg:w-135 lg:gap-8 lg:p-8">
+      <Dialog.Wrapper className="flex h-125 w-80 flex-col gap-5! rounded-[20px] px-4 py-5 md:h-125 md:w-91 md:gap-6 md:p-5 lg:h-185 lg:w-135 lg:gap-8 lg:p-8">
         {(title || hasCloseIcon) && (
           <Dialog.Header className="flex items-center justify-between">
             {title && (
-              <Dialog.Title className="text-gray-0 font-semibold md:text-base lg:text-2xl">
+              <Dialog.Title className="text-gray-0 text-lg font-semibold md:text-base lg:text-2xl">
                 {title}
               </Dialog.Title>
             )}
             {hasCloseIcon && (
               <Dialog.Close asChild className="cursor-pointer">
-                <Close className="md:size-6 lg:size-8" />
+                <Close className="size-6 lg:size-8" />
               </Dialog.Close>
             )}
           </Dialog.Header>
