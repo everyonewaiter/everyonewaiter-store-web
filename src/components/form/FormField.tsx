@@ -1,4 +1,4 @@
-import type { ComponentProps, ReactNode } from "react";
+import type { ChangeEvent, ComponentProps, ReactNode } from "react";
 import {
   FormField as FormFieldComponent,
   FormItem,
@@ -39,22 +39,37 @@ function FormField<
   return (
     <FormFieldComponent
       {...props}
-      render={({ field, fieldState }) => (
-        <FormItem className={formItemClassName}>
-          {label && <FormLabel {...labelProps}>{label}</FormLabel>}
-          <FormControl>
-            <div className="relative flex items-center gap-2">
-              <FormInput {...field} {...inputProps} />
-              {postfix}
-            </div>
-          </FormControl>
-          {fieldState.error ? (
-            <FormErrorMessage />
-          ) : (
-            description && <FormDescription>{description}</FormDescription>
-          )}
-        </FormItem>
-      )}
+      render={({ field, fieldState }) => {
+        const { onChange: inputOnChange, ...restInputProps } = inputProps ?? {};
+        const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+          // inputProps의 onChange가 있으면 먼저 실행 (포맷팅 등)
+          if (inputOnChange) {
+            inputOnChange(e);
+            // inputOnChange에서 form.setValue를 호출하므로 field.onChange는 호출하지 않음
+            // 하지만 inputOnChange가 form.setValue를 호출하지 않는 경우를 대비해 호출
+            return;
+          }
+          // inputOnChange가 없으면 기본 field.onChange 호출
+          field.onChange(e);
+        };
+
+        return (
+          <FormItem className={formItemClassName}>
+            {label && <FormLabel {...labelProps}>{label}</FormLabel>}
+            <FormControl>
+              <div className="relative flex items-center gap-2">
+                <FormInput {...field} {...restInputProps} onChange={handleChange} />
+                {postfix}
+              </div>
+            </FormControl>
+            {fieldState.error ? (
+              <FormErrorMessage />
+            ) : (
+              description && <FormDescription>{description}</FormDescription>
+            )}
+          </FormItem>
+        );
+      }}
     />
   );
 }
