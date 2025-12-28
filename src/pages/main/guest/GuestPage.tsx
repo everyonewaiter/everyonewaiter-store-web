@@ -11,14 +11,14 @@ const content = {
     animationData: successApplication,
   },
   pending: {
-    title: `매장 등록 신청이 반려되었습니다.`,
-    description: `반려 사유 관련 메일을 발송했습니다.\n메일을 확인해주세요.`,
-    animationData: error,
+    title: `매장 등록 승인을 대기중입니다.`,
+    description: `관리자의 승인이 완료될 때까지\n1~2일 소요될 수 있습니다.`,
+    animationData: waiting,
   },
   rejected: {
     title: "매장 등록 신청이 반려되었습니다.",
     description: `반려 사유 관련 메일을 발송했습니다.\n메일함을 확인해주세요.`,
-    animationData: waiting,
+    animationData: error,
   },
 };
 
@@ -27,8 +27,8 @@ function GuestPage() {
   const [status] = useState<"initial" | "pending" | "rejected">("pending");
 
   return (
-    <div className="center h-full w-full bg-gray-700">
-      <div className="flex flex-col items-center justify-center gap-10 rounded-4xl bg-white p-8 lg:w-120">
+    <div className="center h-full w-full bg-white md:bg-gray-700">
+      <div className="flex w-full flex-col items-center justify-center gap-10 rounded-none bg-white px-5 md:w-100 md:rounded-4xl md:p-5 lg:w-120 lg:p-8">
         {content[status] && <GuestContent status={status} {...content[status]} />}
       </div>
     </div>

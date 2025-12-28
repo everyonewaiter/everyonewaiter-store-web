@@ -30,20 +30,28 @@ function GuestContent({ status, title, description, animationData }: Readonly<Gu
         rendererSettings={{
           preserveAspectRatio: "xMidYMid slice",
         }}
-        style={{
-          width: status === "initial" ? "160px" : "200px",
-          height: status === "initial" ? "160px" : "200px",
-        }}
+        className={cn(status === "initial" ? "size-30 md:size-25 lg:size-40" : "size-30")}
       />
-      <div className={cn("flex w-full flex-col gap-8", status !== "initial" && "-mt-10")}>
-        <div className="flex flex-col gap-3 text-center">
-          <h1 className="text-gray-0 text-2xl font-semibold whitespace-pre-line">{title}</h1>
-          <p className="text-lg font-normal whitespace-pre-line text-gray-300">{description}</p>
+      <div
+        className={cn(
+          "flex w-full flex-col gap-6 lg:gap-10",
+          status !== "initial" && "-mt-8 lg:-mt-10"
+        )}
+      >
+        <div className="flex flex-col gap-3 text-center md:gap-2 lg:gap-3">
+          <h1 className="text-gray-0 text-lg font-semibold whitespace-pre-line md:text-base lg:text-2xl">
+            {title}
+          </h1>
+          <p className="text-s font-normal whitespace-pre-line text-gray-300 lg:text-lg">
+            {description}
+          </p>
         </div>
         <Button
           responsive
           responsiveButtons={{
             lg: { buttonSize: "lg" },
+            md: { buttonSize: "sm" },
+            sm: { buttonSize: "md", className: "!h-10" },
           }}
           onClick={handleNavigate}
         >
