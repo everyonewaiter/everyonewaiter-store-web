@@ -20,9 +20,8 @@ function LoginPage() {
 
   const handleSubmit = form.handleSubmit(() => {
     // TODO: 로그인 요청
+    // TODO: 로그인 요청 후 실패 시 이메일 인증이 되지 않았다면 /email?type=not-verified로 이동
   });
-
-  // TODO: 이메일 인증을 하지 않고 로그인한 경우 /email?type=not-verified
 
   return (
     <>
