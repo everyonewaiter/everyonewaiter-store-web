@@ -42,14 +42,10 @@ function FormField<
       render={({ field, fieldState }) => {
         const { onChange: inputOnChange, ...restInputProps } = inputProps ?? {};
         const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-          // inputProps의 onChange가 있으면 먼저 실행 (포맷팅 등)
           if (inputOnChange) {
             inputOnChange(e);
-            // inputOnChange에서 form.setValue를 호출하므로 field.onChange는 호출하지 않음
-            // 하지만 inputOnChange가 form.setValue를 호출하지 않는 경우를 대비해 호출
             return;
           }
-          // inputOnChange가 없으면 기본 field.onChange 호출
           field.onChange(e);
         };
 
