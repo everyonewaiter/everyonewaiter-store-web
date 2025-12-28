@@ -7,7 +7,6 @@ import {
 import * as AlertDialogPrimitive from "@radix-ui/react-alert-dialog";
 import Button from "@/components/ui/Button/Button";
 import type { ButtonColor } from "@/components/ui/Button/Button.types";
-import ResponsiveButton from "@/components/ui/Button/ResponsiveButton";
 import cn from "@/lib/utils";
 
 const AlertDialog = AlertDialogPrimitive.Root;
@@ -77,35 +76,11 @@ AlertDialogTitle.displayName = AlertDialogPrimitive.Title.displayName;
 const AlertDialogAction = forwardRef<
   ComponentRef<typeof AlertDialogPrimitive.Action>,
   ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Action> & {
-    noResponsive?: boolean;
     color?: ButtonColor;
-    customButtonStyle: string;
   }
->(({ onClick, noResponsive, customButtonStyle, ...props }, ref) => (
+>(({ ...props }, ref) => (
   <AlertDialogPrimitive.Action ref={ref} className="flex-1" asChild>
-    {noResponsive ? (
-      <Button type="button" onClick={onClick} className="button-xl w-full" {...props} />
-    ) : (
-      <div>
-        <ResponsiveButton
-          type="button"
-          responsiveButtons={{
-            lg: { buttonSize: "xl" },
-            md: {
-              buttonSize: "sm",
-              className: "justify-center items-center",
-            },
-            sm: {
-              buttonSize: "sm",
-              className: `justify-center items-center`,
-            },
-          }}
-          commonClassName={cn("w-full cursor-pointer", customButtonStyle)}
-          onClick={onClick}
-          {...props}
-        />
-      </div>
-    )}
+    <Button type="button" className="button-xl w-full" {...props} />
   </AlertDialogPrimitive.Action>
 ));
 AlertDialogAction.displayName = AlertDialogPrimitive.Action.displayName;
@@ -113,36 +88,11 @@ AlertDialogAction.displayName = AlertDialogPrimitive.Action.displayName;
 const AlertDialogCancel = forwardRef<
   ComponentRef<typeof AlertDialogPrimitive.Cancel>,
   ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Cancel> & {
-    hasNoAction?: boolean;
-    noResponsive?: boolean;
     color?: ButtonColor;
-    customButtonStyle: string;
   }
->(({ noResponsive, customButtonStyle, ...props }, ref) => (
+>(({ ...props }, ref) => (
   <AlertDialogPrimitive.Cancel ref={ref} className="flex-1" asChild>
-    {noResponsive ? (
-      <Button type="button" className="button-xl w-full" {...props} />
-    ) : (
-      <div>
-        <ResponsiveButton
-          color="grey"
-          type="button"
-          responsiveButtons={{
-            lg: { buttonSize: "xl" },
-            md: {
-              buttonSize: "sm",
-              className: "justify-center items-center",
-            },
-            sm: {
-              buttonSize: "sm",
-              className: `justify-center items-center`,
-            },
-          }}
-          commonClassName={cn("w-full cursor-pointer", customButtonStyle)}
-          {...props}
-        />
-      </div>
-    )}
+    <Button type="button" className="button-xl w-full" {...props} />
   </AlertDialogPrimitive.Cancel>
 ));
 AlertDialogCancel.displayName = AlertDialogPrimitive.Cancel.displayName;
