@@ -4,10 +4,10 @@ import Button from "@/components/ui/Button/Button";
 interface EmailContentProps {
   title: string;
   description: string;
-  handleResendEmail: () => void;
+  onResendEmail: () => void;
 }
 
-function EmailContent({ title, description, handleResendEmail }: Readonly<EmailContentProps>) {
+function EmailContent({ title, description, onResendEmail }: Readonly<EmailContentProps>) {
   return (
     <div className="center flex h-screen w-screen flex-col gap-10">
       <img src={emailHourglass} alt="email hourglass" />
@@ -22,7 +22,7 @@ function EmailContent({ title, description, handleResendEmail }: Readonly<EmailC
           color="black"
           responsive
           responsiveButtons={{ lg: { buttonSize: "lg" } }}
-          onClick={handleResendEmail}
+          onClick={onResendEmail}
         >
           이메일 재발송하기
         </Button>
