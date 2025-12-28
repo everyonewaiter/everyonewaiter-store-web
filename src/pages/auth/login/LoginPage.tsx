@@ -31,10 +31,7 @@ function LoginPage() {
         className="w-40 max-w-50 md:w-[37%]"
       />
       <Form {...form}>
-        <form
-          className="flex flex-col gap-3 md:w-[292px] lg:w-[432px] lg:gap-4"
-          onSubmit={handleSubmit}
-        >
+        <form className="flex flex-col gap-3 md:w-73 lg:w-108 lg:gap-4" onSubmit={handleSubmit}>
           <div className="mb-6 flex flex-col gap-3 lg:mb-8 lg:gap-4">
             <FormField
               control={form.control}
