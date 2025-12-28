@@ -1,12 +1,20 @@
 import { lazy } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+import HomePage from "@/pages/HomePage";
 
-const PublicPageLayout = lazy(() => import("@/pages/auth/PublicPageLayout"));
 const LoginPage = lazy(() => import("@/pages/auth/login/LoginPage"));
 const SignupPage = lazy(() => import("@/pages/auth/signup/SignupPage"));
 const SignupLoadingPage = lazy(() => import("@/pages/auth/signup/result/SignupLoadingPage"));
 const SignupResultPage = lazy(() => import("@/pages/auth/signup/result/SignupResultPage"));
 const EmailPage = lazy(() => import("@/pages/auth/email/EmailPage"));
+
+const MainDevicePage = lazy(() => import("@/pages/main/owner/devices/MainDevicePage"));
+const MainMenuPage = lazy(() => import("@/pages/main/owner/menus/MainMenuPage"));
+const MainSettingsPage = lazy(() => import("@/pages/main/owner/settings/MainSettingsPage"));
+const MainStoresPage = lazy(() => import("@/pages/main/owner/stores/MainStoresPage"));
+
+const PublicPageLayout = lazy(() => import("@/pages/auth/PublicPageLayout"));
+const RootLayout = lazy(() => import("@/pages/main/RootLayout"));
 
 function App() {
   return (
@@ -19,7 +27,16 @@ function App() {
             <Route path="signup/loading" element={<SignupLoadingPage />} />
             <Route path="signup/result" element={<SignupResultPage />} />
           </Route>
+          
           <Route path="email" element={<EmailPage />} />
+          
+          <Route element={<RootLayout />}>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/stores" element={<MainStoresPage />} />
+            <Route path="/devices" element={<MainDevicePage />} />
+            <Route path="/menus" element={<MainMenuPage />} />
+            <Route path="/settings" element={<MainSettingsPage />} />
+          </Route>
         </Routes>
       </div>
     </BrowserRouter>

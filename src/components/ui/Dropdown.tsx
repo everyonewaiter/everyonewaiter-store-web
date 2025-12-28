@@ -1,6 +1,6 @@
 import { useState } from "react";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
-import ChevronDownIcon from "@renderer/assets/icons/chevron-down.svg?react";
+import { ChevronDown } from "@/components/icons";
 import cn from "@/lib/utils";
 
 interface DropdownItem {
@@ -16,6 +16,8 @@ interface DropdownProps extends DropdownMenu.DropdownMenuProps {
   disabled?: boolean;
   onChange?: (item: DropdownItem) => void;
   value?: string;
+  triggerClassName?: string;
+  iconClassName?: string;
 }
 
 function Dropdown({
@@ -26,6 +28,8 @@ function Dropdown({
   defaultText,
   disabled,
   onChange,
+  triggerClassName,
+  iconClassName,
   ...props
 }: Readonly<DropdownProps>) {
   const [isOpen, setIsOpen] = useState(false);
@@ -41,15 +45,17 @@ function Dropdown({
             type === "chip"
               ? "h-9.5 w-fit justify-center gap-2.5 rounded-full"
               : "h-12 w-full justify-between rounded-xl py-2.5",
-            disabled ? "cursor-default!" : "cursor-pointer!"
+            disabled ? "cursor-default!" : "cursor-pointer!",
+            triggerClassName
           )}
         >
           {selectedItem ? selectedItem.name : defaultText}
-          <ChevronDownIcon
+          <ChevronDown
             className={cn(
               `h-6 w-6 transition-transform duration-500`,
               isOpen && "rotate-180",
-              type === "default" ? "text-gray-300" : "text-gray-0"
+              type === "default" ? "text-gray-300" : "text-gray-0",
+              iconClassName
             )}
           />
         </DropdownMenu.Trigger>
