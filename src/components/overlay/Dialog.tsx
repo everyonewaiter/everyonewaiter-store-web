@@ -67,11 +67,15 @@ function DialogWrapper({
         aria-describedby={title ? "dialog-title" : undefined}
         data-slot="dialog-content"
         className={cn(
-          "bg-background data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 fixed top-1/2 left-1/2 z-50 flex -translate-x-1/2 -translate-y-1/2 rounded-3xl bg-white p-8 duration-200",
+          "bg-background data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 fixed top-1/2 left-1/2 z-50 flex -translate-x-1/2 -translate-y-1/2 rounded-3xl bg-white p-8 duration-200 outline-none focus:outline-none",
           flexDirection === "col" ? "flex-col" : "flex-row",
           className
         )}
-        style={{ gap: gap || 32, width: width || 544, height: height || "auto" }}
+        style={{
+          gap: gap || 32,
+          ...(width && { width }),
+          ...(height && { height }),
+        }}
         {...props}
       >
         <Dialog.Title className={title ? "" : "hidden"}>{title}</Dialog.Title>
@@ -89,10 +93,7 @@ function DialogTitle({
   ...props
 }: ComponentProps<typeof DialogPrimitive.Title>) {
   return (
-    <DialogPrimitive.Title
-      className={cn("flex flex-col items-center justify-center gap-3 py-6", className)}
-      {...props}
-    >
+    <DialogPrimitive.Title className={cn(className)} {...props}>
       {children}
     </DialogPrimitive.Title>
   );

@@ -51,7 +51,11 @@ function FormField<
 
         return (
           <FormItem className={formItemClassName}>
-            {label && <FormLabel {...labelProps}>{label}</FormLabel>}
+            {label && (
+              <FormLabel {...labelProps} disabled={props.disabled}>
+                {label}
+              </FormLabel>
+            )}
             <FormControl>
               <div className="relative flex items-center gap-2">
                 <FormInput {...field} {...restInputProps} onChange={handleChange} />
