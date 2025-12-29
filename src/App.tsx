@@ -1,5 +1,6 @@
 import { lazy } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+import PublicRouteGuard from "@/pages/auth/PublicRouteGuard";
 import HomePage from "@/pages/HomePage";
 
 const LoginPage = lazy(() => import("@/pages/auth/login/LoginPage"));
@@ -21,15 +22,17 @@ function App() {
     <BrowserRouter>
       <div className="h-dvh w-dvw bg-white">
         <Routes>
-          <Route element={<PublicPageLayout />}>
-            <Route path="login" element={<LoginPage />} />
-            <Route path="signup" element={<SignupPage />} />
-            <Route path="signup/loading" element={<SignupLoadingPage />} />
-            <Route path="signup/result" element={<SignupResultPage />} />
+          <Route element={<PublicRouteGuard />}>
+            <Route element={<PublicPageLayout />}>
+              <Route path="login" element={<LoginPage />} />
+              <Route path="signup" element={<SignupPage />} />
+              <Route path="signup/loading" element={<SignupLoadingPage />} />
+              <Route path="signup/result" element={<SignupResultPage />} />
+            </Route>
+
+            <Route path="email" element={<EmailPage />} />
           </Route>
-          
-          <Route path="email" element={<EmailPage />} />
-          
+
           <Route element={<RootLayout />}>
             <Route path="/" element={<HomePage />} />
             <Route path="/stores" element={<MainStoresPage />} />

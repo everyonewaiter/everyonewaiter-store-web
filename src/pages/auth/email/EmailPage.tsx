@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import EmailContent from "@/pages/auth/email/EmailContent";
-import PublicRouteGuard from "@/pages/auth/PublicRouteGuard";
 
 function EmailPage() {
   const navigate = useNavigate();
@@ -35,11 +34,7 @@ function EmailPage() {
     // TODO: 이메일 재발송 로직 구현
   };
 
-  return (
-    <PublicRouteGuard>
-      <EmailContent {...content} onResendEmail={handleResendEmail} />
-    </PublicRouteGuard>
-  );
+  return <EmailContent {...content} onResendEmail={handleResendEmail} />;
 }
 
 export default EmailPage;
