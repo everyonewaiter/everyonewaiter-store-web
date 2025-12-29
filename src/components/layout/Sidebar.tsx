@@ -20,7 +20,7 @@ const sidebarItems = [
   {
     label: "매장 정보",
     icon: Shop,
-    path: "/store",
+    path: "/info",
   },
   {
     label: "메뉴 관리",

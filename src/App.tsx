@@ -29,7 +29,7 @@ function App() {
 
           <Route element={<RootLayout />}>
             <Route path="/" element={<HomePage />} />
-            <Route path="/store" element={<MainInfoPage />} />
+            <Route path="/info" element={<MainInfoPage />} />
             <Route path="/devices" element={<MainDevicePage />} />
             <Route path="/menus" element={<MainMenuPage />} />
             <Route path="/settings" element={<MainSettingsPage />} />
