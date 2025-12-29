@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
+import { toast } from "sonner";
 import { Form } from "@/components/form/Form";
 import FormField from "@/components/form/FormField";
 import { EditContained, Plus, Trash } from "@/components/icons";
@@ -44,16 +45,16 @@ function MainInfoPage() {
     <div
       className={cn(
         "flex h-full w-full justify-center",
-        origins.length > 4 ? "items-start pt-10" : "items-center"
+        origins.length > 4 ? "items-start pt-10" : "py-6 md:items-start lg:items-center"
       )}
     >
-      <div className="flex flex-col gap-8 lg:w-120">
-        <div className="flex flex-col gap-3">
-          <h2 className="text-gray-0 text-2xl font-semibold">매장 정보</h2>
-          <p className="text-sm font-normal whitespace-pre-line text-gray-300">{`등록된 매장 정보를 확인할 수 있습니다.\n변경된 정보가 있다면 언제든지 수정해 주세요.`}</p>
+      <div className="flex flex-col md:w-68 md:gap-6 lg:w-120 lg:gap-8">
+        <div className="flex flex-col md:gap-2 lg:gap-3">
+          <h2 className="text-gray-0 font-semibold md:text-lg lg:text-2xl">매장 정보</h2>
+          <p className="font-normal whitespace-pre-line text-gray-300 md:text-xs lg:text-sm">{`등록된 매장 정보를 확인할 수 있습니다.\n변경된 정보가 있다면 언제든지 수정해 주세요.`}</p>
         </div>
         <Form {...form}>
-          <form className="flex flex-col gap-4">
+          <form className="flex flex-col md:gap-3 lg:gap-4">
             <FormField control={form.control} name="name" label="상호명" disabled />
             <FormField control={form.control} name="license" label="사업자번호" disabled />
             <FormField
@@ -70,27 +71,38 @@ function MainInfoPage() {
             />
             {origins.length > 0 ? (
               <Table containerClassName="rounded-xl border border-gray-600 overflow-hidden">
-                <Table.Header className="h-13 rounded-none">
+                <Table.Header className="rounded-none md:h-10 lg:h-13">
                   <Table.Head
-                    className={cn("text-base font-normal", isEditing ? "flex-[0.4]" : "flex-1")}
+                    className={cn(
+                      "md:text-s font-normal lg:text-base",
+                      isEditing ? "flex-[0.4]" : "flex-1"
+                    )}
                   >
                     품목
                   </Table.Head>
                   <Table.Head
-                    className={cn("text-base font-normal", isEditing ? "flex-[0.4]" : "flex-1")}
+                    className={cn(
+                      "md:text-s font-normal lg:text-base",
+                      isEditing ? "flex-[0.4]" : "flex-1"
+                    )}
                   >
                     원산지
                   </Table.Head>
                   {isEditing && (
-                    <Table.Head className="text-primary flex-[0.2] text-base font-normal">
+                    <Table.Head className="text-primary md:text-s flex-[0.2] font-normal lg:text-base">
                       삭제
                     </Table.Head>
                   )}
                 </Table.Header>
                 <Table.Body>
                   {origins.map((origin, index) => (
-                    <Table.Row key={origin.id} className="flex h-13!">
-                      <Table.Cell className={cn(isEditing ? "flex-[0.4]" : "flex-1")}>
+                    <Table.Row key={origin.id} className="flex md:h-10 lg:h-13!">
+                      <Table.Cell
+                        className={cn(
+                          "md:text-s font-normal lg:text-base",
+                          isEditing ? "flex-[0.4]" : "flex-1"
+                        )}
+                      >
                         {isEditing ? (
                           <Input
                             value={origin.item}
@@ -101,7 +113,12 @@ function MainInfoPage() {
                           origin.item
                         )}
                       </Table.Cell>
-                      <Table.Cell className={cn(isEditing ? "flex-[0.4]" : "flex-1")}>
+                      <Table.Cell
+                        className={cn(
+                          "md:text-s font-normal lg:text-base",
+                          isEditing ? "flex-[0.4]" : "flex-1"
+                        )}
+                      >
                         {isEditing ? (
                           <Input
                             value={origin.origin}
@@ -124,11 +141,11 @@ function MainInfoPage() {
                 </Table.Body>
               </Table>
             ) : (
-              <div className="center h-40 flex-col gap-1 rounded-xl border border-gray-600 bg-gray-700">
-                <span className="text-gray-0 text-[15px] font-medium">
+              <div className="center flex-col gap-1 border border-gray-600 bg-gray-700 md:h-35 md:rounded-2xl lg:h-40 lg:rounded-xl">
+                <span className="text-gray-0 font-medium md:text-sm lg:text-[15px]">
                   원산지가 등록되어 있지 않습니다.
                 </span>
-                <span className="text-s font-normal text-[#505050]">
+                <span className="lg:text-s font-normal text-[#505050] md:text-xs">
                   등록을 하시려면 수정 버튼을 눌러 추가해주세요.
                 </span>
               </div>
@@ -145,6 +162,7 @@ function MainInfoPage() {
                 buttonSize: "md",
                 className: "!h-10 border-2 border-dashed border-gray-300 rounded-xl",
               },
+              md: { buttonSize: "sm", className: "border-dashed" },
             }}
             onClick={addOrigin}
           >
@@ -157,10 +175,37 @@ function MainInfoPage() {
           responsive
           responsiveButtons={{
             lg: { buttonSize: "lg", className: "text-lg !text-medium" },
+            md: { buttonSize: "sm", className: "!h-8.5" },
           }}
-          onClick={() => setIsEditing((prev) => !prev)}
+          onClick={() => {
+            if (isEditing) {
+              const origins = form.getValues("origins");
+
+              for (const origin of origins) {
+                const hasItem = origin.item.trim().length > 0;
+                const hasOrigin = origin.origin.trim().length > 0;
+
+                if ((hasItem && !hasOrigin) || (!hasItem && hasOrigin)) {
+                  toast.error("품목과 원산지를 모두 입력해주세요.", {
+                    position: "top-right",
+                  });
+                  return;
+                }
+              }
+
+              const filteredOrigins = origins.filter(
+                (origin) => origin.item.trim().length > 0 && origin.origin.trim().length > 0
+              );
+
+              // TODO: 저장 로직
+              form.setValue("origins", filteredOrigins);
+              setIsEditing(false);
+            } else {
+              setIsEditing(true);
+            }
+          }}
         >
-          {!isEditing && <EditContained className="size-6" />}
+          {!isEditing && <EditContained className="md:size-5 lg:size-6" />}
           {isEditing ? "저장하기" : "수정하기"}
         </Button>
       </div>

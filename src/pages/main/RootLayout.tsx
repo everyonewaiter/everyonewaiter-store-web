@@ -6,7 +6,7 @@ import SectionTitle from "@/components/layout/SectionTitle";
 import Sidebar from "@/components/layout/Sidebar";
 
 function RootLayout() {
-  const [isUser] = useState(false);
+  const [isUser] = useState(true);
 
   // TODO: 로그인 여부 확인 후 리다이렉트
 
@@ -18,7 +18,7 @@ function RootLayout() {
           <aside className="hidden h-auto flex-col rounded-[28px] bg-white md:flex md:w-46.5 md:gap-3 lg:w-79.5 lg:gap-4">
             <Sidebar />
           </aside>
-          <article className="flex h-full flex-1 flex-col bg-white md:rounded-[28px] md:p-8">
+          <article className="flex h-full flex-1 flex-col bg-white md:rounded-[28px] md:p-5 lg:p-8">
             <SectionTitle />
             <div className="flex flex-1 flex-col overflow-y-auto">
               <Outlet />

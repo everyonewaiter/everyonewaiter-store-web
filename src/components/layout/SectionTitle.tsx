@@ -26,15 +26,15 @@ function SectionTitle() {
   };
 
   return (
-    <div className="relative flex flex-col gap-5">
+    <div className="relative flex flex-col md:gap-2 lg:gap-5">
       <div className="flex items-center justify-between">
-        <h2 className="text-gray-0 text-[28px] font-bold">{getText()}</h2>
+        <h2 className="text-gray-0 font-bold md:text-base lg:text-[28px]">{getText()}</h2>
         <button
           ref={buttonRef}
-          className="center h-12 w-12 rounded-2xl border border-gray-400"
+          className="center rounded-2xl border border-gray-400 md:h-8 md:w-8 lg:h-12 lg:w-12"
           onClick={handleOpenUser}
         >
-          <User className="size-8 text-gray-400" />
+          <User className="text-gray-400 md:size-6 lg:size-8" />
         </button>
       </div>
       <div className="h-px w-full bg-gray-500" />
