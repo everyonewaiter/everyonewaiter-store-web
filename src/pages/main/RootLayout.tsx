@@ -20,7 +20,7 @@ function RootLayout() {
           </aside>
           <article className="flex h-full flex-1 flex-col bg-white md:rounded-[28px] md:p-5 lg:p-8">
             <SectionTitle />
-            <div className="flex flex-1 flex-col overflow-y-auto">
+            <div className="flex flex-1 flex-col">
               <Outlet />
             </div>
           </article>
