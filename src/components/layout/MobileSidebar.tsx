@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import logoText from "@/assets/images/logo-text.svg";
 import logo from "@/assets/images/logo.svg";
 import { Hamburger } from "@/components/icons";
@@ -10,10 +10,12 @@ interface MobileSidebarProps {
 }
 
 function MobileSidebar({ children }: Readonly<MobileSidebarProps>) {
+  const [isOpen, setIsOpen] = useState(false);
+
   return (
-    <Sheet>
+    <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <SheetContent side="left" className="mt-7 rounded-tr-3xl rounded-br-3xl md:hidden">
-        <Sidebar />
+        <Sidebar onLinkClick={() => setIsOpen(false)} />
       </SheetContent>
 
       <header className="relative flex items-center justify-center gap-3 border-b border-b-gray-600 px-5 pt-5 pb-4 md:hidden">
