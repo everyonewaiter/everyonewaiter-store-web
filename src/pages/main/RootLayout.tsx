@@ -14,13 +14,13 @@ function RootLayout() {
     <MobileSidebar>
       {isUser ? (
         // 승인된 매장이 있을 경우
-        <div className="flex h-dvh w-dvw flex-col bg-gray-700 md:flex-row md:gap-2.5 md:px-5 md:py-5 lg:gap-6 lg:px-15 lg:py-8">
+        <div className="flex h-full w-dvw flex-col bg-gray-700 md:h-dvh md:flex-row md:gap-2.5 md:px-5 md:py-5 lg:gap-6 lg:px-15 lg:py-8">
           <aside className="hidden h-auto flex-col rounded-[28px] bg-white md:flex md:w-46.5 md:gap-3 lg:w-79.5 lg:gap-4">
             <Sidebar />
           </aside>
           <article className="flex h-full flex-1 flex-col bg-white md:rounded-[28px] md:p-5 lg:p-8">
             <SectionTitle />
-            <div className="flex flex-1 flex-col">
+            <div className="flex flex-1 flex-col overflow-y-auto">
               <Outlet />
             </div>
           </article>

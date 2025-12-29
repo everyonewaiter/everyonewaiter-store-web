@@ -18,14 +18,16 @@ function MobileSidebar({ children }: Readonly<MobileSidebarProps>) {
         <Sidebar onLinkClick={() => setIsOpen(false)} />
       </SheetContent>
 
-      <header className="relative flex items-center justify-center gap-3 border-b border-b-gray-600 px-5 pt-5 pb-4 md:hidden">
-        <img src={logo} alt="logo text horizontal" className="size-6" />
-        <img src={logoText} alt="logo text horizontal" className="md:w-29.5 lg:w-55" />
-        <SheetTrigger className="absolute left-5">
-          <Hamburger className="text-gray-0 size-6" />
-        </SheetTrigger>
-      </header>
-      {children}
+      <div className="flex h-screen flex-col md:h-auto">
+        <header className="relative flex items-center justify-center gap-3 border-b border-b-gray-600 px-5 pt-5 pb-4 md:hidden">
+          <img src={logo} alt="logo text horizontal" className="size-6" />
+          <img src={logoText} alt="logo text horizontal" className="md:w-29.5 lg:w-55" />
+          <SheetTrigger className="absolute left-5">
+            <Hamburger className="text-gray-0 size-6" />
+          </SheetTrigger>
+        </header>
+        <div className="flex flex-1 flex-col md:flex-none">{children}</div>
+      </div>
     </Sheet>
   );
 }

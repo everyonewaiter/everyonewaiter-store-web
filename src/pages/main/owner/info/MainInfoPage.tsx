@@ -76,8 +76,8 @@ function MainInfoPage() {
   return (
     <div
       className={cn(
-        "flex h-full w-full justify-center px-5 pt-10 md:px-0",
-        origins.length > 4 ? "items-start md:pt-10" : "py-6 md:items-start lg:items-center"
+        "flex h-full w-full justify-center px-5 pt-6 md:px-0 md:pt-10",
+        origins.length > 4 ? "items-start" : "items-start md:items-start lg:items-center lg:pb-6"
       )}
     >
       <div className="flex w-full flex-col gap-6 md:w-68 lg:w-120 lg:gap-8">
