@@ -13,12 +13,11 @@ function EmailPage() {
   useEffect(() => {
     // TODO: token이 있을 경우 verifyEmail(token) 호출
     // if (!token) return;
-  }, [token, navigate]);
-
-  if (token && !isExpired) {
     // TODO: 성공 시 login으로 이동
-    return null;
-  }
+    // if (token && !isExpired) {
+    //   navigate('/login');
+    // }
+  }, [token, navigate]);
 
   const content = isExpired
     ? {
@@ -28,7 +27,7 @@ function EmailPage() {
     : {
         title: "이메일 인증이 되지 않았어요!",
         description:
-          "회원가입을 완료했지만 이메일 인증이 아직 진행되지 않았어요.\n아래 버튼을 눌러 인증을 완료해주세요.",
+          "회원가입을 완료한 뒤, 하루가 지났다면\n아래 재발송 버튼을 눌러, 이메일 인증을 완료해주세요.",
       };
 
   const handleResendEmail = () => {
