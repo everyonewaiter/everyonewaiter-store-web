@@ -10,7 +10,7 @@ const SignupResultPage = lazy(() => import("@/pages/auth/signup/result/SignupRes
 const MainDevicePage = lazy(() => import("@/pages/main/owner/devices/MainDevicePage"));
 const MainMenuPage = lazy(() => import("@/pages/main/owner/menus/MainMenuPage"));
 const MainSettingsPage = lazy(() => import("@/pages/main/owner/settings/MainSettingsPage"));
-const MainStoresPage = lazy(() => import("@/pages/main/owner/stores/MainStoresPage"));
+const MainInfoPage = lazy(() => import("@/pages/main/owner/info/MainInfoPage"));
 
 const PublicPageLayout = lazy(() => import("@/pages/auth/PublicPageLayout"));
 const RootLayout = lazy(() => import("@/pages/main/RootLayout"));
@@ -29,7 +29,7 @@ function App() {
 
           <Route element={<RootLayout />}>
             <Route path="/" element={<HomePage />} />
-            <Route path="/stores" element={<MainStoresPage />} />
+            <Route path="/store" element={<MainInfoPage />} />
             <Route path="/devices" element={<MainDevicePage />} />
             <Route path="/menus" element={<MainMenuPage />} />
             <Route path="/settings" element={<MainSettingsPage />} />
