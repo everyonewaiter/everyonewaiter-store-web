@@ -26,7 +26,7 @@ function SectionTitle() {
   };
 
   return (
-    <div className="relative flex flex-col md:gap-2 lg:gap-5">
+    <div className="relative hidden flex-col md:flex md:gap-2 lg:gap-5">
       <div className="flex items-center justify-between">
         <h2 className="text-gray-0 font-bold md:text-base lg:text-[28px]">{getText()}</h2>
         <button
