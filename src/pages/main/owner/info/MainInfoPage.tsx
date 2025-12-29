@@ -44,17 +44,17 @@ function MainInfoPage() {
   return (
     <div
       className={cn(
-        "flex h-full w-full justify-center",
-        origins.length > 4 ? "items-start pt-10" : "py-6 md:items-start lg:items-center"
+        "flex h-full w-full justify-center px-5 pt-10 md:px-0",
+        origins.length > 4 ? "items-start md:pt-10" : "py-6 md:items-start lg:items-center"
       )}
     >
-      <div className="flex flex-col md:w-68 md:gap-6 lg:w-120 lg:gap-8">
-        <div className="flex flex-col md:gap-2 lg:gap-3">
-          <h2 className="text-gray-0 font-semibold md:text-lg lg:text-2xl">매장 정보</h2>
-          <p className="font-normal whitespace-pre-line text-gray-300 md:text-xs lg:text-sm">{`등록된 매장 정보를 확인할 수 있습니다.\n변경된 정보가 있다면 언제든지 수정해 주세요.`}</p>
+      <div className="flex w-full flex-col gap-6 md:w-68 lg:w-120 lg:gap-8">
+        <div className="flex flex-col gap-2 lg:gap-3">
+          <h2 className="text-gray-0 text-lg font-semibold lg:text-2xl">매장 정보</h2>
+          <p className="text-xs font-normal whitespace-pre-line text-gray-300 lg:text-sm">{`등록된 매장 정보를 확인할 수 있습니다.\n변경된 정보가 있다면 언제든지 수정해 주세요.`}</p>
         </div>
         <Form {...form}>
-          <form className="flex flex-col md:gap-3 lg:gap-4">
+          <form className="mt-2 flex flex-col gap-3 md:mt-0 lg:gap-4">
             <FormField control={form.control} name="name" label="상호명" disabled />
             <FormField control={form.control} name="license" label="사업자번호" disabled />
             <FormField
@@ -71,10 +71,10 @@ function MainInfoPage() {
             />
             {origins.length > 0 ? (
               <Table containerClassName="rounded-xl border border-gray-600 overflow-hidden">
-                <Table.Header className="rounded-none md:h-10 lg:h-13">
+                <Table.Header className="h-10 rounded-none lg:h-13">
                   <Table.Head
                     className={cn(
-                      "md:text-s font-normal lg:text-base",
+                      "text-s font-normal lg:text-base",
                       isEditing ? "flex-[0.4]" : "flex-1"
                     )}
                   >
@@ -82,24 +82,24 @@ function MainInfoPage() {
                   </Table.Head>
                   <Table.Head
                     className={cn(
-                      "md:text-s font-normal lg:text-base",
+                      "text-s font-normal lg:text-base",
                       isEditing ? "flex-[0.4]" : "flex-1"
                     )}
                   >
                     원산지
                   </Table.Head>
                   {isEditing && (
-                    <Table.Head className="text-primary md:text-s flex-[0.2] font-normal lg:text-base">
+                    <Table.Head className="text-primary text-s flex-[0.2] font-normal lg:text-base">
                       삭제
                     </Table.Head>
                   )}
                 </Table.Header>
                 <Table.Body>
                   {origins.map((origin, index) => (
-                    <Table.Row key={origin.id} className="flex md:h-10 lg:h-13!">
+                    <Table.Row key={origin.id} className="flex h-10 lg:h-13!">
                       <Table.Cell
                         className={cn(
-                          "md:text-s font-normal lg:text-base",
+                          "text-s font-normal lg:text-base",
                           isEditing ? "flex-[0.4]" : "flex-1"
                         )}
                       >
@@ -115,7 +115,7 @@ function MainInfoPage() {
                       </Table.Cell>
                       <Table.Cell
                         className={cn(
-                          "md:text-s font-normal lg:text-base",
+                          "text-s font-normal lg:text-base",
                           isEditing ? "flex-[0.4]" : "flex-1"
                         )}
                       >
@@ -141,11 +141,11 @@ function MainInfoPage() {
                 </Table.Body>
               </Table>
             ) : (
-              <div className="center flex-col gap-1 border border-gray-600 bg-gray-700 md:h-35 md:rounded-2xl lg:h-40 lg:rounded-xl">
-                <span className="text-gray-0 font-medium md:text-sm lg:text-[15px]">
+              <div className="center h-35 flex-col gap-1 rounded-2xl border border-gray-600 bg-gray-700 lg:h-40 lg:rounded-xl">
+                <span className="text-gray-0 text-sm font-medium lg:text-[15px]">
                   원산지가 등록되어 있지 않습니다.
                 </span>
-                <span className="lg:text-s font-normal text-[#505050] md:text-xs">
+                <span className="lg:text-s text-xs font-normal text-[#505050]">
                   등록을 하시려면 수정 버튼을 눌러 추가해주세요.
                 </span>
               </div>
@@ -163,6 +163,7 @@ function MainInfoPage() {
                 className: "!h-10 border-2 border-dashed border-gray-300 rounded-xl",
               },
               md: { buttonSize: "sm", className: "border-dashed" },
+              sm: { buttonSize: "sm", className: "border-dashed" },
             }}
             onClick={addOrigin}
           >
@@ -176,6 +177,7 @@ function MainInfoPage() {
           responsiveButtons={{
             lg: { buttonSize: "lg", className: "text-lg !text-medium" },
             md: { buttonSize: "sm", className: "!h-8.5" },
+            sm: { buttonSize: "sm", className: "!h-8.5" },
           }}
           onClick={() => {
             if (isEditing) {
@@ -205,7 +207,7 @@ function MainInfoPage() {
             }
           }}
         >
-          {!isEditing && <EditContained className="md:size-5 lg:size-6" />}
+          {!isEditing && <EditContained className="size-5 lg:size-6" />}
           {isEditing ? "저장하기" : "수정하기"}
         </Button>
       </div>
