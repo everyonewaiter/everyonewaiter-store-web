@@ -1,20 +1,23 @@
 import { useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
-import { toast } from "sonner";
 import { Form } from "@/components/form/Form";
 import FormField from "@/components/form/FormField";
-import { EditContained, Plus, Trash } from "@/components/icons";
+import { EditContained, Plus } from "@/components/icons";
 import Button from "@/components/ui/Button/Button";
-import Input from "@/components/ui/Input";
-import Table from "@/components/ui/Table";
 import cn from "@/lib/utils";
+import InfoOriginBox from "@/pages/main/owner/info/InfoOriginBox";
 import { STORE_DETAIL_MOCK } from "@/pages/main/owner/info/mock";
+import type { StoreInfoSchema } from "@/schema/store-info.schema";
 
 function MainInfoPage() {
   const data = STORE_DETAIL_MOCK;
-  const form = useForm({
+
+  const form = useForm<StoreInfoSchema>({
+    mode: "onSubmit",
+    reValidateMode: "onChange",
     defaultValues: {
       name: data.name,
+      // TODO: 사업자번호 포매팅 추가
       license: data.license,
       address: data.address,
       origins: data.setting.countryOfOrigins.map((origin) => ({
@@ -39,6 +42,35 @@ function MainInfoPage() {
       "origins",
       origins.filter((origin) => origin.id !== id)
     );
+  };
+
+  const handleSave = () => {
+    if (isEditing) {
+      const origins = form.getValues("origins");
+
+      for (const origin of origins) {
+        const hasItem = origin.item.trim().length > 0;
+        const hasOrigin = origin.origin.trim().length > 0;
+
+        if ((hasItem && !hasOrigin) || (!hasItem && hasOrigin)) {
+          form.setError("origins", {
+            message: "품목과 원산지를 모두 입력해주세요.",
+          });
+          return;
+        }
+      }
+
+      const filteredOrigins = origins.filter(
+        (origin) => origin.item.trim().length > 0 && origin.origin.trim().length > 0
+      );
+
+      // TODO: 저장 로직
+      form.clearErrors("origins");
+      form.setValue("origins", filteredOrigins);
+      setIsEditing(false);
+    } else {
+      setIsEditing(true);
+    }
   };
 
   return (
@@ -69,87 +101,7 @@ function MainInfoPage() {
                 },
               }}
             />
-            {origins.length > 0 ? (
-              <Table containerClassName="rounded-xl border border-gray-600 overflow-hidden">
-                <Table.Header className="h-10 rounded-none lg:h-13">
-                  <Table.Head
-                    className={cn(
-                      "text-s font-normal lg:text-base",
-                      isEditing ? "flex-[0.4]" : "flex-1"
-                    )}
-                  >
-                    품목
-                  </Table.Head>
-                  <Table.Head
-                    className={cn(
-                      "text-s font-normal lg:text-base",
-                      isEditing ? "flex-[0.4]" : "flex-1"
-                    )}
-                  >
-                    원산지
-                  </Table.Head>
-                  {isEditing && (
-                    <Table.Head className="text-primary text-s flex-[0.2] font-normal lg:text-base">
-                      삭제
-                    </Table.Head>
-                  )}
-                </Table.Header>
-                <Table.Body>
-                  {origins.map((origin, index) => (
-                    <Table.Row key={origin.id} className="flex h-10 lg:h-13!">
-                      <Table.Cell
-                        className={cn(
-                          "text-s font-normal lg:text-base",
-                          isEditing ? "flex-[0.4]" : "flex-1"
-                        )}
-                      >
-                        {isEditing ? (
-                          <Input
-                            value={origin.item}
-                            onChange={(e) => form.setValue(`origins.${index}.item`, e.target.value)}
-                            className="h-full! rounded-none! border-none! text-center"
-                          />
-                        ) : (
-                          origin.item
-                        )}
-                      </Table.Cell>
-                      <Table.Cell
-                        className={cn(
-                          "text-s font-normal lg:text-base",
-                          isEditing ? "flex-[0.4]" : "flex-1"
-                        )}
-                      >
-                        {isEditing ? (
-                          <Input
-                            value={origin.origin}
-                            onChange={(e) =>
-                              form.setValue(`origins.${index}.origin`, e.target.value)
-                            }
-                            className="h-full! rounded-none! border-none! text-center"
-                          />
-                        ) : (
-                          origin.origin
-                        )}
-                      </Table.Cell>
-                      {isEditing && (
-                        <Table.Cell className="flex-[0.2]" onClick={() => handleDelete(origin.id)}>
-                          <Trash className="text-primary size-4.5" />
-                        </Table.Cell>
-                      )}
-                    </Table.Row>
-                  ))}
-                </Table.Body>
-              </Table>
-            ) : (
-              <div className="center h-35 flex-col gap-1 rounded-2xl border border-gray-600 bg-gray-700 lg:h-40 lg:rounded-xl">
-                <span className="text-gray-0 text-sm font-medium lg:text-[15px]">
-                  원산지가 등록되어 있지 않습니다.
-                </span>
-                <span className="lg:text-s text-xs font-normal text-[#505050]">
-                  등록을 하시려면 수정 버튼을 눌러 추가해주세요.
-                </span>
-              </div>
-            )}
+            <InfoOriginBox isEditing={isEditing} onDelete={handleDelete} />
           </form>
         </Form>
         {isEditing && (
@@ -179,33 +131,7 @@ function MainInfoPage() {
             md: { buttonSize: "sm", className: "!h-8.5" },
             sm: { buttonSize: "sm", className: "!h-8.5" },
           }}
-          onClick={() => {
-            if (isEditing) {
-              const origins = form.getValues("origins");
-
-              for (const origin of origins) {
-                const hasItem = origin.item.trim().length > 0;
-                const hasOrigin = origin.origin.trim().length > 0;
-
-                if ((hasItem && !hasOrigin) || (!hasItem && hasOrigin)) {
-                  toast.error("품목과 원산지를 모두 입력해주세요.", {
-                    position: "top-right",
-                  });
-                  return;
-                }
-              }
-
-              const filteredOrigins = origins.filter(
-                (origin) => origin.item.trim().length > 0 && origin.origin.trim().length > 0
-              );
-
-              // TODO: 저장 로직
-              form.setValue("origins", filteredOrigins);
-              setIsEditing(false);
-            } else {
-              setIsEditing(true);
-            }
-          }}
+          onClick={handleSave}
         >
           {!isEditing && <EditContained className="size-5 lg:size-6" />}
           {isEditing ? "저장하기" : "수정하기"}
