@@ -1,5 +1,162 @@
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { Plus } from "@/components/icons";
+import Button from "@/components/ui/Button/Button";
+import Input from "@/components/ui/Input";
+import Switch from "@/components/ui/Switch";
+import SettingsStaffCallChip from "@/pages/main/owner/settings/SettingsStaffCallChip";
+
 function MainSettingsPage() {
-  return <div>MainSettingsPage</div>;
+  const form = useForm({
+    defaultValues: {
+      ksnetDeviceNo: "",
+      printerLocation: "POS",
+      showMenuPopup: false,
+      showOrderTotalPrice: false,
+      showOrderMenuImage: false,
+      staffCallOptions: ["반찬 추가", "음료 추가", "직원 호출"],
+    },
+  });
+
+  const [newStaffCallOption, setNewStaffCallOption] = useState<string>("");
+
+  const handleAddStaffCallOption = () => {
+    // TODO: 직원 호출 옵션 추가 로직
+  };
+
+  return (
+    <div className="flex h-full w-full flex-col items-center bg-white lg:justify-center">
+      <div className="flex w-full flex-col gap-8 px-5 pt-6 md:w-95 md:px-0 md:pt-0 lg:w-120">
+        <h2 className="text-gray-0 text-lg font-semibold md:hidden md:text-2xl lg:block">설정</h2>
+        <div className="flex flex-col gap-6">
+          <section className="flex flex-col gap-3 lg:gap-4">
+            <div className="flex items-center gap-3">
+              <div className="bg-primary h-3.5 w-0.5 rounded-3xl lg:h-4" />
+              <h3 className="text-gray-0 text-[15px] font-semibold lg:text-lg">매장</h3>
+            </div>
+            <div className="flex flex-col gap-3">
+              <p className="text-sm font-medium text-gray-100">
+                주방 프린터기와 연결된 기기를 선택해주세요
+              </p>
+              <div className="flex items-center gap-3">
+                <Button
+                  color="primary"
+                  variant="outline"
+                  responsive
+                  responsiveButtons={{
+                    lg: { buttonSize: "custom", className: "h-10 rounded-lg px-5 w-full" },
+                    md: { buttonSize: "sm", className: "rounded-xl! w-full" },
+                    sm: { buttonSize: "sm", className: "rounded-xl! w-full" },
+                  }}
+                  onClick={() => form.setValue("printerLocation", "POS")}
+                >
+                  POS
+                </Button>
+                <Button
+                  color="grey"
+                  variant="outline"
+                  responsive
+                  responsiveButtons={{
+                    lg: {
+                      buttonSize: "custom",
+                      className: "h-10 rounded-lg px-5 w-full !border-gray-500 !text-gray-0",
+                    },
+                    md: { buttonSize: "sm", className: "rounded-xl! w-full" },
+                    sm: { buttonSize: "sm", className: "rounded-xl! w-full" },
+                  }}
+                  onClick={() => form.setValue("printerLocation", "홀")}
+                >
+                  홀
+                </Button>
+              </div>
+            </div>
+          </section>
+          <section className="flex flex-col gap-4">
+            <div className="flex items-center gap-3">
+              <div className="bg-primary h-3.5 w-0.5 rounded-3xl lg:h-4" />
+              <h3 className="text-gray-0 text-[15px] font-semibold lg:text-lg">주문</h3>
+            </div>
+            <div className="flex flex-col gap-3">
+              <div className="flex items-center justify-between">
+                <label htmlFor="customer-table-menu-popup" className="text-sm font-normal">
+                  손님 테이블 메뉴 팝업창 띄우기
+                </label>
+                <Switch
+                  id="customer-table-menu-popup"
+                  checked={form.watch("showMenuPopup")}
+                  onCheckedChange={(checked) => form.setValue("showMenuPopup", checked)}
+                />
+              </div>
+              <div className="flex items-center justify-between">
+                <label htmlFor="customer-table-order-total-price" className="text-sm font-normal">
+                  손님 테이블 주문 내역에서 총 주문금액 표시하기
+                </label>
+                <Switch
+                  id="customer-table-order-total-price"
+                  checked={form.watch("showOrderTotalPrice")}
+                  onCheckedChange={(checked) => form.setValue("showOrderTotalPrice", checked)}
+                />
+              </div>
+              <div className="flex items-center justify-between">
+                <label
+                  htmlFor="hall-order-menu-image"
+                  className="flex items-end gap-2.5 text-sm font-normal"
+                >
+                  홀 주문 내역에서 메뉴 이미지 표시하기
+                </label>
+                <Switch
+                  id="hall-order-menu-image"
+                  checked={form.watch("showOrderMenuImage")}
+                  onCheckedChange={(checked) => form.setValue("showOrderMenuImage", checked)}
+                />
+              </div>
+              <div className="flex flex-col gap-3">
+                <label
+                  htmlFor="staff-call-options"
+                  className="flex items-end gap-2.5 text-sm font-normal"
+                >
+                  직원 호출 페이지에 옵션 추가{" "}
+                  <span className="text-xs font-normal text-gray-300">최대 12개</span>
+                </label>
+                <div className="flex items-center gap-1.5">
+                  <Input
+                    placeholder="옵션명을 입력해주세요"
+                    className="h-8! rounded-[10px]! py-1.5! text-xs! lg:h-9!"
+                    value={newStaffCallOption}
+                    onChange={(e) => setNewStaffCallOption(e.target.value)}
+                  />
+                  <Button
+                    color="black"
+                    responsive
+                    responsiveButtons={{
+                      lg: { buttonSize: "sm", className: "text-s! gap-0!" },
+                      md: {
+                        buttonSize: "custom",
+                        className: "h-8! w-fit! px-2.5 rounded-lg! text-s! gap-0!",
+                      },
+                      sm: {
+                        buttonSize: "custom",
+                        className: "h-8! w-fit! px-2.5 rounded-lg! text-s! gap-0!",
+                      },
+                    }}
+                    onClick={handleAddStaffCallOption}
+                  >
+                    <Plus className="size-5 text-white" />
+                    추가
+                  </Button>
+                </div>
+              </div>
+            </div>
+            <div className="flex flex-wrap gap-x-3 gap-y-3 lg:gap-x-2 lg:gap-y-2">
+              {form.watch("staffCallOptions").map((option) => (
+                <SettingsStaffCallChip key={option}>{option}</SettingsStaffCallChip>
+              ))}
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+  );
 }
 
 export default MainSettingsPage;
