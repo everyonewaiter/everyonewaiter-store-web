@@ -1,6 +1,7 @@
 import { lazy } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import HomePage from "@/pages/HomePage";
+import MainMenuCategoryPage from "@/pages/main/owner/menus/category/MainMenuCategoryPage";
 
 const LoginPage = lazy(() => import("@/pages/auth/login/LoginPage"));
 const SignupPage = lazy(() => import("@/pages/auth/signup/SignupPage"));
@@ -33,6 +34,7 @@ function App() {
             <Route path="/devices" element={<MainDevicePage />} />
             <Route path="/menus" element={<MainMenuPage />} />
             <Route path="/settings" element={<MainSettingsPage />} />
+            <Route path="/menus/category" element={<MainMenuCategoryPage />} />
           </Route>
         </Routes>
       </div>
