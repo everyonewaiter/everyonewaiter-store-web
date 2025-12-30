@@ -1,9 +1,11 @@
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
+import { Form, FormErrorMessage, FormMessage } from "@/components/form/Form";
 import { Plus } from "@/components/icons";
 import Button from "@/components/ui/Button/Button";
 import Input from "@/components/ui/Input";
 import Switch from "@/components/ui/Switch";
+import SettingsSection from "@/pages/main/owner/settings/SettingsSection";
 import SettingsStaffCallChip from "@/pages/main/owner/settings/SettingsStaffCallChip";
 
 function MainSettingsPage() {
@@ -24,17 +26,15 @@ function MainSettingsPage() {
     // TODO: 직원 호출 옵션 추가 로직
   };
 
+  const deviceNo = useWatch({ control: form.control, name: "ksnetDeviceNo" });
+
   return (
-    <div className="flex h-full w-full flex-col items-center bg-white lg:justify-center">
-      <div className="flex w-full flex-col gap-8 px-5 pt-6 md:w-95 md:px-0 md:pt-0 lg:w-120">
-        <h2 className="text-gray-0 text-lg font-semibold md:hidden md:text-2xl lg:block">설정</h2>
-        <div className="flex flex-col gap-6">
-          <section className="flex flex-col gap-3 lg:gap-4">
-            <div className="flex items-center gap-3">
-              <div className="bg-primary h-3.5 w-0.5 rounded-3xl lg:h-4" />
-              <h3 className="text-gray-0 text-[15px] font-semibold lg:text-lg">매장</h3>
-            </div>
-            <div className="flex flex-col gap-3">
+    <Form {...form}>
+      <div className="flex h-full w-full flex-col items-center bg-white lg:justify-center">
+        <div className="flex w-full flex-col gap-8 px-5 pt-6 md:w-95 md:px-0 md:pt-0 lg:w-120">
+          <h2 className="text-gray-0 text-lg font-semibold md:hidden md:text-2xl lg:block">설정</h2>
+          <div className="flex flex-col gap-6">
+            <SettingsSection title="매장">
               <p className="text-sm font-medium text-gray-100">
                 주방 프린터기와 연결된 기기를 선택해주세요
               </p>
@@ -68,15 +68,41 @@ function MainSettingsPage() {
                 >
                   홀
                 </Button>
+                <FormErrorMessage className="mb-[1.5px]" />
+                {!form.formState.errors.ksnetDeviceNo && deviceNo?.startsWith("DPTOTEST") && (
+                  <FormMessage>테스트용 기기입니다.</FormMessage>
+                )}
               </div>
-            </div>
-          </section>
-          <section className="flex flex-col gap-4">
-            <div className="flex items-center gap-3">
-              <div className="bg-primary h-3.5 w-0.5 rounded-3xl lg:h-4" />
-              <h3 className="text-gray-0 text-[15px] font-semibold lg:text-lg">주문</h3>
-            </div>
-            <div className="flex flex-col gap-3">
+            </SettingsSection>
+            <SettingsSection title="기기">
+              <p className="text-sm font-medium text-gray-100">매장 기기 번호</p>
+              <div className="flex items-center gap-1.5">
+                <Input
+                  placeholder="기기 번호를 입력해주세요"
+                  className="h-8! rounded-[10px]! py-1.5! text-xs! lg:h-9!"
+                  {...form.register("ksnetDeviceNo")}
+                />
+                <Button
+                  color="black"
+                  responsive
+                  responsiveButtons={{
+                    lg: { buttonSize: "sm", className: "text-s! gap-0!" },
+                    md: {
+                      buttonSize: "custom",
+                      className: "h-8! w-fit! px-4! rounded-lg! text-s! ",
+                    },
+                    sm: {
+                      buttonSize: "custom",
+                      className: "h-8! w-fit! px-4! rounded-lg! text-s!",
+                    },
+                  }}
+                  onClick={handleAddStaffCallOption}
+                >
+                  등록
+                </Button>
+              </div>
+            </SettingsSection>
+            <SettingsSection title="주문">
               <div className="flex items-center justify-between">
                 <label htmlFor="customer-table-menu-popup" className="text-sm font-normal">
                   손님 테이블 메뉴 팝업창 띄우기
@@ -146,16 +172,16 @@ function MainSettingsPage() {
                   </Button>
                 </div>
               </div>
-            </div>
-            <div className="flex flex-wrap gap-x-3 gap-y-3 lg:gap-x-2 lg:gap-y-2">
-              {form.watch("staffCallOptions").map((option) => (
-                <SettingsStaffCallChip key={option}>{option}</SettingsStaffCallChip>
-              ))}
-            </div>
-          </section>
+              <div className="flex flex-wrap gap-x-3 gap-y-3 lg:gap-x-2 lg:gap-y-2">
+                {form.watch("staffCallOptions").map((option) => (
+                  <SettingsStaffCallChip key={option}>{option}</SettingsStaffCallChip>
+                ))}
+              </div>
+            </SettingsSection>
+          </div>
         </div>
       </div>
-    </div>
+    </Form>
   );
 }
 
