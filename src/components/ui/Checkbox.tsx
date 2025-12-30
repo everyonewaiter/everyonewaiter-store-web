@@ -11,8 +11,9 @@ function Checkbox({ hasError, size = 18, ...props }: Readonly<CheckboxProps>) {
     <CheckboxPrimitive.Root
       data-slot="checkbox"
       className={cn(
-        "hover:border-primary data-[state=checked]:bg-primary [data-state=checked]:border-primary shrink-0 cursor-pointer rounded-sm border border-gray-400 outline-none disabled:cursor-default disabled:border-gray-400 disabled:bg-gray-600 data-[state=checked]:disabled:opacity-40",
-        hasError && "border-status-error bg-white"
+        "hover:border-primary data-[state=checked]:bg-primary [data-state=checked]:border-primary shrink-0 cursor-pointer rounded-sm border border-gray-400 bg-white outline-none disabled:cursor-default disabled:border-gray-400 disabled:bg-gray-600 data-[state=checked]:disabled:opacity-40",
+        hasError && "border-status-error bg-white",
+        props.className
       )}
       style={{ width: size, height: size }}
       {...props}
