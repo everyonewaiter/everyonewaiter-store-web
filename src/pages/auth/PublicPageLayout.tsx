@@ -1,7 +1,6 @@
 import { Outlet } from "react-router-dom";
 import loginBg from "@/assets/images/login-bg.png";
 
-// TODO: 로그인된 사용자가 이 레이아웃을 사용하는 페이지에 접근하면 홈으로 리다이렉트하는 로직 추가
 function PublicPageLayout() {
   return (
     <div className="relative flex min-h-dvh w-dvw bg-white px-5 md:items-start md:pl-6 lg:items-center lg:pl-15">

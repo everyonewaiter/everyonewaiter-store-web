@@ -5,14 +5,21 @@ import {
   Route,
   RouterProvider,
 } from "react-router-dom";
+import EmailPage from "@/pages/auth/email/EmailPage";
 import LoginPage from "@/pages/auth/login/LoginPage";
 import PublicPageLayout from "@/pages/auth/PublicPageLayout";
+import PublicRouteGuard from "@/pages/auth/PublicRouteGuard";
 import SignupLoadingPage from "@/pages/auth/signup/result/SignupLoadingPage";
 import SignupResultPage from "@/pages/auth/signup/result/SignupResultPage";
 import SignupPage from "@/pages/auth/signup/SignupPage";
+import HomePage from "@/pages/HomePage";
 import GuestApplicationPage from "@/pages/main/guest/application/GuestApplicationPage";
 import GuestCreatePage from "@/pages/main/guest/create/GuestCreatePage";
 import GuestPage from "@/pages/main/guest/GuestPage";
+import MainDevicePage from "@/pages/main/owner/devices/MainDevicePage";
+import MainMenuPage from "@/pages/main/owner/menus/MainMenuPage";
+import MainSettingsPage from "@/pages/main/owner/settings/MainSettingsPage";
+import MainStoresPage from "@/pages/main/owner/stores/MainStoresPage";
 import RootLayout from "@/pages/main/RootLayout";
 
 const router = createBrowserRouter(
@@ -24,16 +31,25 @@ const router = createBrowserRouter(
         </div>
       }
     >
-      <Route element={<PublicPageLayout />}>
-        <Route path="login" element={<LoginPage />} />
-        <Route path="signup" element={<SignupPage />} />
-        <Route path="signup/loading" element={<SignupLoadingPage />} />
-        <Route path="signup/result" element={<SignupResultPage />} />
+      <Route element={<PublicRouteGuard />}>
+        <Route element={<PublicPageLayout />}>
+          <Route path="login" element={<LoginPage />} />
+          <Route path="signup" element={<SignupPage />} />
+          <Route path="signup/loading" element={<SignupLoadingPage />} />
+          <Route path="signup/result" element={<SignupResultPage />} />
+        </Route>
+
+        <Route path="email" element={<EmailPage />} />
       </Route>
 
       <Route element={<RootLayout />}>
         <Route path="/guest" element={<GuestPage />} />
         <Route path="/guest/create" element={<GuestCreatePage />} />
+        <Route path="/" element={<HomePage />} />
+        <Route path="/stores" element={<MainStoresPage />} />
+        <Route path="/devices" element={<MainDevicePage />} />
+        <Route path="/menus" element={<MainMenuPage />} />
+        <Route path="/settings" element={<MainSettingsPage />} />
       </Route>
       <Route path="/guest/application" element={<GuestApplicationPage />} />
     </Route>
