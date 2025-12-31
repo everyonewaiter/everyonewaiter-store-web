@@ -20,6 +20,7 @@ function LoginPage() {
 
   const handleSubmit = form.handleSubmit(() => {
     // TODO: 로그인 요청
+    // TODO: 로그인 요청 후 실패 시 이메일 인증이 되지 않았다면 /email?type=not-verified로 이동
   });
 
   return (
@@ -30,10 +31,7 @@ function LoginPage() {
         className="w-40 max-w-50 md:w-[37%]"
       />
       <Form {...form}>
-        <form
-          className="flex flex-col gap-3 md:w-[292px] lg:w-[432px] lg:gap-4"
-          onSubmit={handleSubmit}
-        >
+        <form className="flex flex-col gap-3 md:w-73 lg:w-108 lg:gap-4" onSubmit={handleSubmit}>
           <div className="mb-6 flex flex-col gap-3 lg:mb-8 lg:gap-4">
             <FormField
               control={form.control}
