@@ -1,8 +1,11 @@
 import z from "zod";
 
 const createStoreSchema = z.object({
-  name: z.string().min(1, "상호명을 입력해주세요.").max(20, "상호명은 20자 이내로 입력해주세요."),
-  ceoName: z.string().min(1, "대표자명을 입력해주세요."),
+  name: z.string().min(1, "상호명을 입력해주세요.").max(30, "상호명은 30자 이내로 입력해주세요."),
+  ceoName: z
+    .string()
+    .min(1, "대표자명을 입력해주세요.")
+    .max(20, "대표자명은 20자 이내로 입력해주세요."),
   address: z.string().min(1, "소재지를 선택해주세요."),
   detailAddress: z.string().optional(),
   landline: z
