@@ -1,8 +1,10 @@
 import { useState } from "react";
+import { overlay } from "overlay-kit";
 import { useNavigate } from "react-router-dom";
 import { Plus, Settings, Trash, UpsideDown } from "@/components/icons";
 import Button from "@/components/ui/Button/Button";
 import MenuCard from "@/pages/main/owner/menus/MenuCard";
+import MenuDetailModal from "@/pages/main/owner/menus/MenuDetailModal";
 import { CATEGORIES_MOCK, MENUS_MOCK } from "@/pages/main/owner/menus/mock";
 import type { Menu } from "@/types/domain/menu";
 
@@ -18,6 +20,18 @@ function MainMenuPage() {
     selectedCategory === "all"
       ? MENUS_MOCK
       : MENUS_MOCK.filter((menu) => menu.categoryId === selectedCategory);
+
+  /**
+   * TODO:
+   * @param menuId - 메뉴 ID
+   */
+  const handleOpenMenuDetailModal = () => {
+    overlay.open((overlayProps) => <MenuDetailModal {...overlayProps} entry="detail" />);
+  };
+
+  const handleOpenCreateMenuModal = () => {
+    overlay.open((overlayProps) => <MenuDetailModal {...overlayProps} entry="create" />);
+  };
 
   return hasCategory ? (
     <div className="overflow-y-auto">
@@ -67,7 +81,10 @@ function MainMenuPage() {
         </div>
       </div>
       <div className="grid grid-cols-4 gap-x-6.5 gap-y-10 py-4">
-        <button className="center flex aspect-329/440 flex-col gap-2 rounded-3xl border border-dashed border-gray-400 bg-gray-700">
+        <button
+          className="center flex aspect-329/440 flex-col gap-2 rounded-3xl border border-dashed border-gray-400 bg-gray-700"
+          onClick={handleOpenCreateMenuModal}
+        >
           <Plus className="size-10 text-gray-100" />
           <span className="text-gray-0 text-lg font-medium">메뉴 추가</span>
         </button>
@@ -79,6 +96,7 @@ function MainMenuPage() {
             onCheckedChange={() => {
               // TODO: 체크 상태 변경 로직 구현
             }}
+            onClick={() => handleOpenMenuDetailModal()}
           />
         ))}
       </div>

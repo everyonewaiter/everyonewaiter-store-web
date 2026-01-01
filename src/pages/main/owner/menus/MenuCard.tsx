@@ -7,15 +7,24 @@ interface MenuCardProps {
   menu: Menu;
   isChecked: boolean;
   onCheckedChange: () => void;
+  onClick: () => void;
 }
 
-function MenuCard({ menu, isChecked, onCheckedChange }: Readonly<MenuCardProps>) {
+function MenuCard({ menu, isChecked, onCheckedChange, onClick }: Readonly<MenuCardProps>) {
   return (
     <div
       className={cn(
         "relative aspect-329/440 overflow-hidden rounded-3xl",
         isChecked && "border-primary border-"
       )}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          onClick();
+        }
+      }}
+      role="button"
+      tabIndex={0}
+      onClick={onClick}
     >
       <img src={loginBg} alt={menu.name} className="h-full w-full object-cover" />
       <div className="absolute top-4 left-4 z-10">

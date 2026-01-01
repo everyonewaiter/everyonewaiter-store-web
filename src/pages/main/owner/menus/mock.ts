@@ -1,4 +1,4 @@
-import type { Category, Menu } from "@/types/domain/menu";
+import type { Category, Menu, MenuDetail } from "@/types/domain/menu";
 
 export const CATEGORIES_MOCK: Category[] = [
   {
@@ -55,7 +55,7 @@ export const MENUS_MOCK: Menu[] = [
   },
   {
     menuId: "4",
-    categoryId: "1",
+    categoryId: "2",
     name: "메뉴 4",
     description: "메뉴 4 설명",
     price: 10000,
@@ -66,7 +66,7 @@ export const MENUS_MOCK: Menu[] = [
   },
   {
     menuId: "5",
-    categoryId: "1",
+    categoryId: "3",
     name: "메뉴 5",
     description: "메뉴 5 설명",
     price: 10000,
@@ -85,5 +85,50 @@ export const MENUS_MOCK: Menu[] = [
     state: "DEFAULT",
     label: "DEFAULT",
     image: "https://via.placeholder.com/150",
+  },
+];
+
+export const MENU_DETAILS_MOCK: MenuDetail[] = [
+  {
+    menuId: "1",
+    categoryId: "1",
+    name: "메뉴 1",
+    description: "메뉴 1 설명",
+    price: 10000,
+    spicy: 1,
+    state: "DEFAULT",
+    label: "BEST",
+    image: "",
+    printEnabled: true,
+    menuOptionGroups: [
+      {
+        menuOptionGroupId: "1",
+        name: "옵션 그룹 1",
+        type: "MANDATORY",
+        printEnabled: true,
+        menuOptions: [
+          {
+            name: "옵션 1",
+            price: 1000,
+          },
+        ],
+      },
+      {
+        menuOptionGroupId: "2",
+        name: "옵션 그룹 2",
+        type: "OPTIONAL",
+        printEnabled: true,
+        menuOptions: [
+          {
+            name: "옵션 1",
+            price: 1000,
+          },
+          {
+            name: "옵션 2",
+            price: 2000,
+          },
+        ],
+      },
+    ],
   },
 ];
