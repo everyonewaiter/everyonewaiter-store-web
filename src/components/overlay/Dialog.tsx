@@ -9,10 +9,10 @@ function Dialog({ ...props }: Readonly<ComponentProps<typeof DialogPrimitive.Roo
 }
 
 Dialog.Trigger = forwardRef<
-  ComponentProps<typeof DialogPrimitive.Trigger>,
-  Readonly<ComponentProps<typeof DialogPrimitive.Trigger>>
->(({ ...props }) => {
-  return <DialogPrimitive.Trigger data-slot="dialog-trigger" {...props} />;
+  ComponentRef<typeof DialogPrimitive.Trigger>,
+  ComponentProps<typeof DialogPrimitive.Trigger>
+>((props, ref) => {
+  return <DialogPrimitive.Trigger ref={ref} data-slot="dialog-trigger" {...props} />;
 });
 Dialog.Trigger.displayName = DialogPrimitive.Trigger.displayName;
 
@@ -22,9 +22,16 @@ function DialogPortal({ ...props }: Readonly<ComponentProps<typeof DialogPrimiti
 
 Dialog.Close = forwardRef<
   ComponentRef<typeof DialogPrimitive.Close>,
-  Readonly<ComponentProps<typeof DialogPrimitive.Close>>
->(({ ...props }) => {
-  return <DialogPrimitive.Close data-slot="dialog-close" {...props} />;
+  ComponentProps<typeof DialogPrimitive.Close>
+>((props, ref) => {
+  return (
+    <DialogPrimitive.Close
+      ref={ref}
+      data-slot="dialog-close"
+      className={cn("h-fit w-fit", props.className)}
+      {...props}
+    />
+  );
 });
 Dialog.Close.displayName = DialogPrimitive.Close.displayName;
 

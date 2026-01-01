@@ -39,6 +39,7 @@ function Dropdown({
     <div className="w-full">
       <DropdownMenu.Root open={isOpen} onOpenChange={disabled ? undefined : setIsOpen} {...props}>
         <DropdownMenu.Trigger
+          disabled={disabled}
           className={cn(
             "flex h-12 flex-row items-center border border-gray-600 pr-3 pl-4 text-sm font-normal transition-colors hover:border-gray-500 focus:outline-none disabled:border-gray-600 disabled:bg-gray-700 disabled:text-gray-300",
             hasError && "border-status-error",
