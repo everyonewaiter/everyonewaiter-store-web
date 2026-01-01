@@ -10,9 +10,14 @@ function MainMenuPage() {
   const navigate = useNavigate();
   const [selectedCategory, setSelectedCategory] = useState<string | null>("all");
   const [checkedMenus] = useState<Menu[]>([]);
-  const hasCategory = CATEGORIES_MOCK.length > 0;
 
   // 카테고리 존재 여부 확인
+  const hasCategory = CATEGORIES_MOCK.length > 0;
+
+  const menus =
+    selectedCategory === "all"
+      ? MENUS_MOCK
+      : MENUS_MOCK.filter((menu) => menu.categoryId === selectedCategory);
 
   return hasCategory ? (
     <div className="overflow-y-auto">
@@ -66,12 +71,14 @@ function MainMenuPage() {
           <Plus className="size-10 text-gray-100" />
           <span className="text-gray-0 text-lg font-medium">메뉴 추가</span>
         </button>
-        {MENUS_MOCK.map((menu) => (
+        {menus.map((menu) => (
           <MenuCard
             key={menu.menuId}
             menu={menu}
             isChecked={checkedMenus.includes(menu)}
-            // onCheckedChange={setCheckedMenus}
+            onCheckedChange={() => {
+              // TODO: 체크 상태 변경 로직 구현
+            }}
           />
         ))}
       </div>

@@ -6,24 +6,20 @@ import type { Menu } from "@/types/domain/menu";
 interface MenuCardProps {
   menu: Menu;
   isChecked: boolean;
-  // onCheckedChange: (menu: Menu) => void;
+  onCheckedChange: () => void;
 }
 
-function MenuCard({ menu, isChecked }: Readonly<MenuCardProps>) {
-  const handleCheckedChange = () => {
-    // TODO: 체크 상태 변경 로직 구현
-  };
-
+function MenuCard({ menu, isChecked, onCheckedChange }: Readonly<MenuCardProps>) {
   return (
     <div
       className={cn(
         "relative aspect-329/440 overflow-hidden rounded-3xl",
-        isChecked && "border-primary border-[1.5]"
+        isChecked && "border-primary border-"
       )}
     >
       <img src={loginBg} alt={menu.name} className="h-full w-full object-cover" />
       <div className="absolute top-4 left-4 z-10">
-        <Checkbox size={32} checked={isChecked} onCheckedChange={handleCheckedChange} />
+        <Checkbox size={32} checked={isChecked} onCheckedChange={onCheckedChange} />
       </div>
       <div className="absolute bottom-2 w-full px-2">
         <div className="flex flex-col gap-2 rounded-[20px] bg-white px-5 py-4">
