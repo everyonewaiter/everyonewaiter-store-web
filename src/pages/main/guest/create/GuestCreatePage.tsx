@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import dashedBorder from "@/assets/images/dashed.svg";
 import logo from "@/assets/images/logo.svg";
 import Spinner from "@/components/feedback/Spinner";
-import { Form } from "@/components/form/Form";
+import { Form, FormErrorMessage } from "@/components/form/Form";
 import FormField from "@/components/form/FormField";
 import { FileAttach } from "@/components/icons";
 import Button from "@/components/ui/Button/Button";
@@ -40,8 +40,15 @@ function GuestCreate() {
     form.setValue("address", address, { shouldDirty: true });
   });
 
-  const handleSubmit = form.handleSubmit(() => {
+  const handleSubmit = form.handleSubmit((data) => {
+    if (!data.file || data.file === null) {
+      form.setError("file", { message: "사업자등록증을 제출해주세요." });
+      return;
+    }
+
     setIsSubmitting(true);
+
+    // TODO: 매장 등록 로직 구현
 
     navigate("/guest");
   });
@@ -193,6 +200,9 @@ function GuestCreate() {
                       </span>
                     </div>
                   </>
+                )}
+                {form.formState.errors.file && (
+                  <FormErrorMessage>{form.formState.errors.file.message}</FormErrorMessage>
                 )}
                 <input
                   type="file"
