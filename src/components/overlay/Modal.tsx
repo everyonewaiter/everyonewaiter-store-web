@@ -1,52 +1,57 @@
-import type { ReactNode } from "react";
-import { useRef } from "react";
+import type { ComponentProps, PropsWithChildren, ReactNode } from "react";
 import { Close } from "@/components/icons";
-import useEscapeKey from "@/hooks/useEscapeKey";
-import useOutsideClick from "@/hooks/useOutSideClick";
+import { Dialog } from "@/components/overlay/Dialog";
 
-interface ModalLayoutProps {
-  children: ReactNode;
-  onClose: () => void;
+interface ModalProps extends ComponentProps<typeof Dialog> {
+  wrapperProps?: ComponentProps<typeof Dialog.Wrapper>;
+  footerContent?: {
+    action?: ReactNode;
+    cancel?: ReactNode;
+  };
+  title?: ReactNode;
+  hasCloseIcon?: boolean;
 }
 
-/**
- * 모달 레이아웃 컴포넌트
- *
- * @description
- * 모달의 기본적인 형태 제공(외부 영역 스타일 처리 및 위치 조정, 닫기 버튼)
- * 버튼 및 키보드 ESC를 통해 모달 동작 제어
- *
- * @param children - 모달 내부에 렌더링할 콘텐츠
- * @param onClose - 모달을 닫는 핸들러 함수, useOverlay의 close
- *
- * @example
- * ```tsx
- * <ModalLayout onClose={close}>
- *   <h1>모달 제목</h1>
- *   <p>모달 내용</p>
- * </ModalLayout>
- * ```
- */
-export default function ModalLayout({ children, onClose }: Readonly<ModalLayoutProps>) {
-  const ref = useRef<HTMLDivElement>(null);
-  useOutsideClick({
-    ref,
-    handler: () => {
-      onClose();
-    },
-  });
-  useEscapeKey({
-    handler: onClose,
-  });
-
+function Modal({
+  children,
+  footerContent,
+  title,
+  hasCloseIcon = true,
+  ...props
+}: Readonly<PropsWithChildren<ModalProps>>) {
   return (
-    <div className="bg-opacity-100 fixed inset-0 z-9999 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-      <div ref={ref} className="relative rounded-md bg-white p-4 lg:p-5">
-        <button type="button" onClick={onClose} className="absolute top-2 right-2">
-          <Close width={24} height={24} color="#222" />
-        </button>
-        {children}
-      </div>
-    </div>
+    <Dialog {...props}>
+      <Dialog.Wrapper className="flex h-125 w-80 flex-col gap-5! rounded-[20px] px-4 py-5 md:h-125 md:w-91 md:gap-6 md:p-5 lg:h-185 lg:w-135 lg:gap-8 lg:p-8">
+        {(title || hasCloseIcon) && (
+          <Dialog.Header className="flex items-center justify-between">
+            {title && (
+              <Dialog.Title className="text-gray-0 text-lg font-semibold md:text-base lg:text-2xl">
+                {title}
+              </Dialog.Title>
+            )}
+            {hasCloseIcon && (
+              <Dialog.Close asChild className="cursor-pointer">
+                <Close className="size-6 lg:size-8" />
+              </Dialog.Close>
+            )}
+          </Dialog.Header>
+        )}
+        <div className="hide-scrollbar flex flex-1 flex-col overflow-y-auto">{children}</div>
+        {/* 불필요한 Spacing(gap) 방지를 위해 조건 분리함 */}
+        {footerContent?.action && footerContent?.cancel ? (
+          <Dialog.Footer className="flex items-center gap-2 lg:gap-3">
+            {footerContent.action}
+            {footerContent.cancel && <>{footerContent.cancel}</>}
+          </Dialog.Footer>
+        ) : (
+          <>
+            {footerContent?.action}
+            {footerContent?.cancel}
+          </>
+        )}
+      </Dialog.Wrapper>
+    </Dialog>
   );
 }
+
+export default Modal;

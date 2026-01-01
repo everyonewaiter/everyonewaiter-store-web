@@ -70,17 +70,17 @@ function FormItem({ className, ...props }: ComponentProps<"div">) {
 
   return (
     <FormItemContext.Provider value={useMemo(() => ({ id }), [id])}>
-      <div data-slot="form-item" className={cn("grid gap-2", className)} {...props} />
+      <div data-slot="form-item" className={cn("grid gap-1 lg:gap-2", className)} {...props} />
     </FormItemContext.Provider>
   );
 }
 
 function FormLabel({
   className,
-  labelDisabled,
+  disabled,
   ...props
 }: ComponentProps<typeof LabelPrimitive.Root> & {
-  labelDisabled?: boolean;
+  disabled?: boolean;
 }) {
   const { error, formItemId } = useFormField();
 
@@ -90,7 +90,7 @@ function FormLabel({
       data-error={!!error}
       className={cn("data-[error=true]:text-destructive leading-normal", className)}
       htmlFor={formItemId}
-      disabled={labelDisabled}
+      disabled={disabled}
       {...props}
     />
   );

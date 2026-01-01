@@ -3,7 +3,7 @@ import loginBg from "@/assets/images/login-bg.png";
 
 function PublicPageLayout() {
   return (
-    <div className="relative flex min-h-dvh w-dvw px-5 md:items-start md:pl-6 lg:items-center lg:pl-15">
+    <div className="relative flex min-h-dvh w-dvw bg-white px-5 md:items-start md:pl-6 lg:items-center lg:pl-15">
       <div className="center min-h-dvh w-full flex-col gap-10 overflow-y-auto md:flex-[0.4] md:py-8 lg:gap-12 lg:py-16">
         <Outlet />
       </div>

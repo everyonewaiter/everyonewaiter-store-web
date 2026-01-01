@@ -161,3 +161,11 @@
 .button-xl {
   @apply h-14 rounded-xl px-8 text-base font-semibold;
 }
+
+.hide-scrollbar {
+  &::-webkit-scrollbar {
+    display: none;
+  }
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}

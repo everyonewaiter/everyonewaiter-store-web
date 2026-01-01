@@ -24,17 +24,15 @@ function RootLayout() {
         </div>
       ) : (
         // 승인된 매장이 없을 경우
-        <div className="flex h-screen w-screen flex-col bg-gray-700">
+        <div className="flex h-full w-full flex-col bg-gray-700">
           <header className="hidden flex-col md:flex md:gap-4 md:px-6 md:pt-3 lg:gap-6 lg:px-15 lg:pt-10">
-            <img
-              src={logoTextHorizontal}
-              alt="logo text horizontal"
-              className="md:w-29.5 lg:w-55"
-            />
+            <img src={logoTextHorizontal} alt="logo text horizontal" className="md:w-36 lg:w-55" />
             <div className="h-px w-full bg-gray-500" />
           </header>
-          <Outlet />
-          <main className="flex flex-1 items-center justify-center">1</main>
+
+          <main className="center flex min-h-0 flex-1">
+            <Outlet />
+          </main>
         </div>
       )}
     </MobileSidebar>
