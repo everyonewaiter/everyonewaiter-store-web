@@ -3,7 +3,9 @@ import { overlay } from "overlay-kit";
 import { useNavigate } from "react-router-dom";
 import { Plus, Settings, Trash, UpsideDown } from "@/components/icons";
 import Button from "@/components/ui/Button/Button";
+import CategoryModal from "@/pages/main/owner/menus/CategoryModal";
 import MenuCard from "@/pages/main/owner/menus/MenuCard";
+import MenuDeleteAlert from "@/pages/main/owner/menus/MenuDeleteAlert";
 import MenuDetailModal from "@/pages/main/owner/menus/MenuDetailModal";
 import { CATEGORIES_MOCK, MENUS_MOCK } from "@/pages/main/owner/menus/mock";
 import type { Menu } from "@/types/domain/menu";
@@ -21,6 +23,8 @@ function MainMenuPage() {
       ? MENUS_MOCK
       : MENUS_MOCK.filter((menu) => menu.categoryId === selectedCategory);
 
+  const [isChangedMenuOrder, setIsChangedMenuOrder] = useState(false);
+
   /**
    * TODO:
    * @param menuId - 메뉴 ID
@@ -33,8 +37,21 @@ function MainMenuPage() {
     overlay.open((overlayProps) => <MenuDetailModal {...overlayProps} entry="create" />);
   };
 
+  const handleOpenCategoryModal = () => {
+    overlay.open((overlayProps) => <CategoryModal {...overlayProps} />);
+  };
+
+  const handleOpenMenuDeleteAlert = () => {
+    overlay.open((overlayProps) => <MenuDeleteAlert {...overlayProps} />);
+  };
+
+  const handleSaveChanges = () => {
+    // TODO: 메뉴 순서 변경 로직 구현
+    setIsChangedMenuOrder(false);
+  };
+
   return hasCategory ? (
-    <div className="overflow-y-auto">
+    <>
       <div className="flex items-center justify-between pt-6 pb-2">
         <div className="flex items-center gap-3">
           <Button
@@ -43,6 +60,7 @@ function MainMenuPage() {
             responsiveButtons={{
               lg: { buttonSize: "custom", className: "size-8 bg-gray-700 rounded-xl" },
             }}
+            onClick={handleOpenCategoryModal}
           >
             <Settings className="size-4.5 text-gray-300" />
           </Button>
@@ -69,16 +87,33 @@ function MainMenuPage() {
             );
           })}
         </div>
-        <div className="flex items-center gap-6">
-          <button className="flex items-center gap-2 text-lg font-medium text-gray-300">
-            <UpsideDown className="size-6" />
-            순서변경
-          </button>
-          <button className="text-status-error flex items-center gap-2 text-lg font-medium">
-            <Trash className="size-6" />
-            삭제
-          </button>
-        </div>
+        {isChangedMenuOrder ? (
+          <div className="flex items-center gap-2">
+            <div className="text-primary center h-9 rounded-lg bg-[#F220200A] px-4 text-sm font-normal">
+              메뉴의 순서 변경은 메뉴를 꾹 누르신 후, 원하시는 자리로 메뉴를 이동해주세요
+            </div>
+            <Button variant="outline" className="button-sm" onClick={handleSaveChanges}>
+              저장
+            </Button>
+          </div>
+        ) : (
+          <div className="flex items-center gap-6">
+            <button
+              className="flex items-center gap-2 text-lg font-medium text-gray-300"
+              onClick={() => setIsChangedMenuOrder(true)}
+            >
+              <UpsideDown className="size-6" />
+              순서변경
+            </button>
+            <button
+              className="text-status-error flex items-center gap-2 text-lg font-medium"
+              onClick={handleOpenMenuDeleteAlert}
+            >
+              <Trash className="size-6" />
+              삭제
+            </button>
+          </div>
+        )}
       </div>
       <div className="grid grid-cols-4 gap-x-6.5 gap-y-10 py-4">
         <button
@@ -100,7 +135,7 @@ function MainMenuPage() {
           />
         ))}
       </div>
-    </div>
+    </>
   ) : (
     <div className="flex h-full items-center justify-center">
       <div className="flex flex-col gap-10">
