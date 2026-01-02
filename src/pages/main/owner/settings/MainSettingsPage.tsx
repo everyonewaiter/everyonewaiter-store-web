@@ -1,15 +1,24 @@
 import { useState } from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { overlay } from "overlay-kit";
 import { useForm, useWatch } from "react-hook-form";
 import { Form, FormErrorMessage, FormMessage } from "@/components/form/Form";
 import { Plus } from "@/components/icons";
 import Button from "@/components/ui/Button/Button";
 import Input from "@/components/ui/Input";
 import Switch from "@/components/ui/Switch";
+import cn from "@/lib/utils";
+import SettingsDeviceNumberAlert from "@/pages/main/owner/settings/SettingsDeviceNumberAlert";
 import SettingsSection from "@/pages/main/owner/settings/SettingsSection";
 import SettingsStaffCallChip from "@/pages/main/owner/settings/SettingsStaffCallChip";
+import { settingsSchema, type SettingsSchema } from "@/schema/stores/settings.schema";
+import type { PrinterLocation } from "@/types/domain/store";
 
 function MainSettingsPage() {
-  const form = useForm({
+  const form = useForm<SettingsSchema>({
+    resolver: zodResolver(settingsSchema),
+    mode: "onSubmit",
+    reValidateMode: "onChange",
     defaultValues: {
       ksnetDeviceNo: "",
       printerLocation: "POS",
@@ -26,7 +35,25 @@ function MainSettingsPage() {
     // TODO: 직원 호출 옵션 추가 로직
   };
 
+  const printerLocation = useWatch({ control: form.control, name: "printerLocation" });
   const deviceNo = useWatch({ control: form.control, name: "ksnetDeviceNo" });
+  const showMenuPopup = useWatch({ control: form.control, name: "showMenuPopup" });
+  const showOrderTotalPrice = useWatch({ control: form.control, name: "showOrderTotalPrice" });
+  const showOrderMenuImage = useWatch({ control: form.control, name: "showOrderMenuImage" });
+  const staffCallOptions = useWatch({ control: form.control, name: "staffCallOptions" });
+
+  const handleChangePrinterLocation = (location: PrinterLocation) => {
+    // TODO: 프린터 위치 변경 로직
+    form.setValue("printerLocation", location);
+  };
+
+  const handleUpdateDeviceNumber = () => {
+    if (deviceNo.startsWith("DPTOTEST")) {
+      overlay.open((overlayProps) => (
+        <SettingsDeviceNumberAlert {...overlayProps} deviceNumber={deviceNo} />
+      ));
+    }
+  };
 
   return (
     <Form {...form}>
@@ -39,35 +66,28 @@ function MainSettingsPage() {
                 주방 프린터기와 연결된 기기를 선택해주세요
               </p>
               <div className="flex items-center gap-3">
-                <Button
-                  color="primary"
-                  variant="outline"
-                  responsive
-                  responsiveButtons={{
-                    lg: { buttonSize: "custom", className: "h-10 rounded-lg px-5 w-full" },
-                    md: { buttonSize: "sm", className: "rounded-xl! w-full" },
-                    sm: { buttonSize: "sm", className: "rounded-xl! w-full" },
-                  }}
-                  onClick={() => form.setValue("printerLocation", "POS")}
-                >
-                  POS
-                </Button>
-                <Button
-                  color="grey"
-                  variant="outline"
-                  responsive
-                  responsiveButtons={{
-                    lg: {
-                      buttonSize: "custom",
-                      className: "h-10 rounded-lg px-5 w-full !border-gray-500 !text-gray-0",
-                    },
-                    md: { buttonSize: "sm", className: "rounded-xl! w-full" },
-                    sm: { buttonSize: "sm", className: "rounded-xl! w-full" },
-                  }}
-                  onClick={() => form.setValue("printerLocation", "홀")}
-                >
-                  홀
-                </Button>
+                {["POS", "HALL"].map((location) => (
+                  <Button
+                    key={location}
+                    color={printerLocation === location ? "primary" : "grey"}
+                    variant="outline"
+                    responsive
+                    responsiveButtons={{
+                      lg: {
+                        buttonSize: "custom",
+                        className: cn(
+                          "h-10 rounded-lg px-5 w-full",
+                          printerLocation !== location && "border-gray-500 !text-gray-0"
+                        ),
+                      },
+                      md: { buttonSize: "sm", className: "rounded-xl! w-full" },
+                      sm: { buttonSize: "sm", className: "rounded-xl! w-full" },
+                    }}
+                    onClick={() => handleChangePrinterLocation(location as PrinterLocation)}
+                  >
+                    {location === "HALL" ? "홀" : "POS"}
+                  </Button>
+                ))}
                 <FormErrorMessage className="mb-[1.5px]" />
                 {!form.formState.errors.ksnetDeviceNo && deviceNo?.startsWith("DPTOTEST") && (
                   <FormMessage>테스트용 기기입니다.</FormMessage>
@@ -96,7 +116,7 @@ function MainSettingsPage() {
                       className: "h-8! w-fit! px-4! rounded-lg! text-s!",
                     },
                   }}
-                  onClick={handleAddStaffCallOption}
+                  onClick={handleUpdateDeviceNumber}
                 >
                   등록
                 </Button>
@@ -109,7 +129,7 @@ function MainSettingsPage() {
                 </label>
                 <Switch
                   id="customer-table-menu-popup"
-                  checked={form.watch("showMenuPopup")}
+                  checked={showMenuPopup}
                   onCheckedChange={(checked) => form.setValue("showMenuPopup", checked)}
                 />
               </div>
@@ -119,7 +139,7 @@ function MainSettingsPage() {
                 </label>
                 <Switch
                   id="customer-table-order-total-price"
-                  checked={form.watch("showOrderTotalPrice")}
+                  checked={showOrderTotalPrice}
                   onCheckedChange={(checked) => form.setValue("showOrderTotalPrice", checked)}
                 />
               </div>
@@ -132,7 +152,7 @@ function MainSettingsPage() {
                 </label>
                 <Switch
                   id="hall-order-menu-image"
-                  checked={form.watch("showOrderMenuImage")}
+                  checked={showOrderMenuImage}
                   onCheckedChange={(checked) => form.setValue("showOrderMenuImage", checked)}
                 />
               </div>
@@ -173,7 +193,7 @@ function MainSettingsPage() {
                 </div>
               </div>
               <div className="flex flex-wrap gap-x-3 gap-y-3 lg:gap-x-2 lg:gap-y-2">
-                {form.watch("staffCallOptions").map((option) => (
+                {staffCallOptions.map((option) => (
                   <SettingsStaffCallChip key={option}>{option}</SettingsStaffCallChip>
                 ))}
               </div>
