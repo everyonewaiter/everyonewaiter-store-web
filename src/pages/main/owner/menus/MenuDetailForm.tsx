@@ -64,6 +64,7 @@ function MenuDetailForm({ canEdit, isDetail }: Readonly<MenuDetailFormProps>) {
         inputProps={{ placeholder: "메뉴 설명을 입력해주세요." }}
         disabled={!canEdit}
       />
+      {/* TODO: onChange 가격 포맷팅 */}
       <FormField
         control={form.control}
         name="price"
