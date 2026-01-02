@@ -1,4 +1,4 @@
-import { type PropsWithChildren, type ReactNode, useRef } from "react";
+import { type PropsWithChildren, useRef } from "react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -14,10 +14,9 @@ import cn from "@/lib/utils";
 interface IProps {
   onClose: () => void;
   layoutClassName?: string;
-  footer?: ReactNode;
 }
 
-function Alert({ children, onClose, layoutClassName, footer }: PropsWithChildren<IProps>) {
+function Alert({ children, onClose, layoutClassName }: PropsWithChildren<IProps>) {
   const ref = useRef<HTMLDivElement>(null);
 
   useOutsideClick({
@@ -37,16 +36,13 @@ function Alert({ children, onClose, layoutClassName, footer }: PropsWithChildren
         className={cn(layoutClassName, "flex flex-col justify-between")}
         onOpenAutoFocus={(e) => e.preventDefault()}
       >
-        <AlertDialogHeader>
-          <AlertDialogTitle>
-            <div>{children}</div>
-          </AlertDialogTitle>
-        </AlertDialogHeader>
-        {footer}
+        {children}
       </AlertDialogContent>
     </AlertDialog>
   );
 }
+Alert.Header = AlertDialogHeader;
+Alert.Title = AlertDialogTitle;
 Alert.Footer = AlertDialogFooter;
 Alert.Action = AlertDialogAction;
 Alert.Cancel = AlertDialogCancel;

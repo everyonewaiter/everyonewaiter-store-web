@@ -65,7 +65,7 @@ const AlertDialogTitle = forwardRef<
   <AlertDialogPrimitive.Title
     ref={ref}
     className={cn(
-      "w-full text-center text-base font-semibold wrap-break-word whitespace-pre-wrap lg:text-lg",
+      "text-gray-0 w-full text-center text-base font-semibold wrap-break-word whitespace-pre-wrap lg:text-lg",
       className
     )}
     {...props}
