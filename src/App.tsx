@@ -1,49 +1,63 @@
-import { lazy } from "react";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import {
+  createBrowserRouter,
+  createRoutesFromElements,
+  Outlet,
+  Route,
+  RouterProvider,
+} from "react-router-dom";
+import EmailPage from "@/pages/auth/email/EmailPage";
+import LoginPage from "@/pages/auth/login/LoginPage";
+import PublicPageLayout from "@/pages/auth/PublicPageLayout";
 import PublicRouteGuard from "@/pages/auth/PublicRouteGuard";
+import SignupLoadingPage from "@/pages/auth/signup/result/SignupLoadingPage";
+import SignupResultPage from "@/pages/auth/signup/result/SignupResultPage";
+import SignupPage from "@/pages/auth/signup/SignupPage";
 import HomePage from "@/pages/HomePage";
+import GuestApplicationPage from "@/pages/main/guest/application/GuestApplicationPage";
+import GuestCreatePage from "@/pages/main/guest/create/GuestCreatePage";
+import GuestPage from "@/pages/main/guest/GuestPage";
+import MainDevicePage from "@/pages/main/owner/devices/MainDevicePage";
+import MainInfoPage from "@/pages/main/owner/info/MainInfoPage";
+import MainMenuPage from "@/pages/main/owner/menus/MainMenuPage";
+import MainSettingsPage from "@/pages/main/owner/settings/MainSettingsPage";
+import RootLayout from "@/pages/main/RootLayout";
 
-const LoginPage = lazy(() => import("@/pages/auth/login/LoginPage"));
-const SignupPage = lazy(() => import("@/pages/auth/signup/SignupPage"));
-const SignupLoadingPage = lazy(() => import("@/pages/auth/signup/result/SignupLoadingPage"));
-const SignupResultPage = lazy(() => import("@/pages/auth/signup/result/SignupResultPage"));
-const EmailPage = lazy(() => import("@/pages/auth/email/EmailPage"));
+const router = createBrowserRouter(
+  createRoutesFromElements(
+    <Route
+      element={
+        <div className="h-dvh w-dvw bg-white">
+          <Outlet />
+        </div>
+      }
+    >
+      <Route element={<PublicRouteGuard />}>
+        <Route element={<PublicPageLayout />}>
+          <Route path="login" element={<LoginPage />} />
+          <Route path="signup" element={<SignupPage />} />
+          <Route path="signup/loading" element={<SignupLoadingPage />} />
+          <Route path="signup/result" element={<SignupResultPage />} />
+        </Route>
 
-const MainDevicePage = lazy(() => import("@/pages/main/owner/devices/MainDevicePage"));
-const MainMenuPage = lazy(() => import("@/pages/main/owner/menus/MainMenuPage"));
-const MainSettingsPage = lazy(() => import("@/pages/main/owner/settings/MainSettingsPage"));
-const MainInfoPage = lazy(() => import("@/pages/main/owner/info/MainInfoPage"));
+        <Route path="email" element={<EmailPage />} />
+      </Route>
 
-const PublicPageLayout = lazy(() => import("@/pages/auth/PublicPageLayout"));
-const RootLayout = lazy(() => import("@/pages/main/RootLayout"));
+      <Route element={<RootLayout />}>
+        <Route path="/guest" element={<GuestPage />} />
+        <Route path="/guest/create" element={<GuestCreatePage />} />
+        <Route path="/" element={<HomePage />} />
+        <Route path="/stores" element={<MainInfoPage />} />
+        <Route path="/devices" element={<MainDevicePage />} />
+        <Route path="/menus" element={<MainMenuPage />} />
+        <Route path="/settings" element={<MainSettingsPage />} />
+      </Route>
+      <Route path="/guest/application" element={<GuestApplicationPage />} />
+    </Route>
+  )
+);
 
 function App() {
-  return (
-    <BrowserRouter>
-      <div className="h-dvh w-dvw bg-white">
-        <Routes>
-          <Route element={<PublicRouteGuard />}>
-            <Route element={<PublicPageLayout />}>
-              <Route path="login" element={<LoginPage />} />
-              <Route path="signup" element={<SignupPage />} />
-              <Route path="signup/loading" element={<SignupLoadingPage />} />
-              <Route path="signup/result" element={<SignupResultPage />} />
-            </Route>
-
-            <Route path="email" element={<EmailPage />} />
-          </Route>
-
-          <Route element={<RootLayout />}>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/info" element={<MainInfoPage />} />
-            <Route path="/devices" element={<MainDevicePage />} />
-            <Route path="/menus" element={<MainMenuPage />} />
-            <Route path="/settings" element={<MainSettingsPage />} />
-          </Route>
-        </Routes>
-      </div>
-    </BrowserRouter>
-  );
+  return <RouterProvider router={router} />;
 }
 
 export default App;
