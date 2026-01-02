@@ -1,6 +1,15 @@
 import { useState } from "react";
 import { useFormContext } from "react-hook-form";
-import { Dot, DragDrop, Info, Minus, Plus, Trash, UpsideDown } from "@/components/icons";
+import {
+  ChevronDown,
+  Dot,
+  DragDrop,
+  Info,
+  Minus,
+  Plus,
+  Trash,
+  UpsideDown,
+} from "@/components/icons";
 import Button from "@/components/ui/Button/Button";
 import Input from "@/components/ui/Input";
 import cn from "@/lib/utils";
@@ -87,8 +96,14 @@ function MenuDetailOptions({
             완료
           </Button>
         ) : (
-          <button type="button" onClick={() => setShowPopup((prev) => !prev)}>
-            <Dot className="text-gray-0 size-6" />
+          <button type="button" onClick={() => canEdit && setShowPopup((prev) => !prev)}>
+            {canEdit ? (
+              <Dot className="text-gray-0 size-6" />
+            ) : (
+              <ChevronDown
+                className={cn("text-gray-0 size-6", selectedGroup === type ? "rotate-180" : "")}
+              />
+            )}
           </button>
         )}
         {showPopup && (
@@ -165,6 +180,7 @@ function MenuDetailOptions({
                                 )}
                               />
                               <div className="relative flex-1">
+                                {/*  TODO: onChange 가격 포맷팅 */}
                                 <Input
                                   className="h-12 border-gray-400 pr-9"
                                   placeholder="ex. 33,000"
@@ -176,28 +192,32 @@ function MenuDetailOptions({
                                   원
                                 </span>
                               </div>
-                              <button onClick={() => handleRemoveOption()}>
-                                <Minus className="size-5 text-gray-300" />
-                              </button>
+                              {canEdit && (
+                                <button onClick={() => handleRemoveOption()}>
+                                  <Minus className="size-5 text-gray-300" />
+                                </button>
+                              )}
                             </div>
                           ))}
                         </div>
                       </div>
-                      <Button
-                        color="grey"
-                        responsive
-                        responsiveButtons={{
-                          lg: {
-                            buttonSize: "custom",
-                            className:
-                              "h-8 rounded-lg border border-gray-600 bg-[F7F7F7]! gap-2 text-sm font-medium text-gray-100",
-                          },
-                        }}
-                        onClick={() => handleAddOption()}
-                      >
-                        하위 옵션 추가
-                        <Plus className="size-4 text-gray-100" />
-                      </Button>
+                      {canEdit && (
+                        <Button
+                          color="grey"
+                          responsive
+                          responsiveButtons={{
+                            lg: {
+                              buttonSize: "custom",
+                              className:
+                                "h-8 rounded-lg border border-gray-600 bg-[F7F7F7]! gap-2 text-sm font-medium text-gray-100",
+                            },
+                          }}
+                          onClick={() => handleAddOption()}
+                        >
+                          하위 옵션 추가
+                          <Plus className="size-4 text-gray-100" />
+                        </Button>
+                      )}
                     </div>
                     {selectedPopupMode && (
                       <button className="center h-8 w-8 rounded-lg border border-gray-600">
