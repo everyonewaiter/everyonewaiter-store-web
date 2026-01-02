@@ -12,7 +12,7 @@ const Input = forwardRef<HTMLInputElement, CombineInputProps>(
   ({ className, prefix, suffix, ...props }, ref) => {
     return (
       <div className="flex w-full flex-1 flex-col gap-1">
-        <div className="relative h-9 w-full lg:h-12">
+        <div className="relative w-full">
           {prefix && (
             <div className="absolute top-1/2 left-4 h-5 w-5 -translate-y-1/2">{prefix}</div>
           )}
