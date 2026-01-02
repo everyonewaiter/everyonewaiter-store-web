@@ -1,5 +1,4 @@
-import { type PropsWithChildren, useRef, useState } from "react";
-import Spinner from "@/components/feedback/Spinner";
+import { type PropsWithChildren, type ReactNode, useRef } from "react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -9,49 +8,17 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/overlay/Alert/Alert.components";
-import type { ButtonColor } from "@/components/ui/Button/Button.types";
 import useEscapeKey from "@/hooks/useEscapeKey";
 import useOutsideClick from "@/hooks/useOutSideClick";
 import cn from "@/lib/utils";
-
-type Color = ButtonColor | undefined;
-
 interface IProps {
   onClose: () => void;
-  hasNoCancel?: boolean;
-  hasNoAction?: boolean;
   layoutClassName?: string;
-  noResponsive?: boolean;
-  disabled?: boolean;
-  isSubmitted?: boolean;
-  primaryButton: {
-    color?: Color;
-    text: string;
-    onClick: () => void;
-    customButtonStyle?: string;
-  };
-  secondaryButton?: {
-    color?: Color;
-    text?: string;
-    onClick?: () => void;
-    customButtonStyle?: string;
-  };
+  footer?: ReactNode;
 }
 
-function Alert({
-  children,
-  onClose,
-  hasNoCancel,
-  hasNoAction,
-  layoutClassName,
-  noResponsive,
-  disabled,
-  isSubmitted,
-  primaryButton,
-  secondaryButton,
-}: PropsWithChildren<IProps>) {
+function Alert({ children, onClose, layoutClassName, footer }: PropsWithChildren<IProps>) {
   const ref = useRef<HTMLDivElement>(null);
-  const [open, setOpen] = useState(true);
 
   useOutsideClick({
     ref,
@@ -63,13 +30,8 @@ function Alert({
     handler: onClose,
   });
 
-  const handleClose = () => {
-    setOpen(false);
-    onClose();
-  };
-
   return (
-    <AlertDialog open={open}>
+    <AlertDialog open>
       <AlertDialogContent
         ref={ref}
         className={cn(layoutClassName, "flex flex-col justify-between")}
@@ -80,36 +42,13 @@ function Alert({
             <div>{children}</div>
           </AlertDialogTitle>
         </AlertDialogHeader>
-        <AlertDialogFooter>
-          {!hasNoCancel && (
-            <AlertDialogCancel
-              color={secondaryButton?.color || "grey"}
-              onClick={secondaryButton?.onClick || handleClose}
-              className="flex-[0.6]"
-              hasNoAction={hasNoAction}
-              noResponsive={noResponsive}
-              customButtonStyle={secondaryButton?.customButtonStyle || ""}
-              disabled={isSubmitted}
-            >
-              <span>{secondaryButton?.text || "닫기"}</span>
-            </AlertDialogCancel>
-          )}
-          {!hasNoAction && (
-            <AlertDialogAction
-              noResponsive={noResponsive}
-              className="flex-1"
-              disabled={disabled || isSubmitted}
-              color={primaryButton.color || "primary"}
-              {...primaryButton}
-              customButtonStyle={primaryButton.customButtonStyle || ""}
-            >
-              {isSubmitted ? <Spinner /> : <span>{primaryButton.text}</span>}
-            </AlertDialogAction>
-          )}
-        </AlertDialogFooter>
+        {footer}
       </AlertDialogContent>
     </AlertDialog>
   );
 }
+Alert.Footer = AlertDialogFooter;
+Alert.Action = AlertDialogAction;
+Alert.Cancel = AlertDialogCancel;
 
 export default Alert;

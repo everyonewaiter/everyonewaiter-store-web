@@ -17,7 +17,10 @@ function TableHeader({ className, ...props }: Readonly<ComponentProps<"thead">>)
   return (
     <thead
       data-slot="table-header"
-      className={cn("h-16 rounded-2xl bg-gray-700", className)}
+      className={cn(
+        "flex items-center justify-center rounded-2xl bg-gray-700 md:h-12 lg:h-16",
+        className
+      )}
       {...props}
     />
   );
@@ -36,7 +39,7 @@ function TableRow({ className, ...props }: Readonly<ComponentProps<"tr"> & { isH
     <tr
       data-slot="table-row"
       className={cn(
-        "h-16 w-full cursor-pointer border-b border-gray-600 last:border-none",
+        "flex w-full cursor-pointer border-b border-gray-600 last:border-none md:h-12 lg:h-16",
         className
       )}
       {...props}
@@ -51,7 +54,7 @@ function TableHead({ className, ...props }: Readonly<ComponentProps<"th">>) {
     <th
       data-slot="table-head"
       className={cn(
-        "text-gray-0 flex h-full items-center justify-center text-base font-bold",
+        "text-gray-0 flex h-full items-center justify-center font-bold md:text-sm lg:text-base",
         className
       )}
       {...props}
@@ -66,7 +69,7 @@ function TableCell({ className, ...props }: Readonly<ComponentProps<"td">>) {
     <td
       data-slot="table-cell"
       className={cn(
-        "text-gray-0 flex h-full items-center justify-center text-base font-medium",
+        "text-gray-0 md:text-s flex h-full items-center justify-center font-normal lg:text-base lg:font-medium",
         className
       )}
       align="center"

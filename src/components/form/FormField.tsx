@@ -1,4 +1,4 @@
-import type { ComponentProps, ReactNode } from "react";
+import type { ChangeEvent, ComponentProps, ReactNode } from "react";
 import {
   FormField as FormFieldComponent,
   FormItem,
@@ -39,22 +39,37 @@ function FormField<
   return (
     <FormFieldComponent
       {...props}
-      render={({ field, fieldState }) => (
-        <FormItem className={formItemClassName}>
-          {label && <FormLabel {...labelProps}>{label}</FormLabel>}
-          <FormControl>
-            <div className="relative flex items-center gap-2">
-              <FormInput {...field} {...inputProps} />
-              {postfix}
-            </div>
-          </FormControl>
-          {fieldState.error ? (
-            <FormErrorMessage />
-          ) : (
-            description && <FormDescription>{description}</FormDescription>
-          )}
-        </FormItem>
-      )}
+      render={({ field, fieldState }) => {
+        const { onChange: inputOnChange, ...restInputProps } = inputProps ?? {};
+        const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+          if (inputOnChange) {
+            inputOnChange(e);
+            return;
+          }
+          field.onChange(e);
+        };
+
+        return (
+          <FormItem className={formItemClassName}>
+            {label && (
+              <FormLabel {...labelProps} disabled={props.disabled}>
+                {label}
+              </FormLabel>
+            )}
+            <FormControl>
+              <div className="relative flex items-center gap-2">
+                <FormInput {...field} {...restInputProps} onChange={handleChange} />
+                {postfix}
+              </div>
+            </FormControl>
+            {fieldState.error ? (
+              <FormErrorMessage />
+            ) : (
+              description && <FormDescription>{description}</FormDescription>
+            )}
+          </FormItem>
+        );
+      }}
     />
   );
 }
