@@ -2,8 +2,8 @@ import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { overlay } from "overlay-kit";
 import { useForm, useWatch } from "react-hook-form";
-import { Form, FormErrorMessage, FormMessage } from "@/components/form/Form";
-import { Plus } from "@/components/icons";
+import { Form, FormErrorMessage } from "@/components/form/Form";
+import { Info, Plus } from "@/components/icons";
 import Button from "@/components/ui/Button/Button";
 import Input from "@/components/ui/Input";
 import Switch from "@/components/ui/Switch";
@@ -88,10 +88,6 @@ function MainSettingsPage() {
                     {location === "HALL" ? "홀" : "POS"}
                   </Button>
                 ))}
-                <FormErrorMessage className="mb-[1.5px]" />
-                {!form.formState.errors.ksnetDeviceNo && deviceNo?.startsWith("DPTOTEST") && (
-                  <FormMessage>테스트용 기기입니다.</FormMessage>
-                )}
               </div>
             </SettingsSection>
             <SettingsSection title="기기">
@@ -121,6 +117,12 @@ function MainSettingsPage() {
                   등록
                 </Button>
               </div>
+              <FormErrorMessage className="mb-[1.5px]" />
+              {deviceNo?.startsWith("DPTOTEST") && (
+                <p className="-mt-1 flex gap-1 text-xs text-gray-400 lg:text-xs">
+                  <Info className="mt-px size-4" /> 테스트용 기기입니다.
+                </p>
+              )}
             </SettingsSection>
             <SettingsSection title="주문">
               <div className="flex items-center justify-between">
