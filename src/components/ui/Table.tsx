@@ -29,7 +29,9 @@ Table.Header = TableHeader;
 TableHeader.displayName = "Table.Header";
 
 function TableBody({ className, ...props }: Readonly<ComponentProps<"tbody">>) {
-  return <tbody data-slot="table-body" className={cn("w-full", className)} {...props} />;
+  return (
+    <tbody data-slot="table-body" className={cn("flex w-full flex-col", className)} {...props} />
+  );
 }
 Table.Body = TableBody;
 TableBody.displayName = "Table.Body";
