@@ -4,6 +4,7 @@ import { Form } from "@/components/form/Form";
 import FormField from "@/components/form/FormField";
 import { EditContained, Plus } from "@/components/icons";
 import Button from "@/components/ui/Button/Button";
+import { formatBusinessNumber } from "@/lib/format";
 import cn from "@/lib/utils";
 import InfoOriginBox from "@/pages/main/owner/info/InfoOriginBox";
 import { STORE_DETAIL_MOCK } from "@/pages/main/owner/info/mock";
@@ -17,8 +18,7 @@ function MainInfoPage() {
     reValidateMode: "onChange",
     defaultValues: {
       name: data.name,
-      // TODO: 사업자번호 포매팅 추가
-      license: data.license,
+      license: `${data.license.slice(0, 3)}-${data.license.slice(3, 5)}-${data.license.slice(5)}`,
       address: data.address,
       origins: data.setting.countryOfOrigins.map((origin) => ({
         id: crypto.randomUUID(),
@@ -60,9 +60,13 @@ function MainInfoPage() {
         }
       }
 
-      const filteredOrigins = origins.filter(
-        (origin) => origin.item.trim().length > 0 && origin.origin.trim().length > 0
-      );
+      const filteredOrigins = origins
+        .filter((origin) => origin.item.trim().length > 0 && origin.origin.trim().length > 0)
+        .map((origin) => ({
+          ...origin,
+          item: origin.item.trim(),
+          origin: origin.origin.trim(),
+        }));
 
       // TODO: 저장 로직
       form.clearErrors("origins");
@@ -88,19 +92,14 @@ function MainInfoPage() {
         <Form {...form}>
           <form className="mt-2 flex flex-col gap-3 md:mt-0 lg:gap-4">
             <FormField control={form.control} name="name" label="상호명" disabled />
-            <FormField control={form.control} name="license" label="사업자번호" disabled />
             <FormField
               control={form.control}
-              name="address"
-              label="주소"
+              name="license"
+              label="사업자번호"
               disabled
-              inputProps={{
-                onChange: (e) => {
-                  // TODO: 사업자번호 포매팅
-                  form.setValue("address", e.target.value);
-                },
-              }}
+              inputProps={{ onChange: (e) => form.setValue("license", formatBusinessNumber(e)) }}
             />
+            <FormField control={form.control} name="address" label="주소" disabled />
             <InfoOriginBox isEditing={isEditing} onDelete={handleDelete} />
           </form>
         </Form>
