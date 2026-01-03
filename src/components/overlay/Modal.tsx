@@ -40,13 +40,13 @@ function Modal({
         {/* 불필요한 Spacing(gap) 방지를 위해 조건 분리함 */}
         {footerContent?.action && footerContent?.cancel ? (
           <Dialog.Footer className="flex items-center gap-2 lg:gap-3">
-            {footerContent.action}
             {footerContent.cancel && <>{footerContent.cancel}</>}
+            {footerContent.action}
           </Dialog.Footer>
         ) : (
           <>
-            {footerContent?.action}
             {footerContent?.cancel}
+            {footerContent?.action}
           </>
         )}
       </Dialog.Wrapper>
