@@ -26,21 +26,29 @@ function InfoOriginBox({ isEditing, onDelete }: Readonly<InfoOriginBoxProps>) {
           )}
         >
           <Table.Header className="h-10 rounded-none lg:h-13">
-            <Table.Head
-              className={cn("text-s font-normal lg:text-base", isEditing ? "flex-[0.4]" : "flex-1")}
-            >
-              품목
-            </Table.Head>
-            <Table.Head
-              className={cn("text-s font-normal lg:text-base", isEditing ? "flex-[0.4]" : "flex-1")}
-            >
-              원산지
-            </Table.Head>
-            {isEditing && (
-              <Table.Head className="text-primary text-s flex-[0.2] font-normal lg:text-base">
-                삭제
+            <Table.Row>
+              <Table.Head
+                className={cn(
+                  "text-s font-normal lg:text-base",
+                  isEditing ? "flex-[0.4]" : "flex-1"
+                )}
+              >
+                품목
               </Table.Head>
-            )}
+              <Table.Head
+                className={cn(
+                  "text-s font-normal lg:text-base",
+                  isEditing ? "flex-[0.4]" : "flex-1"
+                )}
+              >
+                원산지
+              </Table.Head>
+              {isEditing && (
+                <Table.Head className="text-primary text-s flex-[0.2] font-normal lg:text-base">
+                  삭제
+                </Table.Head>
+              )}
+            </Table.Row>
           </Table.Header>
           <Table.Body>
             {origins.map((origin, index) => (
