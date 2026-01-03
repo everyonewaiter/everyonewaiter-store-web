@@ -164,7 +164,7 @@ function MainDevicePage() {
         </Table>
 
         {data.map((device, index) => (
-          <div className="mb-4 flex flex-col gap-2 last:mb-0" key={device.deviceId}>
+          <div className="mb-4 flex flex-col gap-2 last:mb-0 md:hidden" key={device.deviceId}>
             <div className="text-gray-0 flex items-center gap-2.5 text-lg font-semibold">
               <Checkbox
                 checked={checkedDevices.includes(device)}
