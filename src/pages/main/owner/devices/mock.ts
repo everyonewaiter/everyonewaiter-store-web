@@ -1,0 +1,49 @@
+import type { Device, DeviceDetail } from "@/types/domain/device";
+
+export const DEVICE_MOCK: Device[] = [
+  {
+    deviceId: "1",
+    storeId: "1",
+    name: "1번 테이블",
+    purpose: "POS",
+    state: "ACTIVE",
+    paymentType: "POSTPAID",
+    createdAt: "2021-01-01",
+    updatedAt: "2021-01-01",
+  },
+  {
+    deviceId: "2",
+    storeId: "2",
+    name: "2번 테이블",
+    purpose: "HALL",
+    state: "ACTIVE",
+    paymentType: "PREPAID",
+    createdAt: "2021-01-01",
+    updatedAt: "2021-01-01",
+  },
+  {
+    deviceId: "3",
+    storeId: "3",
+    name: "3번 테이블",
+    purpose: "POS",
+    state: "INACTIVE",
+    paymentType: "POSTPAID",
+    createdAt: "2021-01-01",
+    updatedAt: "2021-01-01",
+  },
+];
+
+export const DEVICE_DETAIL_MOCK: DeviceDetail[] = [
+  {
+    deviceId: "1",
+    storeId: "1",
+    name: "1번 테이블",
+    purpose: "POS",
+    state: "ACTIVE",
+    paymentType: "POSTPAID",
+    createdAt: "2021-01-01",
+    updatedAt: "2021-01-01",
+    tableNo: 1,
+    storeName: "1번 가게",
+  },
+];
