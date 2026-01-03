@@ -8,7 +8,7 @@ function SectionTitle() {
 
   const getText = () => {
     switch (location.pathname) {
-      case "/info":
+      case "/stores":
         return "매장 정보";
       case "/devices":
         return "기기 관리";
