@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, type ChangeEvent } from "react";
 import { useFormContext } from "react-hook-form";
 import {
   ChevronDown,
@@ -12,6 +12,7 @@ import {
 } from "@/components/icons";
 import Button from "@/components/ui/Button/Button";
 import Input from "@/components/ui/Input";
+import { formatPrice } from "@/lib/format";
 import cn from "@/lib/utils";
 import type { MenuSchema } from "@/schema/menu.schema";
 import type { MenuOptionGroupType } from "@/types/domain/menu";
@@ -40,23 +41,48 @@ function MenuDetailOptions({
   );
 
   const handleAddOptionGroup = () => {
-    form.setValue(optionGroupsName, [
-      ...form.getValues(optionGroupsName),
-      {
-        name: "",
-        type: "MANDATORY",
-        printEnabled: false,
-        menuOptions: [],
-      },
-    ]);
+    const newData = {
+      name: "",
+      printEnabled: true,
+      menuOptions: [],
+    };
+
+    if (type === "MANDATORY") {
+      form.setValue("requiredOptionGroups", [
+        ...form.getValues("requiredOptionGroups"),
+        {
+          type,
+          ...newData,
+        },
+      ]);
+    } else {
+      form.setValue("optionalOptionGroups", [
+        ...form.getValues("optionalOptionGroups"),
+        {
+          type,
+          ...newData,
+        },
+      ]);
+    }
   };
 
   /**
    *
    * @param groupIndex - 옵션 그룹 인덱스
    */
-  const handleAddOption = () => {
-    // TODO: 하위 옵션 추가 로직 구현
+  const handleAddOption = (groupIndex: number) => {
+    const newOption = {
+      name: "",
+      price: "",
+    };
+
+    const fieldPath = `${optionGroupsName}.${groupIndex}.menuOptions` as Parameters<
+      typeof form.setValue
+    >[0];
+
+    const currentOptions =
+      (form.getValues(fieldPath) as Array<{ name: string; price: string }>) || [];
+    form.setValue(fieldPath, [...currentOptions, newOption]);
   };
 
   /**
@@ -64,8 +90,20 @@ function MenuDetailOptions({
    * @param groupIndex - 옵션 그룹 인덱스
    * @param optionIndex - 하위 옵션 인덱스
    */
-  const handleRemoveOption = () => {
-    // TODO: 하위 옵션 삭제 로직 구현
+  const handleRemoveOption = (groupIndex: number, optionIndex: number) => {
+    const fieldPath =
+      `${type === "MANDATORY" ? "required" : "optional"}OptionGroups.${groupIndex}.menuOptions` as Parameters<
+        typeof form.setValue
+      >[0];
+
+    const currentOptions =
+      (form.getValues(fieldPath) as Array<{ name: string; price: string }>) || [];
+    form.setValue(
+      fieldPath,
+      currentOptions.filter(
+        (_: { name: string; price: string }, idx: number) => idx !== optionIndex
+      )
+    );
   };
 
   return (
@@ -78,18 +116,19 @@ function MenuDetailOptions({
       role="button"
       tabIndex={0}
       className={cn(
-        "flex min-h-0 flex-col justify-start rounded-3xl border border-gray-600 bg-transparent p-6",
+        "flex min-h-0 flex-col justify-start border border-gray-600 bg-transparent md:rounded-xl md:p-4 lg:rounded-3xl lg:p-6",
         selectedGroup === type ? "flex-1 cursor-default" : "h-fit cursor-pointer"
       )}
       onClick={() => setSelectedGroup(type)}
     >
       <div className="relative flex w-full shrink-0 items-center justify-between">
-        <div className="flex flex-1 items-center gap-2">
-          <span className="text-gray-0 text-lg font-medium">{text} 옵션</span>
-          <Info className="text-gray-0 size-6" />
+        <div className="flex flex-1 items-center md:gap-1.5 lg:gap-2">
+          <span className="text-gray-0 font-medium md:text-sm lg:text-lg">{text} 옵션</span>
+          <Info className="text-gray-0 md:size-5 lg:size-6" />
         </div>
         {selectedPopupMode === "CHANGE_ORDER" ? (
           <Button
+            type="button"
             className="border-primary text-primary! text-s h-7 rounded-lg border bg-white px-4 font-normal hover:bg-white"
             onClick={() => setSelectedPopupMode(null)}
           >
@@ -98,52 +137,43 @@ function MenuDetailOptions({
         ) : (
           <button type="button" onClick={() => canEdit && setShowPopup((prev) => !prev)}>
             {canEdit ? (
-              <Dot className="text-gray-0 size-6" />
+              <Dot className="text-gray-0 md:size-5 lg:size-6" />
             ) : (
               <ChevronDown
-                className={cn("text-gray-0 size-6", selectedGroup === type ? "rotate-180" : "")}
+                className={cn(
+                  "text-gray-0 md:size-5 lg:size-6",
+                  selectedGroup === type ? "rotate-180" : ""
+                )}
               />
             )}
           </button>
         )}
         {showPopup && (
-          <div className="absolute top-8 right-0 z-999 rounded-[16px] bg-white p-3 shadow-[0px_2px_10px_rgba(0,0,0,0.08)]">
-            <button
-              type="button"
-              className={cn(
-                "flex items-center gap-2 rounded-lg p-3 text-[15px] font-normal text-gray-100",
-                selectedPopupMode === "CHANGE_ORDER" ? "bg-gray-700" : ""
-              )}
-              onClick={() => {
-                if (selectedPopupMode === "CHANGE_ORDER") {
-                  setSelectedPopupMode(null);
-                } else {
-                  setSelectedPopupMode("CHANGE_ORDER");
-                }
-                setShowPopup(false);
-              }}
-            >
-              <UpsideDown className="size-4.5 text-gray-100" />
-              순서 변경
-            </button>
-            <button
-              type="button"
-              className={cn(
-                "flex items-center gap-2 rounded-lg p-3 text-[15px] font-normal text-gray-100",
-                selectedPopupMode === "DELETE" ? "bg-gray-700" : ""
-              )}
-              onClick={() => {
-                if (selectedPopupMode === "DELETE") {
-                  setSelectedPopupMode(null);
-                } else {
-                  setSelectedPopupMode("DELETE");
-                }
-                setShowPopup(false);
-              }}
-            >
-              <Trash className="size-4.5 text-gray-100" />
-              옵션 삭제
-            </button>
+          <div className="absolute top-8 right-0 z-999 rounded-[16px] bg-white shadow-[0px_2px_10px_rgba(0,0,0,0.08)] md:p-2.5 lg:p-3">
+            {["CHANGE_ORDER", "DELETE"].map((mode) => {
+              const Icon = mode === "CHANGE_ORDER" ? UpsideDown : Trash;
+              return (
+                <button
+                  key={mode}
+                  type="button"
+                  className={cn(
+                    "md:text-s flex items-center gap-2 rounded-lg font-normal text-gray-100 md:w-29 md:p-2 lg:w-auto lg:p-3 lg:text-[15px]",
+                    selectedPopupMode === mode ? "bg-gray-700" : ""
+                  )}
+                  onClick={() => {
+                    if (selectedPopupMode === mode) {
+                      setSelectedPopupMode(null);
+                    } else {
+                      setSelectedPopupMode(mode as "CHANGE_ORDER" | "DELETE");
+                    }
+                    setShowPopup(false);
+                  }}
+                >
+                  <Icon className="size-4.5 text-gray-100" />
+                  {mode === "CHANGE_ORDER" ? "순서 변경" : "옵션 삭제"}
+                </button>
+              );
+            })}
           </div>
         )}
       </div>
@@ -153,56 +183,73 @@ function MenuDetailOptions({
           <div className="h-4 shrink-0" />
           <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
             {form.watch(optionGroupsName)?.length ? (
-              <div className="hide-scrollbar flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto whitespace-pre-line">
+              <div className="hide-scrollbar flex min-h-0 flex-col gap-4 overflow-y-auto whitespace-pre-line md:h-79 lg:h-100">
                 {form.watch(optionGroupsName).map((group, index) => (
                   <div className="flex w-full items-center gap-3" key={group.name}>
-                    <div className="flex w-full flex-col gap-3 rounded-xl border border-gray-600 p-4">
-                      <div className="flex flex-1 flex-col gap-4">
+                    <div
+                      className={cn(
+                        "flex w-full flex-col rounded-xl border border-gray-600 md:p-3 lg:p-4",
+                        group.menuOptions.length > 0 ? "gap-3" : ""
+                      )}
+                    >
+                      <div className="flex flex-1 flex-col">
                         <Input
-                          className="h-12 border-gray-400"
                           placeholder="옵션명을 입력해주세요."
                           {...form.register(
                             `${type === "MANDATORY" ? "required" : "optional"}OptionGroups.${index}.name`
                           )}
+                          disabled={!canEdit}
                         />
-                        <div className="h-px w-full bg-gray-600" />
-                        <div className="flex flex-col gap-3">
-                          {group.menuOptions.map((_, optionIndex) => (
-                            <div
-                              className="flex items-center gap-2"
-                              key={`${index}-${optionIndex}`}
-                            >
-                              <Input
-                                className="h-12 flex-1 border-gray-400"
-                                placeholder="하위 옵션명을 입력해주세요."
-                                {...form.register(
-                                  `${type === "MANDATORY" ? "required" : "optional"}OptionGroups.${index}.menuOptions.${optionIndex}.name`
-                                )}
-                              />
-                              <div className="relative flex-1">
-                                {/*  TODO: onChange 가격 포맷팅 */}
+                        <div className="my-4 h-px w-full bg-gray-600" />
+                        {group.menuOptions.length > 0 && (
+                          <div className="flex flex-col md:gap-2 lg:gap-3">
+                            {group.menuOptions.map((_, optionIndex) => (
+                              <div
+                                className="flex items-center gap-2"
+                                key={`${index}-${optionIndex}`}
+                              >
                                 <Input
-                                  className="h-12 border-gray-400 pr-9"
-                                  placeholder="ex. 33,000"
+                                  className="flex-1 border-gray-400 lg:h-12"
+                                  placeholder="하위 옵션명을 입력해주세요."
                                   {...form.register(
-                                    `${type === "MANDATORY" ? "required" : "optional"}OptionGroups.${index}.menuOptions.${optionIndex}.price`
+                                    `${type === "MANDATORY" ? "required" : "optional"}OptionGroups.${index}.menuOptions.${optionIndex}.name`
                                   )}
+                                  disabled={!canEdit}
                                 />
-                                <span className="absolute top-1/2 right-4 -translate-y-1/2 text-[15px] font-medium text-[#7C7C7C]">
-                                  원
-                                </span>
+                                <div className="relative flex-1">
+                                  <Input
+                                    className="border-gray-400 lg:h-12 lg:pr-9"
+                                    placeholder="ex. 33,000"
+                                    value={group.menuOptions[optionIndex]?.price || ""}
+                                    onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                                      const fieldPath =
+                                        `${type === "MANDATORY" ? "required" : "optional"}OptionGroups.${index}.menuOptions.${optionIndex}.price` as Parameters<
+                                          typeof form.setValue
+                                        >[0];
+                                      form.setValue(fieldPath, formatPrice(e.target.value));
+                                    }}
+                                    disabled={!canEdit}
+                                  />
+                                  <span className="absolute top-1/2 right-4 -translate-y-1/2 text-[15px] font-medium text-[#7C7C7C]">
+                                    원
+                                  </span>
+                                </div>
+                                {canEdit && (
+                                  <button
+                                    type="button"
+                                    onClick={() => handleRemoveOption(index, optionIndex)}
+                                  >
+                                    <Minus className="size-5 text-gray-300" />
+                                  </button>
+                                )}
                               </div>
-                              {canEdit && (
-                                <button onClick={() => handleRemoveOption()}>
-                                  <Minus className="size-5 text-gray-300" />
-                                </button>
-                              )}
-                            </div>
-                          ))}
-                        </div>
+                            ))}
+                          </div>
+                        )}
                       </div>
                       {canEdit && (
                         <Button
+                          type="button"
                           color="grey"
                           responsive
                           responsiveButtons={{
@@ -211,8 +258,13 @@ function MenuDetailOptions({
                               className:
                                 "h-8 rounded-lg border border-gray-600 bg-[F7F7F7]! gap-2 text-sm font-medium text-gray-100",
                             },
+                            md: {
+                              buttonSize: "sm",
+                              className:
+                                "h-8! border border-gray-600 bg-[F7F7F7]! gap-1 text-xs font-normal text-gray-100",
+                            },
                           }}
-                          onClick={() => handleAddOption()}
+                          onClick={() => handleAddOption(index)}
                         >
                           하위 옵션 추가
                           <Plus className="size-4 text-gray-100" />
@@ -220,7 +272,10 @@ function MenuDetailOptions({
                       )}
                     </div>
                     {selectedPopupMode && (
-                      <button className="center h-8 w-8 rounded-lg border border-gray-600">
+                      <button
+                        type="button"
+                        className="center h-8 w-8 rounded-lg border border-gray-600"
+                      >
                         {selectedPopupMode === "DELETE" ? (
                           <Trash className="text-gray-0 size-5" />
                         ) : (
@@ -233,7 +288,7 @@ function MenuDetailOptions({
               </div>
             ) : (
               <div className="flex flex-1 items-center justify-center">
-                <span className="text-sm font-normal text-gray-300">
+                <span className="font-normal text-gray-300 md:text-xs lg:text-sm">
                   현재 등록된 {text} 옵션이 없습니다.
                 </span>
               </div>
@@ -241,12 +296,17 @@ function MenuDetailOptions({
             {canEdit && (
               <div className="mt-4 shrink-0">
                 <Button
+                  type="button"
                   variant="outline"
                   responsive
                   responsiveButtons={{
                     lg: {
                       buttonSize: "sm",
                       className: "border border-gray-600 rounded-lg w-full",
+                    },
+                    md: {
+                      buttonSize: "sm",
+                      className: "border border-gray-600 w-full h-8!",
                     },
                   }}
                   onClick={handleAddOptionGroup}
