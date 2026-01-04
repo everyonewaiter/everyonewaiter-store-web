@@ -33,14 +33,14 @@ function MainMenuCategoryPage() {
       <form onSubmit={handleSubmit}>
         <div
           className={cn(
-            "flex h-full justify-center",
-            categories.length > 5 ? "lg:items-start" : "items-center"
+            "flex h-full justify-center md:py-6 lg:py-0",
+            categories.length > 5 ? "items-start" : "items-center md:items-start"
           )}
         >
-          <div className="flex w-120 flex-col gap-6">
-            <div className="flex flex-col gap-3">
-              <h2 className="text-gray-0 text-2xl font-semibold">카테고리</h2>
-              <span className="text-sm font-normal whitespace-pre-line text-gray-300">{`메뉴 카테고리를 등록하거나 수정할 수 있습니다.\n카테고리는 메뉴 정렬 및 노출에 활용됩니다.`}</span>
+          <div className="flex flex-col md:w-75 md:gap-5 lg:w-120 lg:gap-6">
+            <div className="flex flex-col md:gap-1 lg:gap-3">
+              <h2 className="text-gray-0 font-semibold md:text-lg lg:text-2xl">카테고리</h2>
+              <span className="md:text-s font-normal whitespace-pre-line text-gray-300 lg:text-sm">{`메뉴 카테고리를 등록하거나 수정할 수 있습니다.\n카테고리는 메뉴 정렬 및 노출에 활용됩니다.`}</span>
             </div>
 
             <div className="flex flex-col gap-3">
@@ -59,6 +59,7 @@ function MainMenuCategoryPage() {
                 responsive
                 responsiveButtons={{
                   lg: { buttonSize: "lg", className: "h-10! w-full border-dashed font-normal!" },
+                  md: { buttonSize: "sm", className: "w-full border-dashed" },
                 }}
                 onClick={handleAddCategory}
               >
@@ -71,6 +72,7 @@ function MainMenuCategoryPage() {
               responsive
               responsiveButtons={{
                 lg: { buttonSize: "lg" },
+                md: { buttonSize: "sm", className: "w-full" },
               }}
               onClick={handleSubmit}
             >

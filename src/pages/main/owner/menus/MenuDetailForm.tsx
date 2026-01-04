@@ -34,7 +34,7 @@ function MenuDetailForm({ canEdit, isDetail }: Readonly<MenuDetailFormProps>) {
   const form = useFormContext<MenuSchema>();
 
   return (
-    <div className="hide-scrollbar flex flex-[0.32] flex-col gap-4 overflow-y-auto rounded-3xl border border-gray-600 p-6">
+    <>
       <div className="flex flex-col gap-2">
         <Label>카테고리</Label>
         <Dropdown
@@ -87,6 +87,10 @@ function MenuDetailForm({ canEdit, isDetail }: Readonly<MenuDetailFormProps>) {
                     isDetail ? "cursor-default!" : "cursor-pointer!"
                   ),
                 },
+                md: {
+                  buttonSize: "custom",
+                  className: "w-fit px-3 h-7 rounded-[40px] text-xs font-normal",
+                },
               }}
             >
               기본
@@ -105,6 +109,10 @@ function MenuDetailForm({ canEdit, isDetail }: Readonly<MenuDetailFormProps>) {
                       lg: {
                         buttonSize: "sm",
                         className: cn("w-fit rounded-[40px]!", !isSelected && "border-gray-500!"),
+                      },
+                      md: {
+                        buttonSize: "custom",
+                        className: "w-fit px-3 h-7 rounded-[40px] text-xs font-normal",
                       },
                     }}
                   >
@@ -145,6 +153,10 @@ function MenuDetailForm({ canEdit, isDetail }: Readonly<MenuDetailFormProps>) {
                       form.getValues("spicy") === spicy ? "" : "border-gray-500!"
                     ),
                   },
+                  md: {
+                    buttonSize: "custom",
+                    className: "w-fit px-3 h-7 rounded-[40px] text-xs font-normal",
+                  },
                 }}
               >
                 {`🌶️`.repeat(spicy)}
@@ -167,6 +179,10 @@ function MenuDetailForm({ canEdit, isDetail }: Readonly<MenuDetailFormProps>) {
                   isDetail ? "cursor-default!" : "cursor-pointer!"
                 ),
               },
+              md: {
+                buttonSize: "custom",
+                className: "w-fit px-3 h-7 rounded-[40px] text-xs font-normal",
+              },
             }}
           >
             기본
@@ -186,6 +202,10 @@ function MenuDetailForm({ canEdit, isDetail }: Readonly<MenuDetailFormProps>) {
                       buttonSize: "sm",
                       className: cn("w-fit rounded-[40px]!", !isSelected && "border-gray-500!"),
                     },
+                    md: {
+                      buttonSize: "custom",
+                      className: "w-fit px-3 h-7 rounded-[40px] text-xs font-normal",
+                    },
                   }}
                 >
                   {state}
@@ -196,10 +216,12 @@ function MenuDetailForm({ canEdit, isDetail }: Readonly<MenuDetailFormProps>) {
         )}
       </div>
       <div className="flex items-center justify-between">
-        <span className="text-gray-0 text-sm font-normal">주방 프린터에 출력하기</span>
-        <Switch disabled={!canEdit} />
+        <span className="text-gray-0 font-normal md:text-xs lg:text-sm">
+          주방 프린터에 출력하기
+        </span>
+        <Switch disabled={!canEdit} checked={form.getValues("printEnabled")} />
       </div>
-    </div>
+    </>
   );
 }
 

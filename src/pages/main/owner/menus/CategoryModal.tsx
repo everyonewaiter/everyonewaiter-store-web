@@ -59,6 +59,7 @@ function CategoryModal({ isOpen, close }: Readonly<ModalProps>) {
               responsive
               responsiveButtons={{
                 lg: { buttonSize: "xl", className: "w-full outline-none" },
+                md: { buttonSize: "sm", className: "w-full" },
               }}
             >
               {isCreating ? "저장하기" : "순서 저장하기"}
@@ -70,6 +71,7 @@ function CategoryModal({ isOpen, close }: Readonly<ModalProps>) {
               responsive
               responsiveButtons={{
                 lg: { buttonSize: "xl", className: "w-30 outline-none" },
+                md: { buttonSize: "sm", className: "w-25" },
               }}
               onClick={() => (isCreating ? close() : setMode("CREATE"))}
             >
@@ -88,6 +90,7 @@ function CategoryModal({ isOpen, close }: Readonly<ModalProps>) {
                   className:
                     "h-full! rounded-3xl! gap-1.5 items-center text-gray-300 text-sm font-medium px-4!",
                 },
+                md: { buttonSize: "sm", className: "bg-transparent" },
               }}
               onClick={() => setMode("CHANGE_ORDER")}
             >
@@ -100,7 +103,7 @@ function CategoryModal({ isOpen, close }: Readonly<ModalProps>) {
         }
       >
         <div className="flex flex-1 flex-col overflow-hidden">
-          <div className="hide-scrollbar flex flex-1 flex-col gap-3 overflow-y-auto lg:gap-4">
+          <div className="hide-scrollbar flex flex-1 flex-col gap-3 overflow-y-auto md:gap-4">
             {categories.map((category, index) => (
               <FormField
                 key={category.id}
@@ -146,6 +149,10 @@ function CategoryModal({ isOpen, close }: Readonly<ModalProps>) {
                 lg: {
                   buttonSize: "lg",
                   className: "mt-4 w-full border-dashed font-normal!",
+                },
+                md: {
+                  buttonSize: "sm",
+                  className: "w-full border-dashed rounded-xl!",
                 },
               }}
               onClick={handleAddCategory}

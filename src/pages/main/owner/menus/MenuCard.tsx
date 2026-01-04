@@ -14,8 +14,8 @@ function MenuCard({ menu, isChecked, onCheckedChange, onClick }: Readonly<MenuCa
   return (
     <div
       className={cn(
-        "relative aspect-329/440 cursor-pointer overflow-hidden rounded-3xl",
-        isChecked && "border-primary"
+        "relative cursor-pointer overflow-hidden rounded-xl md:aspect-159/220 lg:aspect-329/440 lg:rounded-3xl",
+        isChecked && "outline-primary outline"
       )}
       onKeyDown={(e) => {
         if (e.key === "Enter" || e.key === " ") {
@@ -28,32 +28,38 @@ function MenuCard({ menu, isChecked, onCheckedChange, onClick }: Readonly<MenuCa
     >
       <img src={loginBg} alt={menu.name} className="h-full w-full object-cover" draggable="false" />
       <div
-        className="absolute top-4 left-4 z-10"
+        className="absolute z-10 md:top-2.5 md:left-2.5 lg:top-4 lg:left-4"
         role="presentation"
         onClick={(e) => e.stopPropagation()}
         onKeyDown={(e) => e.stopPropagation()}
       >
-        <Checkbox size={32} checked={isChecked} onCheckedChange={onCheckedChange} />
+        <Checkbox
+          className="md:size-6 lg:size-8"
+          checked={isChecked}
+          onCheckedChange={onCheckedChange}
+        />
       </div>
-      <div className="absolute bottom-2 w-full px-2">
-        <div className="flex flex-col gap-2 rounded-[20px] bg-white px-5 py-4">
+      <div className="absolute w-full md:bottom-1 md:px-1 lg:bottom-2 lg:px-2">
+        <div className="flex flex-col bg-white md:gap-0.5 md:rounded-xl md:p-3 lg:gap-2 lg:rounded-[20px] lg:px-5 lg:py-4">
           {(menu.state !== "DEFAULT" || menu.label !== "DEFAULT") && (
             <div className="flex items-center gap-2">
               {menu.label !== "DEFAULT" && (
-                <button className="w-fit rounded-3xl bg-[#3900B514] px-4 py-1 text-[#3900B5]">
+                <button className="w-fit rounded-3xl bg-[#3900B514] px-4 py-1 text-[#3900B5] md:text-xs lg:text-sm">
                   {menu.label}
                 </button>
               )}
               {menu.state !== "DEFAULT" && (
-                <button className="w-fit rounded-3xl bg-[#F2202014] px-4 py-1 text-[#F22020]">
+                <button className="w-fit rounded-3xl bg-[#F2202014] px-4 py-1 text-[#F22020] md:text-xs lg:text-sm">
                   {menu.state}
                 </button>
               )}
             </div>
           )}
-          <div className="flex w-full items-center justify-between">
-            <span className="text-gray-0 text-lg font-semibold">{menu.name}</span>
-            <strong className="text-gray-0 text-[28px] font-bold">
+          <div className="flex w-full justify-between md:mt-1 md:flex-col md:items-start lg:mt-0 lg:flex-row lg:items-center">
+            <span className="text-gray-0 md:text-s md:font-medium lg:text-lg lg:font-semibold">
+              {menu.name}
+            </span>
+            <strong className="text-gray-0 md:text-xl md:font-semibold lg:text-[28px] lg:font-bold">
               {menu.price.toLocaleString()}원
             </strong>
           </div>
