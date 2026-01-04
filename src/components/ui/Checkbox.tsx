@@ -6,16 +6,19 @@ interface CheckboxProps extends CheckboxPrimitive.CheckboxProps {
   size?: number;
 }
 
-function Checkbox({ hasError, size = 18, ...props }: Readonly<CheckboxProps>) {
+function Checkbox({ hasError, size, className, ...props }: Readonly<CheckboxProps>) {
+  const hasSizeClass = className?.match(/\b(size-|w-|h-)/);
+
   return (
     <CheckboxPrimitive.Root
       data-slot="checkbox"
       className={cn(
         "hover:border-primary data-[state=checked]:bg-primary [data-state=checked]:border-primary shrink-0 cursor-pointer rounded-sm border border-gray-400 bg-white outline-none disabled:cursor-default disabled:border-gray-400 disabled:bg-gray-600 data-[state=checked]:disabled:opacity-40",
+        !hasSizeClass && !size && "h-4 w-4",
         hasError && "border-status-error bg-white",
-        props.className
+        className
       )}
-      style={{ width: size, height: size }}
+      style={size && !hasSizeClass ? { width: size, height: size } : undefined}
       {...props}
     >
       <CheckboxPrimitive.Indicator
@@ -23,8 +26,7 @@ function Checkbox({ hasError, size = 18, ...props }: Readonly<CheckboxProps>) {
         className="flex h-full w-full items-center justify-center text-current"
       >
         <svg
-          width={size * 0.556}
-          height={size * 0.556}
+          className="h-[55.6%] w-[55.6%]"
           viewBox="0 0 10 10"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
