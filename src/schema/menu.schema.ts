@@ -18,7 +18,7 @@ const menuSchema = z.object({
       menuOptions: z.array(
         z.object({
           name: z.string().min(1, "옵션명을 입력해주세요."),
-          price: z.number().min(1, "가격을 입력해주세요."),
+          price: z.string().min(1, "가격을 입력해주세요."),
         })
       ),
     })
@@ -31,7 +31,7 @@ const menuSchema = z.object({
       menuOptions: z.array(
         z.object({
           name: z.string().min(1, "옵션명을 입력해주세요."),
-          price: z.number().min(1, "가격을 입력해주세요."),
+          price: z.string().min(1, "가격을 입력해주세요."),
         })
       ),
     })

@@ -48,7 +48,7 @@ function MenuDetailModal({ isOpen, close, entry }: Readonly<MenuDetailModalProps
           state: "DEFAULT",
           label: "DEFAULT",
           image: "",
-          printEnabled: false,
+          printEnabled: true,
           requiredOptionGroups: [],
           optionalOptionGroups: [],
         }
@@ -56,73 +56,90 @@ function MenuDetailModal({ isOpen, close, entry }: Readonly<MenuDetailModalProps
           categoryId: menu?.categoryId ?? "",
           name: menu?.name ?? "",
           description: menu?.description,
-          price: String(menu?.price ?? 0),
+          price: menu?.price ? menu.price.toLocaleString("ko-KR") : "",
           spicy: menu?.spicy ?? 0,
           state: menu?.state ?? "DEFAULT",
           label: menu?.label ?? "DEFAULT",
           image: menu?.image ?? "",
-          printEnabled: menu?.printEnabled ?? false,
+          printEnabled: menu?.printEnabled ?? true,
           requiredOptionGroups:
-            menu?.menuOptionGroups.filter((group) => group.type === "MANDATORY") ?? [],
+            menu?.menuOptionGroups
+              .filter((group) => group.type === "MANDATORY")
+              .map((group) => ({
+                name: group.name,
+                type: group.type,
+                printEnabled: group.printEnabled,
+                menuOptions: group.menuOptions.map((option) => ({
+                  name: option.name,
+                  price: option.price.toLocaleString("ko-KR"),
+                })),
+              })) ?? [],
           optionalOptionGroups:
-            menu?.menuOptionGroups.filter((group) => group.type === "OPTIONAL") ?? [],
+            menu?.menuOptionGroups
+              .filter((group) => group.type === "OPTIONAL")
+              .map((group) => ({
+                name: group.name,
+                type: group.type,
+                printEnabled: group.printEnabled,
+                menuOptions: group.menuOptions.map((option) => ({
+                  name: option.name,
+                  price: option.price.toLocaleString("ko-KR"),
+                })),
+              })) ?? [],
         },
   });
 
   const [selectedGroup, setSelectedGroup] = useState<MenuOptionGroupType>("MANDATORY");
 
-  const handleSubmit = form.handleSubmit(
-    (data) => {
-      if (isCreating) {
-        // TODO: 메뉴 생성 로직 추가
-        console.log(data);
-      } else {
-        // TODO: 메뉴 수정 로직 추가
-        setMode("detail");
-      }
-    },
-    (errors) => {
-      console.log(errors);
+  const handleSubmit = form.handleSubmit(() => {
+    if (isCreating) {
+      // TODO: 메뉴 생성 로직 추가
+      // TODO: 메뉴의 가격과 옵션의 가격을 number로 변경
+    } else {
+      // TODO: 메뉴 수정 로직 추가
+      setMode("detail");
     }
-  );
+  });
 
   return (
     <Dialog open={isOpen} onOpenChange={close}>
-      <Dialog.Wrapper className="w-[1344px]! max-w-full!" flexDirection="col">
+      <Dialog.Wrapper
+        className="md:aspect-912/621 md:h-full md:w-full md:overflow-y-auto md:rounded-none md:p-5! lg:h-auto lg:w-[1344px]! lg:max-w-full! lg:overflow-y-hidden lg:rounded-[32px] lg:p-8"
+        flexDirection="col"
+      >
         <Form {...form}>
           <form
             onSubmit={(e) => {
               console.log("Form submitted!", e);
               handleSubmit(e);
             }}
-            className="flex flex-col gap-8"
+            className="flex flex-col md:gap-5 lg:gap-8"
           >
             <div className="flex justify-between">
-              <div className="flex flex-1 flex-col gap-3">
-                <h1 className="text-gray-0 text-2xl font-semibold">메뉴 정보</h1>
-                <p className="text-sm font-normal text-gray-300">
+              <div className="flex flex-1 flex-col md:gap-1 lg:gap-3">
+                <h1 className="text-gray-0 font-semibold md:text-lg lg:text-2xl">메뉴 정보</h1>
+                <p className="font-normal text-gray-300 md:text-xs lg:text-sm">
                   메뉴의 세부 정보를 입력하고 옵션을 설정해 주세요.
                 </p>
               </div>
               <Dialog.Close>
-                <Close className="text-gray-0 size-8" />
+                <Close className="text-gray-0 md:size-6 lg:size-8" />
               </Dialog.Close>
             </div>
 
-            {/* 메뉴 이미지 등록 */}
-            <div className="flex h-162 gap-4.5">
-              <div className="flex w-[364px] flex-[0.28] flex-col gap-2">
+            <div className="flex w-full flex-1 justify-between md:h-114 md:gap-2 lg:h-162 lg:gap-4.5">
+              <div className="flex flex-[0.29] flex-col md:gap-1 lg:gap-2">
                 {menu?.image && (
                   <Image
                     src={menu?.image ?? ""}
                     alt={menu?.name ?? ""}
-                    className="aspect-364/478 rounded-3xl"
+                    className="md:aspect-240/280 md:rounded-xl lg:aspect-364/478 lg:rounded-3xl"
                   />
                 )}
                 {(!menu?.image || isCreating) && (
                   <div
                     className={cn(
-                      "center aspect-364/478 rounded-3xl border bg-gray-700",
+                      "center rounded-3xl border bg-gray-700 md:aspect-240/280 md:rounded-xl lg:aspect-364/478 lg:rounded-3xl",
                       form.formState.errors.image?.message
                         ? "border-status-error"
                         : "border-gray-600"
@@ -137,7 +154,11 @@ function MenuDetailModal({ isOpen, close, entry }: Readonly<MenuDetailModalProps
                     color="black"
                     responsive
                     responsiveButtons={{
-                      lg: { buttonSize: "sm" },
+                      lg: { buttonSize: "sm", className: "border-gray-300!" },
+                      md: {
+                        buttonSize: "md",
+                        className: "h-8! rounded-lg! border-gray-300! text-xs! font-normal!",
+                      },
                     }}
                   >
                     이미지 등록
@@ -151,10 +172,12 @@ function MenuDetailModal({ isOpen, close, entry }: Readonly<MenuDetailModalProps
               </div>
 
               {/* 메뉴 정보 폼 */}
-              <MenuDetailForm canEdit={canEdit} isDetail={isDetail} />
+              <div className="hide-scrollbar flex w-full flex-[0.33] flex-col overflow-y-auto border border-gray-600 md:gap-3 md:rounded-xl md:p-4 lg:gap-4 lg:rounded-3xl lg:p-6">
+                <MenuDetailForm canEdit={canEdit} isDetail={isDetail} />
+              </div>
 
               {/* 메뉴 옵션 폼 */}
-              <div className="flex min-h-0 flex-[0.35] flex-col gap-4.5">
+              <div className="flex min-h-0 w-full flex-[0.36] flex-col gap-4.5">
                 <MenuDetailOptions
                   type="MANDATORY"
                   selectedGroup={selectedGroup}
@@ -189,6 +212,7 @@ function MenuDetailModal({ isOpen, close, entry }: Readonly<MenuDetailModalProps
                   responsive
                   responsiveButtons={{
                     lg: { buttonSize: "lg", className: "w-120" },
+                    md: { buttonSize: "sm", className: "w-73" },
                   }}
                   onClick={() => console.log("button clicked!")}
                 >
