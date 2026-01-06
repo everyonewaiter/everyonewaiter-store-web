@@ -39,7 +39,9 @@ export interface StoreDetail {
   license: string;
   image: string;
   status: StoreStatus;
-  setting: StoreSetting;
   lastOpenedAt: string;
   lastClosedAt: string;
+  setting: StoreSetting;
+  createdAt: string;
+  updatedAt: string;
 }
