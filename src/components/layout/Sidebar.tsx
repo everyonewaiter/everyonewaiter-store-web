@@ -43,13 +43,25 @@ function IconComp({ Icon, className }: Readonly<{ Icon: ElementType; className: 
   return <Icon className={cn("size-6 lg:size-8", className)} />;
 }
 
-function Sidebar() {
+interface SidebarProps {
+  onLinkClick?: () => void;
+}
+
+function Sidebar({ onLinkClick }: Readonly<SidebarProps>) {
   const { pathname } = useLocation();
   const selectedStore = STORES_MOCK[0];
 
+  const handleLinkClick = () => {
+    onLinkClick?.();
+  };
+
   return (
     <>
-      <Link to="/" className="flex items-center px-4 pt-5 pb-2.5 md:pt-4 lg:px-6 lg:py-8 lg:pb-5">
+      <Link
+        to="/"
+        onClick={handleLinkClick}
+        className="flex items-center px-4 pt-5 pb-2.5 md:pt-4 lg:px-6 lg:py-8 lg:pb-5"
+      >
         <img
           src={logoTextHorizontal}
           alt="logo text horizontal"
@@ -72,7 +84,12 @@ function Sidebar() {
               index === 0 ? ["/", "/create"].includes(pathname) : pathname.startsWith(item.path);
 
             return (
-              <Link to={item.path} className="flex h-10.5 lg:h-14" key={item.label}>
+              <Link
+                to={item.path}
+                onClick={handleLinkClick}
+                className="flex h-10.5 lg:h-14"
+                key={item.label}
+              >
                 <div className="center relative w-1.5 lg:w-2">
                   <div
                     className={cn(

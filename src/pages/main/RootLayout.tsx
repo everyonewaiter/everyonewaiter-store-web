@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Outlet } from "react-router-dom";
 import logoTextHorizontal from "@/assets/images/logo-text-horizontal.svg";
 import MobileSidebar from "@/components/layout/MobileSidebar";
+import SectionTitle from "@/components/layout/SectionTitle";
 import Sidebar from "@/components/layout/Sidebar";
 
 function RootLayout() {
@@ -18,6 +19,7 @@ function RootLayout() {
             <Sidebar />
           </aside>
           <article className="flex h-full min-w-0 flex-1 flex-col bg-white md:rounded-[28px] md:p-5 lg:p-8">
+            <SectionTitle />
             <div className="hide-scrollbar flex flex-col overflow-y-auto">
               <Outlet />
             </div>
