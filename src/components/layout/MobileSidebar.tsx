@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import logoText from "@/assets/images/logo-text.svg";
 import logo from "@/assets/images/logo.svg";
@@ -11,15 +11,16 @@ interface MobileSidebarProps {
 }
 
 function MobileSidebar({ children }: Readonly<MobileSidebarProps>) {
+  const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const isGuestPage = location.pathname.startsWith("/guest");
   const isGuestChildrenPage = isGuestPage && location.pathname !== "/guest";
 
   return (
-    <Sheet>
+    <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <SheetContent side="left" className="mt-7 rounded-tr-3xl rounded-br-3xl md:hidden">
-        <Sidebar />
+        <Sidebar onLinkClick={() => setIsOpen(false)} />
       </SheetContent>
 
       <div className="flex h-dvh flex-col md:h-full">
