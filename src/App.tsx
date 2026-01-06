@@ -17,9 +17,9 @@ import GuestApplicationPage from "@/pages/main/guest/application/GuestApplicatio
 import GuestCreatePage from "@/pages/main/guest/create/GuestCreatePage";
 import GuestPage from "@/pages/main/guest/GuestPage";
 import MainDevicePage from "@/pages/main/owner/devices/MainDevicePage";
+import MainInfoPage from "@/pages/main/owner/info/MainInfoPage";
 import MainMenuPage from "@/pages/main/owner/menus/MainMenuPage";
 import MainSettingsPage from "@/pages/main/owner/settings/MainSettingsPage";
-import MainStoresPage from "@/pages/main/owner/stores/MainStoresPage";
 import RootLayout from "@/pages/main/RootLayout";
 
 const router = createBrowserRouter(
@@ -46,7 +46,7 @@ const router = createBrowserRouter(
         <Route path="/guest" element={<GuestPage />} />
         <Route path="/guest/create" element={<GuestCreatePage />} />
         <Route path="/" element={<HomePage />} />
-        <Route path="/stores" element={<MainStoresPage />} />
+        <Route path="/stores" element={<MainInfoPage />} />
         <Route path="/devices" element={<MainDevicePage />} />
         <Route path="/menus" element={<MainMenuPage />} />
         <Route path="/settings" element={<MainSettingsPage />} />
