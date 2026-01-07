@@ -2,6 +2,7 @@ import { useFormContext } from "react-hook-form";
 import { FormErrorMessage } from "@/components/form/Form";
 import FormField from "@/components/form/FormField";
 import Button from "@/components/ui/Button/Button";
+import type { ResponsiveButtonProps, ScreenSize } from "@/components/ui/Button/Button.types";
 import Dropdown from "@/components/ui/Dropdown";
 import Label from "@/components/ui/Label";
 import Switch from "@/components/ui/Switch";
@@ -32,6 +33,16 @@ function MenuDetailForm({ canEdit, isDetail }: Readonly<MenuDetailFormProps>) {
   const categories = CATEGORIES_MOCK;
 
   const form = useFormContext<MenuSchema>();
+
+  const commonStyle = (): ResponsiveButtonProps["responsiveButtons"][ScreenSize] => {
+    return {
+      buttonSize: "custom",
+      className: cn(
+        "w-fit px-3 h-7 rounded-[40px] text-xs font-normal",
+        isDetail ? "cursor-default!" : "cursor-pointer!"
+      ),
+    };
+  };
 
   return (
     <>
@@ -87,10 +98,8 @@ function MenuDetailForm({ canEdit, isDetail }: Readonly<MenuDetailFormProps>) {
                     isDetail ? "cursor-default!" : "cursor-pointer!"
                   ),
                 },
-                md: {
-                  buttonSize: "custom",
-                  className: "w-fit px-3 h-7 rounded-[40px] text-xs font-normal",
-                },
+                md: commonStyle(),
+                sm: commonStyle(),
               }}
             >
               기본
@@ -110,10 +119,8 @@ function MenuDetailForm({ canEdit, isDetail }: Readonly<MenuDetailFormProps>) {
                         buttonSize: "sm",
                         className: cn("w-fit rounded-[40px]!", !isSelected && "border-gray-500!"),
                       },
-                      md: {
-                        buttonSize: "custom",
-                        className: "w-fit px-3 h-7 rounded-[40px] text-xs font-normal",
-                      },
+                      md: commonStyle(),
+                      sm: commonStyle(),
                     }}
                   >
                     {label}
@@ -133,6 +140,8 @@ function MenuDetailForm({ canEdit, isDetail }: Readonly<MenuDetailFormProps>) {
                 buttonSize: "sm",
                 className: "w-fit rounded-[40px]! cursor-default!",
               },
+              md: commonStyle(),
+              sm: commonStyle(),
             }}
           >
             🌶️
@@ -153,10 +162,8 @@ function MenuDetailForm({ canEdit, isDetail }: Readonly<MenuDetailFormProps>) {
                       form.getValues("spicy") === spicy ? "" : "border-gray-500!"
                     ),
                   },
-                  md: {
-                    buttonSize: "custom",
-                    className: "w-fit px-3 h-7 rounded-[40px] text-xs font-normal",
-                  },
+                  md: commonStyle(),
+                  sm: commonStyle(),
                 }}
               >
                 {`🌶️`.repeat(spicy)}
@@ -179,10 +186,8 @@ function MenuDetailForm({ canEdit, isDetail }: Readonly<MenuDetailFormProps>) {
                   isDetail ? "cursor-default!" : "cursor-pointer!"
                 ),
               },
-              md: {
-                buttonSize: "custom",
-                className: "w-fit px-3 h-7 rounded-[40px] text-xs font-normal",
-              },
+              md: commonStyle(),
+              sm: commonStyle(),
             }}
           >
             기본
@@ -202,10 +207,8 @@ function MenuDetailForm({ canEdit, isDetail }: Readonly<MenuDetailFormProps>) {
                       buttonSize: "sm",
                       className: cn("w-fit rounded-[40px]!", !isSelected && "border-gray-500!"),
                     },
-                    md: {
-                      buttonSize: "custom",
-                      className: "w-fit px-3 h-7 rounded-[40px] text-xs font-normal",
-                    },
+                    md: commonStyle(),
+                    sm: commonStyle(),
                   }}
                 >
                   {state}
@@ -216,9 +219,7 @@ function MenuDetailForm({ canEdit, isDetail }: Readonly<MenuDetailFormProps>) {
         )}
       </div>
       <div className="flex items-center justify-between">
-        <span className="text-gray-0 font-normal md:text-xs lg:text-sm">
-          주방 프린터에 출력하기
-        </span>
+        <span className="text-gray-0 text-xs font-normal lg:text-sm">주방 프린터에 출력하기</span>
         <Switch disabled={!canEdit} checked={form.getValues("printEnabled")} />
       </div>
     </>
