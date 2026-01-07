@@ -41,7 +41,7 @@ function Dropdown({
         <DropdownMenu.Trigger
           disabled={disabled}
           className={cn(
-            "md:text-s flex flex-row items-center border border-gray-600 pr-3 font-normal transition-colors hover:border-gray-500 focus:outline-none disabled:border-gray-600 disabled:bg-gray-700 disabled:text-gray-300 md:h-9 md:rounded-lg md:pl-3 lg:h-12 lg:pl-4 lg:text-sm",
+            "text-s flex h-9! flex-row items-center rounded-lg! border border-gray-500! pr-3 pl-3 font-normal transition-colors hover:border-gray-500 focus:outline-none disabled:border-gray-600 disabled:bg-gray-700 disabled:text-gray-300 lg:h-12 lg:pl-4 lg:text-sm",
             hasError && "border-status-error",
             type === "chip"
               ? "h-9.5 w-fit justify-center gap-2.5 rounded-full"
