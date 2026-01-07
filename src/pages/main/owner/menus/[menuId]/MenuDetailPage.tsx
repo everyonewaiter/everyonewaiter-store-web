@@ -1,6 +1,6 @@
 import { useLocation, useNavigate, useParams } from "react-router-dom";
+import MobileTitle from "@/components/layout/MobileTitle";
 import MenuDetailContent from "@/pages/main/owner/menus/MenuDetailContent";
-import MenuMobileTitle from "@/pages/main/owner/menus/MenuMobileTitle";
 import { MENU_DETAILS_MOCK } from "@/pages/main/owner/menus/mock";
 
 function MenuDetailPage() {
@@ -22,7 +22,7 @@ function MenuDetailPage() {
 
   return (
     <div className="flex flex-col gap-8 px-5 py-6">
-      <MenuMobileTitle />
+      <MobileTitle>메뉴 상세</MobileTitle>
       <MenuDetailContent entry={entry} menu={menu!} close={() => navigate(-1)} isOpen />
     </div>
   );
