@@ -35,6 +35,7 @@ function MenuDetailOptions({
   const text = type === "MANDATORY" ? "필수" : "선택";
   const optionGroupsName = type === "MANDATORY" ? "requiredOptionGroups" : "optionalOptionGroups";
 
+  const [showInfo, setShowInfo] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
   const [selectedPopupMode, setSelectedPopupMode] = useState<"CHANGE_ORDER" | "DELETE" | null>(
     null
@@ -116,15 +117,26 @@ function MenuDetailOptions({
       role="button"
       tabIndex={0}
       className={cn(
-        "flex min-h-0 flex-col justify-start border border-gray-600 bg-transparent md:rounded-xl md:p-4 lg:rounded-3xl lg:p-6",
-        selectedGroup === type ? "flex-1 cursor-default" : "h-fit cursor-pointer"
+        "flex min-h-0 flex-col justify-start rounded-xl border border-gray-600 bg-transparent p-4 lg:rounded-3xl lg:p-6",
+        selectedGroup === type
+          ? "aspect-320/388 cursor-default md:aspect-auto md:flex-1"
+          : "h-fit cursor-pointer"
       )}
       onClick={() => setSelectedGroup(type)}
     >
       <div className="relative flex w-full shrink-0 items-center justify-between">
-        <div className="flex flex-1 items-center md:gap-1.5 lg:gap-2">
-          <span className="text-gray-0 font-medium md:text-sm lg:text-lg">{text} 옵션</span>
-          <Info className="text-gray-0 md:size-5 lg:size-6" />
+        <div className="relative flex flex-1 items-center gap-1.5 lg:gap-2">
+          <span className="text-gray-0 text-sm font-medium lg:text-lg">{text} 옵션</span>
+          <Info
+            className="text-gray-0 size-5 cursor-pointer lg:size-6"
+            onClick={() => setShowInfo((prev) => !prev)}
+          />
+          {showInfo && (
+            <div className="absolute bottom-9 left-7 z-999 rounded-2xl bg-white p-2.5 text-[10px] whitespace-pre-line text-[#505050] drop-shadow-[0px_2px_10px_rgba(0,0,0,0.08)] lg:bottom-11 lg:left-11.5 lg:p-3">
+              {`첫번째 옵션 상세가 기본값으로 설정됩니다.\n순서변경 아이콘 클릭 시 옵션명 및 옵션상세의\n순서를 변경할 수 있습니다.`}
+              <div className="absolute -bottom-3.5 left-6 h-0 w-0 border-t-14 border-r-[14.5px] border-l-[14.5px] border-t-white border-r-transparent border-l-transparent" />
+            </div>
+          )}
         </div>
         {selectedPopupMode === "CHANGE_ORDER" ? (
           <Button
@@ -137,11 +149,11 @@ function MenuDetailOptions({
         ) : (
           <button type="button" onClick={() => canEdit && setShowPopup((prev) => !prev)}>
             {canEdit ? (
-              <Dot className="text-gray-0 md:size-5 lg:size-6" />
+              <Dot className="text-gray-0 size-5 lg:size-6" />
             ) : (
               <ChevronDown
                 className={cn(
-                  "text-gray-0 md:size-5 lg:size-6",
+                  "text-gray-0 size-5 lg:size-6",
                   selectedGroup === type ? "rotate-180" : ""
                 )}
               />
@@ -149,7 +161,7 @@ function MenuDetailOptions({
           </button>
         )}
         {showPopup && (
-          <div className="absolute top-8 right-0 z-999 rounded-[16px] bg-white shadow-[0px_2px_10px_rgba(0,0,0,0.08)] md:p-2.5 lg:p-3">
+          <div className="absolute top-8 right-0 z-999 rounded-[16px] bg-white p-2.5 shadow-[0px_2px_10px_rgba(0,0,0,0.08)] lg:p-3">
             {["CHANGE_ORDER", "DELETE"].map((mode) => {
               const Icon = mode === "CHANGE_ORDER" ? UpsideDown : Trash;
               return (
@@ -157,7 +169,7 @@ function MenuDetailOptions({
                   key={mode}
                   type="button"
                   className={cn(
-                    "md:text-s flex items-center gap-2 rounded-lg font-normal text-gray-100 md:w-29 md:p-2 lg:w-auto lg:p-3 lg:text-[15px]",
+                    "flex w-29 items-center gap-2 rounded-lg p-2 text-[13px] font-normal text-gray-100 lg:w-auto lg:p-3 lg:text-[15px]",
                     selectedPopupMode === mode ? "bg-gray-700" : ""
                   )}
                   onClick={() => {
@@ -169,7 +181,7 @@ function MenuDetailOptions({
                     setShowPopup(false);
                   }}
                 >
-                  <Icon className="size-4.5 text-gray-100" />
+                  <Icon className="size-5 text-gray-100" />
                   {mode === "CHANGE_ORDER" ? "순서 변경" : "옵션 삭제"}
                 </button>
               );
@@ -181,14 +193,14 @@ function MenuDetailOptions({
       {selectedGroup === type && (
         <>
           <div className="h-4 shrink-0" />
-          <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
+          <div className="flex min-h-0 flex-1 flex-col justify-between overflow-hidden md:justify-start">
             {form.watch(optionGroupsName)?.length ? (
               <div className="hide-scrollbar flex min-h-0 flex-col gap-4 overflow-y-auto whitespace-pre-line md:h-79 lg:h-100">
                 {form.watch(optionGroupsName).map((group, index) => (
                   <div className="flex w-full items-center gap-3" key={group.name}>
                     <div
                       className={cn(
-                        "flex w-full flex-col rounded-xl border border-gray-600 md:p-3 lg:p-4",
+                        "flex w-full flex-col rounded-xl border border-gray-600 p-3 lg:p-4",
                         group.menuOptions.length > 0 ? "gap-3" : ""
                       )}
                     >
@@ -202,14 +214,14 @@ function MenuDetailOptions({
                         />
                         <div className="my-4 h-px w-full bg-gray-600" />
                         {group.menuOptions.length > 0 && (
-                          <div className="flex flex-col md:gap-2 lg:gap-3">
+                          <div className="flex flex-col gap-2 lg:gap-3">
                             {group.menuOptions.map((_, optionIndex) => (
                               <div
                                 className="flex items-center gap-2"
                                 key={`${index}-${optionIndex}`}
                               >
                                 <Input
-                                  className="flex-1 border-gray-400 lg:h-12"
+                                  className="flex-1 border-gray-600 md:border-gray-400 lg:h-12"
                                   placeholder="하위 옵션명을 입력해주세요."
                                   {...form.register(
                                     `${type === "MANDATORY" ? "required" : "optional"}OptionGroups.${index}.menuOptions.${optionIndex}.name`
@@ -218,7 +230,7 @@ function MenuDetailOptions({
                                 />
                                 <div className="relative flex-1">
                                   <Input
-                                    className="border-gray-400 lg:h-12 lg:pr-9"
+                                    className="border-gray-600 md:border-gray-400 lg:h-12 lg:pr-9"
                                     placeholder="ex. 33,000"
                                     value={group.menuOptions[optionIndex]?.price || ""}
                                     onChange={(e: ChangeEvent<HTMLInputElement>) => {
@@ -230,7 +242,7 @@ function MenuDetailOptions({
                                     }}
                                     disabled={!canEdit}
                                   />
-                                  <span className="absolute top-1/2 right-4 -translate-y-1/2 text-[15px] font-medium text-[#7C7C7C]">
+                                  <span className="text-s absolute top-1/2 right-4 -translate-y-1/2 font-medium text-[#7C7C7C] md:text-[15px]">
                                     원
                                   </span>
                                 </div>
@@ -263,6 +275,11 @@ function MenuDetailOptions({
                               className:
                                 "h-8! border border-gray-600 bg-[F7F7F7]! gap-1 text-xs font-normal text-gray-100",
                             },
+                            sm: {
+                              buttonSize: "sm",
+                              className:
+                                "h-8! border border-gray-600 bg-[F7F7F7]! gap-1 text-xs font-normal text-gray-100",
+                            },
                           }}
                           onClick={() => handleAddOption(index)}
                         >
@@ -288,7 +305,7 @@ function MenuDetailOptions({
               </div>
             ) : (
               <div className="flex flex-1 items-center justify-center">
-                <span className="font-normal text-gray-300 md:text-xs lg:text-sm">
+                <span className="text-xs font-normal text-gray-300 lg:text-sm">
                   현재 등록된 {text} 옵션이 없습니다.
                 </span>
               </div>
@@ -305,6 +322,10 @@ function MenuDetailOptions({
                       className: "border border-gray-600 rounded-lg w-full",
                     },
                     md: {
+                      buttonSize: "sm",
+                      className: "border border-gray-600 w-full h-8!",
+                    },
+                    sm: {
                       buttonSize: "sm",
                       className: "border border-gray-600 w-full h-8!",
                     },

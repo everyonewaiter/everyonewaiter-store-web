@@ -60,6 +60,7 @@ function CategoryModal({ isOpen, close }: Readonly<ModalProps>) {
               responsiveButtons={{
                 lg: { buttonSize: "xl", className: "w-full outline-none" },
                 md: { buttonSize: "sm", className: "w-full" },
+                sm: { buttonSize: "sm", className: "w-full" },
               }}
             >
               {isCreating ? "저장하기" : "순서 저장하기"}
@@ -72,6 +73,7 @@ function CategoryModal({ isOpen, close }: Readonly<ModalProps>) {
               responsiveButtons={{
                 lg: { buttonSize: "xl", className: "w-30 outline-none" },
                 md: { buttonSize: "sm", className: "w-25" },
+                sm: { buttonSize: "sm", className: "w-25" },
               }}
               onClick={() => (isCreating ? close() : setMode("CREATE"))}
             >
@@ -81,29 +83,20 @@ function CategoryModal({ isOpen, close }: Readonly<ModalProps>) {
         }}
         topRightContent={
           isCreating ? (
-            <Button
-              color="grey"
-              responsive
-              responsiveButtons={{
-                lg: {
-                  buttonSize: "md",
-                  className:
-                    "h-full! rounded-3xl! gap-1.5 items-center text-gray-300 text-sm font-medium px-4!",
-                },
-                md: { buttonSize: "sm", className: "bg-transparent" },
-              }}
+            <button
+              className="flex gap-1.5 text-sm font-medium text-gray-300"
               onClick={() => setMode("CHANGE_ORDER")}
             >
               <UpsideDown className="size-5 text-gray-300" />
               순서변경
-            </Button>
+            </button>
           ) : (
             <></>
           )
         }
       >
         <div className="flex flex-1 flex-col overflow-hidden">
-          <div className="hide-scrollbar flex flex-1 flex-col gap-3 overflow-y-auto md:gap-4">
+          <div className="hide-scrollbar flex flex-1 flex-col gap-3 overflow-y-auto pb-4 md:gap-3 md:pb-0">
             {categories.map((category, index) => (
               <FormField
                 key={category.id}
@@ -118,7 +111,7 @@ function CategoryModal({ isOpen, close }: Readonly<ModalProps>) {
                   <Button
                     variant="outline"
                     className={cn(
-                      "center h-10 w-10 rounded-xl",
+                      "center size-7 rounded-lg md:size-10 md:rounded-xl",
                       isCreating ? "border-status-error" : "border-gray-600"
                     )}
                     onClick={() => {
@@ -130,9 +123,9 @@ function CategoryModal({ isOpen, close }: Readonly<ModalProps>) {
                     }}
                   >
                     {isCreating ? (
-                      <Trash className="text-status-error size-5" />
+                      <Trash className="text-status-error size-5 md:size-6" />
                     ) : (
-                      <DragDrop className="size-6 text-gray-100" />
+                      <DragDrop className="size-5 text-gray-100 md:size-6" />
                     )}
                   </Button>
                 }
@@ -151,6 +144,10 @@ function CategoryModal({ isOpen, close }: Readonly<ModalProps>) {
                   className: "mt-4 w-full border-dashed font-normal!",
                 },
                 md: {
+                  buttonSize: "sm",
+                  className: "w-full border-dashed rounded-xl!",
+                },
+                sm: {
                   buttonSize: "sm",
                   className: "w-full border-dashed rounded-xl!",
                 },
