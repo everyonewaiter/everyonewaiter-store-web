@@ -18,6 +18,7 @@ import GuestCreatePage from "@/pages/main/guest/create/GuestCreatePage";
 import GuestPage from "@/pages/main/guest/GuestPage";
 import MainDevicePage from "@/pages/main/owner/devices/MainDevicePage";
 import MainInfoPage from "@/pages/main/owner/info/MainInfoPage";
+import MenuDetailPage from "@/pages/main/owner/menus/[menuId]/MenuDetailPage";
 import MainMenuCategoryPage from "@/pages/main/owner/menus/category/MainMenuCategoryPage";
 import MainMenuPage from "@/pages/main/owner/menus/MainMenuPage";
 import MainSettingsPage from "@/pages/main/owner/settings/MainSettingsPage";
@@ -52,6 +53,7 @@ const router = createBrowserRouter(
         <Route path="/devices" element={<MainDevicePage />} />
         <Route path="/menus" element={<MainMenuPage />} />
         <Route path="/menus/category" element={<MainMenuCategoryPage />} />
+        <Route path="/menus/:menuId" element={<MenuDetailPage />} />
         <Route path="/settings" element={<MainSettingsPage />} />
       </Route>
       <Route path="/guest/application" element={<GuestApplicationPage />} />
