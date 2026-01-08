@@ -58,7 +58,7 @@ function MainMenuPage() {
   };
 
   return hasCategory ? (
-    <div className="w-full overflow-x-hidden px-5 py-4.5 md:px-0">
+    <div className="hide-scrollbar w-full overflow-x-hidden px-5 py-4.5 md:px-0">
       <MobileTitle>메뉴 관리</MobileTitle>
       <div className="flex w-full shrink-0 flex-col justify-between gap-5 py-5 md:pt-6 md:pb-2 lg:flex-row lg:items-center">
         <div className="hide-scrollbar flex flex-1 shrink-0 items-center gap-1 overflow-x-auto md:gap-2 lg:gap-3">
