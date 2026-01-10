@@ -5,7 +5,7 @@ export type StoreStatus = "OPEN" | "CLOSE";
 
 export interface StoreApplication {
   registrationId: string;
-  accountid: string;
+  accountId: string;
   name: string;
   ceoName: string;
   address: string;
