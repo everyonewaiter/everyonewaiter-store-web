@@ -99,13 +99,7 @@ function MenuDetailContent({ entry, menu, close }: Readonly<MenuDetailContentPro
 
   return (
     <Form {...form}>
-      <form
-        onSubmit={(e) => {
-          console.log("Form submitted!", e);
-          handleSubmit(e);
-        }}
-        className="flex flex-col gap-5 lg:gap-8"
-      >
+      <form onSubmit={handleSubmit} className="flex flex-col gap-5 lg:gap-8">
         <div className="flex justify-between">
           <div className="flex flex-1 flex-col gap-1 lg:gap-3">
             <h1 className="text-gray-0 text-lg font-semibold lg:text-2xl">메뉴 정보</h1>
