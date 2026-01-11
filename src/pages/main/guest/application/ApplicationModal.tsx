@@ -22,9 +22,15 @@ const formType = createStoreSchema.omit({ file: true }).extend({
 
 interface ApplicationModalProps extends ModalProps {
   application: StoreApplication;
+  showReapplyButton?: boolean;
 }
 
-function ApplicationModal({ application, isOpen, close }: Readonly<ApplicationModalProps>) {
+function ApplicationModal({
+  application,
+  isOpen,
+  close,
+  showReapplyButton = false,
+}: Readonly<ApplicationModalProps>) {
   const [isEditing, setIsEditing] = useState(false);
 
   const form = useForm<z.infer<typeof formType>>({
@@ -61,7 +67,7 @@ function ApplicationModal({ application, isOpen, close }: Readonly<ApplicationMo
         onOpenChange={(open) => !open && close()}
         footerContent={{
           action:
-            application.status === "REJECT" ? (
+            application.status === "REJECT" && showReapplyButton ? (
               <Button
                 color={isEditing ? "primary" : "black"}
                 responsive
