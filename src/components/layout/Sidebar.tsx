@@ -75,9 +75,9 @@ function Sidebar({ onLinkClick }: Readonly<SidebarProps>) {
             dropdownItems={STORES_MOCK.filter((store) => store.id !== selectedStore.id)}
             defaultText={STORES_MOCK[0].name}
             triggerClassName={
-              "bg-primary border-primary text-white text-[15px] font-semibold lg:text-lg lg:font-bold pl-4 pr-3 lg:pl-5 pr-4 h-12 lg:h-14 w-full min-w-0"
+              "bg-primary border-primary text-white text-[15px] font-semibold lg:text-lg lg:font-bold pl-4 pr-3 lg:pl-5 pr-4 h-12 lg:h-14 w-full min-w-0 overflow-hidden text-ellipsis whitespace-nowrap"
             }
-            iconClassName="text-white"
+            iconClassName="text-white shrink-0"
           />
         </div>
         <nav>
