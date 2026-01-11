@@ -49,10 +49,12 @@ function Dropdown({
             triggerClassName
           )}
         >
-          {selectedItem ? selectedItem.name : defaultText}
+          <span className="min-w-0 flex-1 overflow-hidden text-left text-ellipsis whitespace-nowrap">
+            {selectedItem ? selectedItem.name : defaultText}
+          </span>
           <ChevronRight
             className={cn(
-              `h-6 w-6 rotate-90 transition-transform duration-500`,
+              `h-6 w-6 shrink-0 rotate-90 transition-transform duration-500`,
               isOpen && "rotate-270",
               type === "default" ? "text-gray-300" : "text-gray-0",
               iconClassName
