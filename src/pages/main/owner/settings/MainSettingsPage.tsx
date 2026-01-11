@@ -126,7 +126,7 @@ function MainSettingsPage() {
                   </p>
                 )}
             </SettingsSection>
-            <SettingsSection title="테이블">
+            <SettingsSection title="POS">
               <p className="text-sm font-medium text-gray-100">추가 테이블 수</p>
               <div className="flex items-center gap-1.5">
                 <Input
@@ -160,15 +160,17 @@ function MainSettingsPage() {
                 {form.formState.errors.extraTableCount?.message}
               </FormErrorMessage>
             </SettingsSection>
+            <SettingsSection title="홀">
+              <SettingsSwitchItem
+                propName="showOrderMenuImage"
+                label="홀 주문 내역에서 메뉴 이미지 표시하기"
+              />
+            </SettingsSection>
             <SettingsSection title="주문">
               <SettingsSwitchItem propName="showMenuPopup" label="손님 테이블 메뉴 팝업창 띄우기" />
               <SettingsSwitchItem
                 propName="showOrderTotalPrice"
                 label="손님 테이블 주문 내역에서 총 주문금액 표시하기"
-              />
-              <SettingsSwitchItem
-                propName="showOrderMenuImage"
-                label="홀 주문 내역에서 메뉴 이미지 표시하기"
               />
               <div className="flex flex-col gap-3">
                 <label
