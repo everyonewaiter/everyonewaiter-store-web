@@ -166,7 +166,7 @@ function MainSettingsPage() {
                 label="홀 주문 내역에서 메뉴 이미지 표시하기"
               />
             </SettingsSection>
-            <SettingsSection title="주문">
+            <SettingsSection title="주문" className="pb-5">
               <SettingsSwitchItem propName="showMenuPopup" label="손님 테이블 메뉴 팝업창 띄우기" />
               <SettingsSwitchItem
                 propName="showOrderTotalPrice"
