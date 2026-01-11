@@ -24,3 +24,5 @@ dist-ssr
 
 src/components/icons/__svgs__
 src/components/icons/index.tsx
+
+.env
