@@ -1,12 +1,11 @@
 export type ApplicationStatus = "APPLY" | "REJECT" | "APPROVE" | "REAPPLY";
 
 export type PrinterLocation = "POS" | "HALL";
-
 export type StoreStatus = "OPEN" | "CLOSE";
 
 export interface StoreApplication {
   registrationId: string;
-  accountid: string;
+  accountId: string;
   name: string;
   ceoName: string;
   address: string;
