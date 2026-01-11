@@ -5,7 +5,6 @@ import { Form, FormErrorMessage } from "@/components/form/Form";
 import { Info, Plus } from "@/components/icons";
 import Button from "@/components/ui/Button/Button";
 import Input from "@/components/ui/Input";
-import Label from "@/components/ui/Label";
 import cn from "@/lib/utils";
 import SettingsSection from "@/pages/main/owner/settings/SettingsSection";
 import SettingsStaffCallChip from "@/pages/main/owner/settings/SettingsStaffCallChip";
@@ -37,6 +36,7 @@ function MainSettingsPage() {
 
   const handleAddStaffCallOption = () => {
     // TODO: 직원 호출 옵션 추가 로직
+    form.trigger("staffCallOptions");
   };
 
   const handleChangePrinterLocation = (location: PrinterLocation) => {
@@ -46,16 +46,17 @@ function MainSettingsPage() {
 
   const handleRegisterDeviceNumber = () => {
     // TODO: 기기 번호 등록 로직
+    form.trigger("ksnetDeviceNo");
+  };
+
+  const handleRegisterExtraTableCount = () => {
+    // TODO: 추가 테이블 수 등록 로직
+    form.trigger("extraTableCount");
   };
 
   return (
     <Form {...form}>
-      <div
-        className={cn(
-          "flex h-full w-full flex-col items-center bg-white md:justify-center",
-          staffCallOptions.length > 5 && "py-8 md:justify-start"
-        )}
-      >
+      <div className="flex h-full w-full flex-col items-center justify-start bg-white md:py-8 lg:py-10">
         <div className="flex w-full flex-col gap-8 px-5 pt-6 md:w-95 md:px-0 md:pt-0 lg:w-120">
           <h2 className="text-gray-0 text-lg font-semibold md:hidden md:text-2xl lg:block">설정</h2>
           <div className="flex flex-col gap-6">
@@ -115,12 +116,49 @@ function MainSettingsPage() {
                   등록
                 </Button>
               </div>
-              <FormErrorMessage className="mb-[1.5px]" />
-              {deviceNo?.startsWith("DPTOTEST") && (
-                <p className="-mt-1 flex gap-1 text-xs text-gray-400 lg:text-xs">
-                  <Info className="mt-px size-4" /> 테스트용 기기입니다.
-                </p>
-              )}
+              <FormErrorMessage className="mb-[1.5px]">
+                {form.formState.errors.ksnetDeviceNo?.message}
+              </FormErrorMessage>
+              {!form.formState.errors.ksnetDeviceNo?.message &&
+                deviceNo?.startsWith("DPTOTEST") && (
+                  <p className="-mt-1 flex gap-1 text-xs text-gray-400 lg:text-xs">
+                    <Info className="mt-px size-4" /> 테스트용 기기입니다.
+                  </p>
+                )}
+            </SettingsSection>
+            <SettingsSection title="테이블">
+              <p className="text-sm font-medium text-gray-100">추가 테이블 수</p>
+              <div className="flex items-center gap-1.5">
+                <Input
+                  type="number"
+                  placeholder="추가 테이블 수 입력해주세요"
+                  className="h-8! rounded-[10px]! py-1.5! text-xs! lg:h-9!"
+                  {...form.register("extraTableCount", {
+                    setValueAs: (value) => (value === "" ? 0 : Number(value)),
+                  })}
+                />
+                <Button
+                  color="black"
+                  responsive
+                  responsiveButtons={{
+                    lg: { buttonSize: "sm", className: "text-s! gap-0!" },
+                    md: {
+                      buttonSize: "custom",
+                      className: "h-8! w-fit! px-4! rounded-lg! text-s! ",
+                    },
+                    sm: {
+                      buttonSize: "custom",
+                      className: "h-8! w-fit! px-4! rounded-lg! text-s!",
+                    },
+                  }}
+                  onClick={handleRegisterExtraTableCount}
+                >
+                  등록
+                </Button>
+              </div>
+              <FormErrorMessage className="mb-[1.5px]">
+                {form.formState.errors.extraTableCount?.message}
+              </FormErrorMessage>
             </SettingsSection>
             <SettingsSection title="주문">
               <SettingsSwitchItem propName="showMenuPopup" label="손님 테이블 메뉴 팝업창 띄우기" />
@@ -132,37 +170,6 @@ function MainSettingsPage() {
                 propName="showOrderMenuImage"
                 label="홀 주문 내역에서 메뉴 이미지 표시하기"
               />
-              <div className="flex flex-col gap-3">
-                <Label className="flex items-end gap-2.5 text-sm font-normal">
-                  추가 테이블 수 설정
-                </Label>
-                <div className="flex items-center gap-1.5">
-                  <Input
-                    type="number"
-                    placeholder="테이블 수를 입력해주세요"
-                    className="h-8! rounded-[10px]! py-1.5! text-xs! lg:h-9!"
-                    {...form.register("extraTableCount")}
-                  />
-                  <Button
-                    color="black"
-                    responsive
-                    responsiveButtons={{
-                      lg: { buttonSize: "sm", className: "text-s! gap-0!" },
-                      md: {
-                        buttonSize: "custom",
-                        className: "h-8! w-fit! px-4! rounded-lg! text-s! ",
-                      },
-                      sm: {
-                        buttonSize: "custom",
-                        className: "h-8! w-fit! px-4! rounded-lg! text-s!",
-                      },
-                    }}
-                    onClick={handleRegisterDeviceNumber}
-                  >
-                    등록
-                  </Button>
-                </div>
-              </div>
               <div className="flex flex-col gap-3">
                 <label
                   htmlFor="staff-call-options"
@@ -198,6 +205,9 @@ function MainSettingsPage() {
                     추가
                   </Button>
                 </div>
+                <FormErrorMessage className="mb-[1.5px]">
+                  {form.formState.errors.staffCallOptions?.message}
+                </FormErrorMessage>
               </div>
               <div className="flex flex-wrap gap-x-3 gap-y-3 lg:gap-x-2 lg:gap-y-2">
                 {staffCallOptions.map((option) => (
