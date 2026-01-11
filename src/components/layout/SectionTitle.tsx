@@ -7,23 +7,25 @@ function SectionTitle() {
   const buttonRef = useRef<HTMLButtonElement>(null);
 
   const getText = () => {
-    switch (location.pathname) {
-      case "/stores":
-        return "매장 정보";
-      case "/devices":
-        return "기기 관리";
-      case "/menus":
-        return "메뉴 관리";
-      case "/settings":
-        return "설정";
-      default:
-        return "매장 신청 현황";
+    const pathname = location.pathname;
+    if (pathname === "/") {
+      return "매장 등록 현황";
+    } else if (pathname === "/stores") {
+      return "매장 정보";
+    } else if (pathname === "/devices") {
+      return "기기 관리";
+    } else if (pathname === "/menus") {
+      return "메뉴 관리";
+    } else if (pathname === "/settings") {
+      return "설정";
     }
   };
 
   const handleOpenUser = () => {
     // TODO: 유저 액션 모달 구현
   };
+
+  if (!getText()) return null;
 
   return (
     <div className="relative hidden flex-col md:flex md:gap-2 lg:gap-5">
