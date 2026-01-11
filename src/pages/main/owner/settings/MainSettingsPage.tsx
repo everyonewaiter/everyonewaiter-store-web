@@ -127,7 +127,7 @@ function MainSettingsPage() {
                 )}
             </SettingsSection>
             <SettingsSection title="POS">
-              <p className="text-sm font-medium text-gray-100">추가 테이블 수</p>
+              <p className="text-sm font-medium text-gray-100">추가 테이블 수 설정</p>
               <div className="flex items-center gap-1.5">
                 <Input
                   type="number"
