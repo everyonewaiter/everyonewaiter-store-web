@@ -3,7 +3,7 @@ import type { StoreApplication } from "@/types/domain/store";
 export const storeApplicationMock: StoreApplication[] = [
   {
     registrationId: "1",
-    accountid: "1",
+    accountId: "1",
     name: "매장명",
     ceoName: "대표자명",
     address: "서울특별시 강남구 역삼동",
@@ -18,7 +18,7 @@ export const storeApplicationMock: StoreApplication[] = [
 
   {
     registrationId: "3",
-    accountid: "3",
+    accountId: "3",
     name: "매장명",
     ceoName: "대표자명",
     address: "서울특별시 강남구 역삼동",
@@ -32,7 +32,7 @@ export const storeApplicationMock: StoreApplication[] = [
   },
   {
     registrationId: "4",
-    accountid: "4",
+    accountId: "4",
     name: "매장명",
     ceoName: "대표자명",
     address: "서울특별시 강남구 역삼동",
@@ -46,7 +46,7 @@ export const storeApplicationMock: StoreApplication[] = [
   },
   {
     registrationId: "2",
-    accountid: "2",
+    accountId: "2",
     name: "매장명",
     ceoName: "대표자명",
     address: "서울특별시 강남구 역삼동",
