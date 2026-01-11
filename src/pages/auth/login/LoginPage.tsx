@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
-import logoTextHorizontal from "@/assets/images/logo-text-horizontal.svg";
+import logoTextVertical from "@/assets/images/logo-text-vertical.svg";
 import { Form } from "@/components/form/Form";
 import FormField from "@/components/form/FormField";
 import Button from "@/components/ui/Button/Button";
@@ -25,11 +25,7 @@ function LoginPage() {
 
   return (
     <>
-      <img
-        src={logoTextHorizontal}
-        alt="logo text horizontal"
-        className="w-40 max-w-50 md:w-[37%]"
-      />
+      <img src={logoTextVertical} alt="logo text vertical" className="w-40 max-w-50 md:w-[37%]" />
       <Form {...form}>
         <form className="flex flex-col gap-3 md:w-73 lg:w-108 lg:gap-4" onSubmit={handleSubmit}>
           <div className="mb-6 flex flex-col gap-3 lg:mb-8 lg:gap-4">
