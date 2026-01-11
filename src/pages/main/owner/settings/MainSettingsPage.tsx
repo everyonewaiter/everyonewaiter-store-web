@@ -2,7 +2,7 @@ import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, useWatch } from "react-hook-form";
 import { Form, FormErrorMessage } from "@/components/form/Form";
-import { Info, Plus } from "@/components/icons";
+import { Info } from "@/components/icons";
 import Button from "@/components/ui/Button/Button";
 import Input from "@/components/ui/Input";
 import cn from "@/lib/utils";
@@ -203,7 +203,6 @@ function MainSettingsPage() {
                     }}
                     onClick={handleAddStaffCallOption}
                   >
-                    <Plus className="size-5 text-white" />
                     추가
                   </Button>
                 </div>
