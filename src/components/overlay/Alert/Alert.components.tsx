@@ -5,8 +5,7 @@ import {
   type HTMLAttributes,
 } from "react";
 import * as AlertDialogPrimitive from "@radix-ui/react-alert-dialog";
-import Button from "@/components/ui/Button/Button";
-import type { ButtonColor } from "@/components/ui/Button/Button.types";
+import Button, { type ButtonProps } from "@/components/ui/Button/Button";
 import cn from "@/lib/utils";
 
 const AlertDialog = AlertDialogPrimitive.Root;
@@ -75,24 +74,20 @@ AlertDialogTitle.displayName = AlertDialogPrimitive.Title.displayName;
 
 const AlertDialogAction = forwardRef<
   ComponentRef<typeof AlertDialogPrimitive.Action>,
-  ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Action> & {
-    color?: ButtonColor;
-  }
+  ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Action> & ButtonProps
 >(({ ...props }, ref) => (
-  <AlertDialogPrimitive.Action ref={ref} className="flex-1" asChild>
-    <Button type="button" className="button-xl w-full" {...props} />
+  <AlertDialogPrimitive.Action ref={ref} asChild>
+    <Button type="button" {...props} />
   </AlertDialogPrimitive.Action>
 ));
 AlertDialogAction.displayName = AlertDialogPrimitive.Action.displayName;
 
 const AlertDialogCancel = forwardRef<
   ComponentRef<typeof AlertDialogPrimitive.Cancel>,
-  ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Cancel> & {
-    color?: ButtonColor;
-  }
+  ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Cancel> & ButtonProps
 >(({ ...props }, ref) => (
-  <AlertDialogPrimitive.Cancel ref={ref} className="flex-1" asChild>
-    <Button type="button" className="button-xl w-full" {...props} />
+  <AlertDialogPrimitive.Cancel ref={ref} asChild>
+    <Button type="button" {...props} />
   </AlertDialogPrimitive.Cancel>
 ));
 AlertDialogCancel.displayName = AlertDialogPrimitive.Cancel.displayName;

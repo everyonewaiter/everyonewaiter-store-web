@@ -15,10 +15,28 @@ function MenuDeleteAlert({ close }: Readonly<Pick<AlertProps, "close">>) {
       </Alert.Header>
 
       <Alert.Footer>
-        <Alert.Cancel color="grey" onClick={close} className="button-sm md:button-lg flex-[0.4]">
+        <Alert.Cancel
+          color="grey"
+          onClick={close}
+          responsive
+          responsiveButtons={{
+            sm: { buttonSize: "sm", className: "w-full" },
+            md: { buttonSize: "lg", className: "w-full" },
+            lg: { buttonSize: "lg", className: "w-full" },
+          }}
+        >
           닫기
         </Alert.Cancel>
-        <Alert.Action color="primary" onClick={handleConfirm} className="button-sm md:button-lg">
+        <Alert.Action
+          color="primary"
+          responsive
+          responsiveButtons={{
+            sm: { buttonSize: "sm", className: "w-full" },
+            md: { buttonSize: "lg", className: "w-full" },
+            lg: { buttonSize: "lg", className: "w-full" },
+          }}
+          onClick={handleConfirm}
+        >
           삭제
         </Alert.Action>
       </Alert.Footer>
