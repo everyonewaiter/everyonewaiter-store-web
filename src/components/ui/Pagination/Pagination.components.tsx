@@ -1,6 +1,11 @@
 import type { ComponentProps } from "react";
-import { ChevronLeft, ChevronRight } from "@/components/icons";
-import { buttonVariants } from "@/components/ui/Button/Button.styles";
+import {
+  ChevronLeft,
+  ChevronRight,
+  ChevronDoubleLeft,
+  ChevronDoubleRight,
+} from "@/components/icons";
+import Button, { type ButtonProps } from "@/components/ui/Button/Button";
 import cn from "@/lib/utils";
 
 function Pagination({ className, ...props }: Readonly<ComponentProps<"nav">>) {
@@ -9,7 +14,7 @@ function Pagination({ className, ...props }: Readonly<ComponentProps<"nav">>) {
       role="navigation"
       aria-label="pagination"
       data-slot="pagination"
-      className={cn("mx-auto flex w-full justify-center", className)}
+      className={cn("mx-auto hidden w-full justify-center md:flex", className)}
       {...props}
     />
   );
@@ -19,7 +24,7 @@ function PaginationContent({ className, ...props }: Readonly<ComponentProps<"ul"
   return (
     <ul
       data-slot="pagination-content"
-      className={cn("flex flex-row items-center gap-1", className)}
+      className={cn("flex flex-row items-center gap-3", className)}
       {...props}
     />
   );
@@ -29,59 +34,73 @@ function PaginationItem({ ...props }: Readonly<ComponentProps<"li">>) {
   return <li data-slot="pagination-item" {...props} />;
 }
 
-type PaginationLinkProps = {
-  isActive?: boolean;
-} & ComponentProps<"a">;
+type PaginationLinkProps = ButtonProps;
 
-function PaginationLink({
-  className,
-  isActive,
-  children,
-  "aria-label": ariaLabel,
-  ...props
-}: PaginationLinkProps) {
-  const defaultAriaLabel = isActive ? "Current page" : "Go to page";
-  const finalAriaLabel = ariaLabel || (children ? undefined : defaultAriaLabel);
-
+function PaginationLink({ className, children, ...props }: PaginationLinkProps) {
   return (
-    <a
-      aria-current={isActive ? "page" : undefined}
-      aria-label={finalAriaLabel}
-      data-slot="pagination-link"
-      data-active={isActive}
+    <Button
+      color="black"
+      variant="ghost"
+      type="button"
       className={cn(
-        buttonVariants({
-          variant: isActive ? "outline" : "ghost",
-        }),
+        "flex cursor-pointer items-center justify-center rounded-sm md:h-5 md:min-w-5 lg:h-6 lg:min-w-6",
         className
       )}
       {...props}
-    />
+    >
+      {children}
+    </Button>
   );
 }
 
-function PaginationPrevious({ className, ...props }: ComponentProps<typeof PaginationLink>) {
+type PaginationPreviousProps = {
+  hasPrevPage?: boolean;
+  iconClassName?: string;
+} & ComponentProps<typeof PaginationLink>;
+
+function PaginationPrevious({ className, iconClassName, ...props }: PaginationPreviousProps) {
   return (
-    <PaginationLink
-      aria-label="Go to previous page"
-      className={cn("gap-1 px-2.5 sm:pl-2.5", className)}
-      {...props}
-    >
-      <ChevronLeft />
-      <span className="hidden sm:block">Previous</span>
+    <PaginationLink aria-label="Go to previous page" className={className} {...props}>
+      <ChevronLeft className={cn("text-gray-400 md:size-5 lg:size-6", iconClassName)} />
     </PaginationLink>
   );
 }
 
-function PaginationNext({ className, ...props }: ComponentProps<typeof PaginationLink>) {
+type PaginationNextProps = {
+  hasNextPage?: boolean;
+  iconClassName?: string;
+} & ComponentProps<typeof PaginationLink>;
+
+function PaginationNext({ className, iconClassName, ...props }: PaginationNextProps) {
   return (
-    <PaginationLink
-      aria-label="Go to next page"
-      className={cn("gap-1 px-2.5 sm:pr-2.5", className)}
-      {...props}
-    >
-      <span className="hidden sm:block">Next</span>
-      <ChevronRight />
+    <PaginationLink aria-label="Go to next page" className={className} {...props}>
+      <ChevronRight className={cn("text-gray-400 md:size-5 lg:size-6", iconClassName)} />
+    </PaginationLink>
+  );
+}
+
+type PaginationFastPrevProps = {
+  hasPrevPage?: boolean;
+  iconClassName?: string;
+} & ComponentProps<typeof PaginationLink>;
+
+function PaginationFastPrev({ className, iconClassName, ...props }: PaginationFastPrevProps) {
+  return (
+    <PaginationLink aria-label="Go to fast backward page" className={className} {...props}>
+      <ChevronDoubleLeft className={cn("text-gray-500 md:size-5 lg:size-6", iconClassName)} />
+    </PaginationLink>
+  );
+}
+
+type PaginationFastNextProps = {
+  hasNextPage?: boolean;
+  iconClassName?: string;
+} & ComponentProps<typeof PaginationLink>;
+
+function PaginationFastNext({ className, iconClassName, ...props }: PaginationFastNextProps) {
+  return (
+    <PaginationLink aria-label="Go to fast forward page" className={className} {...props}>
+      <ChevronDoubleRight className={cn("text-gray-500 md:size-5 lg:size-6", iconClassName)} />
     </PaginationLink>
   );
 }
@@ -93,4 +112,6 @@ export {
   PaginationItem,
   PaginationPrevious,
   PaginationNext,
+  PaginationFastPrev,
+  PaginationFastNext,
 };
