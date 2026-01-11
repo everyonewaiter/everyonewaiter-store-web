@@ -16,7 +16,10 @@ const settingsSchema = z.object({
     })
   ),
   staffCallOptions: z.array(z.string()),
-  extraTableCount: z.number().min(0, "추가 테이블 수는 0 이상이어야 합니다."),
+  extraTableCount: z
+    .number()
+    .min(0, "추가 테이블 수는 0 이상이어야 합니다.")
+    .max(10, "추가 테이블 수는 10 이하이어야 합니다."),
 });
 
 type SettingsSchema = z.infer<typeof settingsSchema>;
