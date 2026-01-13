@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export const instance = axios.create({
-  baseURL: `${import.meta.env.VITE_API_URL}/api/v1`,
+  baseURL: `${import.meta.env.VITE_API_BASE_URL}/v1`,
   headers: {
     "Content-Type": "application/json",
   },
@@ -23,3 +23,10 @@ instance.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+
+export const publicInstance = axios.create({
+  baseURL: `${import.meta.env.VITE_API_BASE_URL}/v1`,
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
