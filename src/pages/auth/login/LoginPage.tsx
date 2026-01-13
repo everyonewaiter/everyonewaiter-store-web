@@ -1,13 +1,25 @@
+import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
+import { accountMutations } from "@/api/account/mutations";
 import logoTextVertical from "@/assets/images/logo-text-vertical.svg";
+import Spinner from "@/components/feedback/Spinner";
 import { Form } from "@/components/form/Form";
 import FormField from "@/components/form/FormField";
 import Button from "@/components/ui/Button/Button";
+import { errorResponse } from "@/lib/error-response";
 import { loginSchema, type LoginSchema } from "@/schema/auth/login.schema";
 
 function LoginPage() {
+  const navigate = useNavigate();
+  const { mutate: login } = useMutation(accountMutations.signIn());
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const form = useForm<LoginSchema>({
     mode: "onSubmit",
     reValidateMode: "onChange",
@@ -18,9 +30,34 @@ function LoginPage() {
     },
   });
 
-  const handleSubmit = form.handleSubmit(() => {
-    // TODO: 로그인 요청
-    // TODO: 로그인 요청 후 실패 시 이메일 인증이 되지 않았다면 /email?type=not-verified로 이동
+  const handleSubmit = form.handleSubmit((values: LoginSchema) => {
+    setIsSubmitting(true);
+
+    login(
+      {
+        email: values.email,
+        password: values.password,
+      },
+      {
+        onSuccess: (data) => {
+          localStorage.setItem("accessToken", data.accessToken);
+        },
+        onError: (error) => {
+          setIsSubmitting(false);
+
+          const { code, message } = errorResponse(error);
+
+          if (code === "NOT_COMPLETE_EMAIL_VERIFICATION") {
+            toast.error(message);
+            navigate("/email?type=not-verified");
+            return;
+          }
+
+          form.setError("email", { message });
+          form.setError("password", { message });
+        },
+      }
+    );
   });
 
   return (
@@ -52,8 +89,9 @@ function LoginPage() {
                 md: { buttonSize: "sm" },
                 lg: { buttonSize: "lg" },
               }}
+              disabled={isSubmitting}
             >
-              로그인
+              {isSubmitting ? <Spinner /> : "로그인"}
             </Button>
             <p className="text-s text-center text-gray-300 lg:text-sm">
               계정이 없으신가요? 간편하게{" "}
