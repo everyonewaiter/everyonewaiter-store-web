@@ -1,8 +1,27 @@
+import { useEffect, useState } from "react";
 import Lottie from "lottie-react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import success from "@/assets/json/success.json";
 import Button from "@/components/ui/Button/Button";
 
 function SignupResultPage() {
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const email = searchParams.get("email");
+
+  const [leftTime, setLeftTime] = useState(3);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (leftTime > 1) {
+        setLeftTime(leftTime - 1);
+      } else {
+        navigate("/login");
+      }
+    }, 1000);
+    return () => clearTimeout(timer);
+  }, [leftTime, navigate]);
+
   return (
     <div className="flex h-full w-full flex-col items-center justify-center gap-6 text-center md:w-[292px] lg:w-[432px] lg:gap-10">
       <Lottie
@@ -40,7 +59,7 @@ function SignupResultPage() {
           },
         }}
       >
-        asdfkjhlkasdjfhl@gmail.com
+        {email}
       </Button>
       <div className="flex flex-col gap-2 text-center md:hidden">
         <span className="text-base font-medium text-[#191919]">
@@ -49,6 +68,9 @@ function SignupResultPage() {
         <span className="text-sm font-normal text-gray-300">
           메일 수신이 되지 않았다면, 스팸 메일함을 확인해주세요.
         </span>
+      </div>
+      <div className="text-sm font-normal text-gray-300">
+        {leftTime}초 뒤 로그인 화면으로 돌아갑니다.
       </div>
     </div>
   );
