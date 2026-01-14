@@ -8,14 +8,24 @@ interface MenuCardProps {
   isChecked: boolean;
   onCheckedChange: () => void;
   onClick: () => void;
+  className?: string;
+  disabled?: boolean;
 }
 
-function MenuCard({ menu, isChecked, onCheckedChange, onClick }: Readonly<MenuCardProps>) {
+function MenuCard({
+  menu,
+  isChecked,
+  onCheckedChange,
+  onClick,
+  className,
+  disabled,
+}: Readonly<MenuCardProps>) {
   return (
     <div
       className={cn(
         "relative aspect-152/210 cursor-pointer overflow-hidden rounded-xl md:aspect-159/220 lg:aspect-329/440 lg:rounded-3xl",
-        isChecked && "outline-primary outline"
+        isChecked && "outline-primary outline",
+        className
       )}
       onKeyDown={(e) => {
         if (e.key === "Enter" || e.key === " ") {
@@ -27,18 +37,20 @@ function MenuCard({ menu, isChecked, onCheckedChange, onClick }: Readonly<MenuCa
       onClick={onClick}
     >
       <img src={loginBg} alt={menu.name} className="h-full w-full object-cover" draggable="false" />
-      <div
-        className="absolute top-2.5 left-2.5 z-10 lg:top-4 lg:left-4"
-        role="presentation"
-        onClick={(e) => e.stopPropagation()}
-        onKeyDown={(e) => e.stopPropagation()}
-      >
-        <Checkbox
-          className="size-6 lg:size-8"
-          checked={isChecked}
-          onCheckedChange={onCheckedChange}
-        />
-      </div>
+      {!disabled && (
+        <div
+          className="absolute top-2.5 left-2.5 z-10 lg:top-4 lg:left-4"
+          role="presentation"
+          onClick={(e) => e.stopPropagation()}
+          onKeyDown={(e) => e.stopPropagation()}
+        >
+          <Checkbox
+            className="size-6 lg:size-8"
+            checked={isChecked}
+            onCheckedChange={onCheckedChange}
+          />
+        </div>
+      )}
       <div className="absolute bottom-1.5 w-full px-1.5 md:bottom-1 md:px-1 lg:bottom-2 lg:px-2">
         <div className="flex flex-col gap-1 rounded-xl bg-white p-2 md:gap-0.5 md:p-3 lg:gap-2 lg:rounded-[20px] lg:px-5 lg:py-4">
           {(menu.state !== "DEFAULT" || menu.label !== "DEFAULT") && (
