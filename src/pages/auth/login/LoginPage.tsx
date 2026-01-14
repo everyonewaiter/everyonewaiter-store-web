@@ -41,11 +41,20 @@ function LoginPage() {
       {
         onSuccess: (data) => {
           localStorage.setItem("accessToken", data.accessToken);
+          navigate("/");
         },
         onError: (error) => {
           setIsSubmitting(false);
+          const {
+            status,
+            data: { code, message },
+          } = errorResponse(error);
 
-          const { code, message } = errorResponse(error);
+          if (status === 400 || code === "FAILED_SIGN_IN") {
+            form.setError("email", { message });
+            form.setError("password", { message });
+            return;
+          }
 
           if (code === "NOT_COMPLETE_EMAIL_VERIFICATION") {
             toast.error(message);
@@ -53,8 +62,7 @@ function LoginPage() {
             return;
           }
 
-          form.setError("email", { message });
-          form.setError("password", { message });
+          toast.error(message || "로그인 중 오류가 발생했습니다.");
         },
       }
     );
