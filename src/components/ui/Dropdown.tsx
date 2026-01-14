@@ -40,14 +40,14 @@ function Dropdown({
       <DropdownMenu.Root open={isOpen} onOpenChange={disabled ? undefined : setIsOpen} {...props}>
         <DropdownMenu.Trigger
           className={cn(
-            "flex h-12 flex-row items-center border border-gray-600 pr-3 pl-4 text-sm font-normal transition-colors hover:border-gray-500 focus:outline-none disabled:border-gray-600 disabled:bg-gray-700 disabled:text-gray-300",
+            "text-s flex h-9! cursor-pointer flex-row items-center rounded-lg! border border-gray-600 pr-3 pl-3 font-normal transition-colors hover:border-gray-500 focus:outline-none disabled:cursor-default! disabled:border-gray-500 disabled:bg-gray-700 disabled:text-gray-300 lg:h-12! lg:rounded-xl! lg:pl-4 lg:text-[15px]!",
             hasError && "border-status-error",
             type === "chip"
               ? "h-9.5 w-fit justify-center gap-2.5 rounded-full"
               : "h-12 w-full justify-between rounded-xl py-2.5",
-            disabled ? "cursor-default!" : "cursor-pointer!",
             triggerClassName
           )}
+          disabled={disabled}
         >
           {selectedItem ? selectedItem.name : defaultText}
           <ChevronDown
@@ -71,7 +71,7 @@ function Dropdown({
               <DropdownMenu.Item
                 key={dropdownItem.id}
                 className={cn(
-                  "text-gray-0 flex h-9 min-w-full cursor-pointer items-center rounded-xl px-3 text-sm font-normal outline-none md:rounded-lg",
+                  "text-gray-0 flex h-9 min-w-full cursor-pointer items-center rounded-lg px-3 text-sm font-normal outline-none lg:rounded-xl",
                   value === dropdownItem.id ? "bg-gray-700" : ""
                 )}
                 onClick={(e) => {

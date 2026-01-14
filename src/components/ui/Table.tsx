@@ -13,7 +13,7 @@ function Table({
     >
       <table
         data-slot="table"
-        className={cn("w-full caption-bottom text-sm", className)}
+        className={cn("hidden w-full caption-bottom text-sm md:block", className)}
         {...props}
       />
     </div>
@@ -36,7 +36,9 @@ Table.Header = TableHeader;
 TableHeader.displayName = "Table.Header";
 
 function TableBody({ className, ...props }: Readonly<ComponentProps<"tbody">>) {
-  return <tbody data-slot="table-body" className={cn("w-full", className)} {...props} />;
+  return (
+    <tbody data-slot="table-body" className={cn("flex w-full flex-col", className)} {...props} />
+  );
 }
 Table.Body = TableBody;
 TableBody.displayName = "Table.Body";
