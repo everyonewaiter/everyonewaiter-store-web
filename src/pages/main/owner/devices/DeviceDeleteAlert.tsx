@@ -1,4 +1,4 @@
-import Alert from "@/components/overlay/Alert/Alert";
+import Alert from "@/components/overlay/Alert";
 import type { Device } from "@/types/domain/device";
 import type { ModalProps } from "@/types/overlay";
 

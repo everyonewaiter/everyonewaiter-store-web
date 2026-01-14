@@ -1,4 +1,4 @@
-import Alert from "@/components/overlay/Alert/Alert";
+import Alert from "@/components/overlay/Alert";
 import type { Menu } from "@/types/domain/menu";
 import type { ModalProps } from "@/types/overlay";
 
