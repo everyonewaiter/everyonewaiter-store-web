@@ -14,7 +14,7 @@ function MenuDetailModal({ entry, ...props }: Readonly<MenuDetailModalProps>) {
   return (
     <Dialog open={props.isOpen} onOpenChange={(open) => !open && props.close()}>
       <Dialog.Wrapper
-        className="hidden md:block md:aspect-912/621 md:h-full md:w-full md:overflow-y-auto md:rounded-none md:p-5 lg:h-auto lg:w-[1344px]! lg:max-w-full! lg:overflow-y-hidden lg:rounded-[32px] lg:p-8"
+        className="hidden text-start md:block md:aspect-912/621 md:h-[600px] md:min-w-[960px] md:overflow-y-auto md:p-5 lg:h-auto lg:w-[1344px]! lg:max-w-full! lg:overflow-y-hidden lg:rounded-[32px] lg:p-8"
         flexDirection="col"
       >
         <MenuDetailContent menu={menu} entry={entry} {...props} />

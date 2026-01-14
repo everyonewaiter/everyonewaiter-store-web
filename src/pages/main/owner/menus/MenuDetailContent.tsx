@@ -99,88 +99,89 @@ function MenuDetailContent({ entry, menu, close }: Readonly<MenuDetailContentPro
 
   return (
     <Form {...form}>
-      <form onSubmit={handleSubmit} className="flex flex-col gap-5 lg:gap-8">
-        <div className="flex justify-between">
-          <div className="flex flex-1 flex-col gap-1 lg:gap-3">
-            <h1 className="text-gray-0 text-lg font-semibold lg:text-2xl">메뉴 정보</h1>
-            <p className="text-xs font-normal text-gray-300 lg:text-sm">
-              메뉴의 세부 정보를 입력하고 옵션을 설정해 주세요.
-            </p>
+      <form id="menu-detail-form" onSubmit={handleSubmit}>
+        <div className="flex flex-col gap-5 lg:gap-8">
+          <div className="flex justify-between">
+            <div className="flex flex-1 flex-col gap-1 lg:gap-3">
+              <h1 className="text-gray-0 text-lg font-semibold lg:text-2xl">메뉴 정보</h1>
+              <p className="text-xs font-normal text-gray-300 lg:text-sm">
+                메뉴의 세부 정보를 입력하고 옵션을 설정해 주세요.
+              </p>
+            </div>
+            <button type="button" onClick={close} className="hidden md:block">
+              <Close className="text-gray-0 size-6" />
+            </button>
           </div>
-          <button type="button" onClick={close} className="hidden md:block">
-            <Close className="text-gray-0 size-6" />
-          </button>
-        </div>
 
-        <div className="flex w-full flex-col gap-4 md:h-114 md:flex-1 md:flex-row md:justify-between md:gap-2 lg:h-162 lg:gap-4.5">
-          <div className="flex flex-col gap-1 md:flex-[0.29] lg:gap-2">
-            {menu?.image && (
-              <Image
-                src={menu?.image ?? ""}
-                alt={menu?.name ?? ""}
-                className="aspect-320/373 rounded-xl md:aspect-240/280 lg:aspect-364/478 lg:rounded-3xl"
+          <div className="flex w-full flex-col gap-4 md:h-114 md:flex-1 md:flex-row md:justify-between md:gap-2 lg:h-162 lg:gap-4.5">
+            <div className="flex flex-col gap-1 md:flex-[0.29] lg:gap-2">
+              {menu?.image && (
+                <Image
+                  src={menu?.image ?? ""}
+                  alt={menu?.name ?? ""}
+                  className="aspect-320/373 rounded-xl md:aspect-240/280 lg:aspect-364/478 lg:rounded-3xl"
+                />
+              )}
+              {(!menu?.image || isCreating) && (
+                <div
+                  className={cn(
+                    "center aspect-320/373 rounded-xl border bg-gray-700 md:aspect-240/280 lg:aspect-364/478 lg:rounded-3xl",
+                    form.formState.errors.image?.message ? "border-status-error" : "border-gray-600"
+                  )}
+                >
+                  <img src={logo} alt="logo" className="size-25 opacity-5 grayscale" />
+                </div>
+              )}
+              {isCreating && (
+                <Button
+                  variant="outline"
+                  color="black"
+                  responsive
+                  responsiveButtons={{
+                    lg: { buttonSize: "sm", className: "border-gray-300!" },
+                    md: {
+                      buttonSize: "md",
+                      className: "h-8! rounded-lg! border-gray-300! text-xs! font-normal!",
+                    },
+                    sm: {
+                      buttonSize: "md",
+                      className: "h-8! rounded-lg! border-gray-300! text-xs! font-normal!",
+                    },
+                  }}
+                >
+                  이미지 등록
+                </Button>
+              )}
+              {/* TODO: 이미지 등록 로직 구현 */}
+              <input type="file" hidden />
+              {form.formState.errors.image && (
+                <FormErrorMessage>{form.formState.errors.image.message}</FormErrorMessage>
+              )}
+            </div>
+
+            {/* 메뉴 정보 폼 */}
+            <div className="hide-scrollbar flex w-full flex-col gap-3 overflow-y-auto rounded-xl border border-gray-600 p-4 md:flex-[0.33] lg:gap-4 lg:rounded-3xl lg:p-6">
+              <MenuDetailForm canEdit={canEdit} isDetail={isDetail} />
+            </div>
+
+            {/* 메뉴 옵션 폼 */}
+            <div className="flex min-h-0 w-full flex-col gap-3 md:flex-[0.36] md:gap-4.5">
+              <MenuDetailOptions
+                type="MANDATORY"
+                selectedGroup={selectedGroup}
+                setSelectedGroup={setSelectedGroup}
+                canEdit={canEdit}
               />
-            )}
-            {(!menu?.image || isCreating) && (
-              <div
-                className={cn(
-                  "center aspect-320/373 rounded-xl border bg-gray-700 md:aspect-240/280 lg:aspect-364/478 lg:rounded-3xl",
-                  form.formState.errors.image?.message ? "border-status-error" : "border-gray-600"
-                )}
-              >
-                <img src={logo} alt="logo" className="size-25 opacity-5 grayscale" />
-              </div>
-            )}
-            {isCreating && (
-              <Button
-                variant="outline"
-                color="black"
-                responsive
-                responsiveButtons={{
-                  lg: { buttonSize: "sm", className: "border-gray-300!" },
-                  md: {
-                    buttonSize: "md",
-                    className: "h-8! rounded-lg! border-gray-300! text-xs! font-normal!",
-                  },
-                  sm: {
-                    buttonSize: "md",
-                    className: "h-8! rounded-lg! border-gray-300! text-xs! font-normal!",
-                  },
-                }}
-              >
-                이미지 등록
-              </Button>
-            )}
-            {/* TODO: 이미지 등록 로직 구현 */}
-            <input type="file" hidden />
-            {form.formState.errors.image && (
-              <FormErrorMessage>{form.formState.errors.image.message}</FormErrorMessage>
-            )}
-          </div>
-
-          {/* 메뉴 정보 폼 */}
-          <div className="hide-scrollbar flex w-full flex-col gap-3 overflow-y-auto rounded-xl border border-gray-600 p-4 md:flex-[0.33] lg:gap-4 lg:rounded-3xl lg:p-6">
-            <MenuDetailForm canEdit={canEdit} isDetail={isDetail} />
-          </div>
-
-          {/* 메뉴 옵션 폼 */}
-          <div className="flex min-h-0 w-full flex-col gap-3 md:flex-[0.36] md:gap-4.5">
-            <MenuDetailOptions
-              type="MANDATORY"
-              selectedGroup={selectedGroup}
-              setSelectedGroup={setSelectedGroup}
-              canEdit={canEdit}
-            />
-            <MenuDetailOptions
-              type="OPTIONAL"
-              selectedGroup={selectedGroup}
-              setSelectedGroup={setSelectedGroup}
-              canEdit={canEdit}
-            />
+              <MenuDetailOptions
+                type="OPTIONAL"
+                selectedGroup={selectedGroup}
+                setSelectedGroup={setSelectedGroup}
+                canEdit={canEdit}
+              />
+            </div>
           </div>
         </div>
-
-        <div className="flex w-full justify-center">
+        <div className="bottom-0 flex w-full justify-center bg-white md:sticky md:z-10 md:pt-5 lg:relative lg:pt-10">
           {isDetail ? (
             <Button
               color="black"
@@ -198,6 +199,7 @@ function MenuDetailContent({ entry, menu, close }: Readonly<MenuDetailContentPro
           ) : (
             <Button
               type="submit"
+              form="menu-detail-form"
               responsive
               responsiveButtons={{
                 lg: { buttonSize: "lg", className: "w-120" },
