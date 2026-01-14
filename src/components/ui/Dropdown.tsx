@@ -40,12 +40,11 @@ function Dropdown({
       <DropdownMenu.Root open={isOpen} onOpenChange={disabled ? undefined : setIsOpen} {...props}>
         <DropdownMenu.Trigger
           className={cn(
-            "text-s flex h-9! flex-row items-center rounded-lg! border border-gray-600 pr-3 pl-3 font-normal transition-colors hover:border-gray-500 focus:outline-none disabled:border-gray-500 disabled:bg-gray-700 disabled:text-gray-300 lg:h-12 lg:pl-4 lg:text-sm",
+            "text-s flex h-9! cursor-pointer flex-row items-center rounded-lg! border border-gray-600 pr-3 pl-3 font-normal transition-colors hover:border-gray-500 focus:outline-none disabled:cursor-default! disabled:border-gray-500 disabled:bg-gray-700 disabled:text-gray-300 lg:h-12! lg:rounded-xl! lg:pl-4 lg:text-[15px]!",
             hasError && "border-status-error",
             type === "chip"
               ? "h-9.5 w-fit justify-center gap-2.5 rounded-full"
               : "h-12 w-full justify-between rounded-xl py-2.5",
-            disabled ? "cursor-default!" : "cursor-pointer!",
             triggerClassName
           )}
           disabled={disabled}
