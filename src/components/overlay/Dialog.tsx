@@ -54,6 +54,19 @@ function DialogWrapper({
   flexDirection?: "col" | "row";
   height?: number;
 }) {
+  const handleOpenAutoFocus = (e: Event) => {
+    e.preventDefault();
+
+    const activeElement = document.activeElement;
+    const contentElement = e.currentTarget as HTMLElement;
+
+    if (activeElement && contentElement && !contentElement.contains(activeElement)) {
+      if (activeElement instanceof HTMLElement) {
+        activeElement.blur();
+      }
+    }
+  };
+
   return (
     <DialogPortal data-slot="dialog-portal">
       <DialogOverlay />
@@ -68,7 +81,7 @@ function DialogWrapper({
           ...(width && { width }),
           ...(height && { height }),
         }}
-        onOpenAutoFocus={(e) => e.preventDefault()}
+        onOpenAutoFocus={handleOpenAutoFocus}
         {...props}
       >
         {children}
@@ -92,6 +105,20 @@ function DialogTitle({
 }
 Dialog.Title = DialogTitle;
 DialogTitle.displayName = DialogPrimitive.Title.displayName;
+
+function DialogDescription({
+  className,
+  children,
+  ...props
+}: ComponentProps<typeof DialogPrimitive.Description>) {
+  return (
+    <DialogPrimitive.Description className={cn(className)} {...props}>
+      {children}
+    </DialogPrimitive.Description>
+  );
+}
+Dialog.Description = DialogDescription;
+DialogDescription.displayName = DialogPrimitive.Description.displayName;
 
 function DialogHeader({ className, ...props }: ComponentProps<"div">) {
   return (

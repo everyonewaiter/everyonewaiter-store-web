@@ -20,6 +20,7 @@ function Alert({
     <Dialog open={isOpen} onOpenChange={close}>
       <Dialog.Wrapper className={layoutClassName}>
         <Dialog.Title className="center h-20! lg:h-25!">{children}</Dialog.Title>
+        <Dialog.Description className="sr-only" />
         <Dialog.Footer>{footer}</Dialog.Footer>
       </Dialog.Wrapper>
     </Dialog>
