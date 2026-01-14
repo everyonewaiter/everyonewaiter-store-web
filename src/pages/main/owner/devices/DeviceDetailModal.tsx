@@ -12,6 +12,13 @@ import { deviceSchema, type DeviceSchema } from "@/schema/device.schema";
 import type { DevicePaymentType, DevicePurpose } from "@/types/domain/device";
 import type { ModalProps } from "@/types/overlay";
 
+const PURPOSE_TRANSLATES = {
+  POS: "POS",
+  HALL: "홀",
+  TABLE: "테이블",
+  WAITING: "웨이팅",
+};
+
 interface DeviceDetailModalProps extends ModalProps {
   deviceId: string;
 }
@@ -131,14 +138,13 @@ function DeviceDetailModal({ deviceId, ...props }: Readonly<DeviceDetailModalPro
               <Label disabled={!isEditing}>권한</Label>
               <Dropdown
                 dropdownItems={purposeDropdownItems}
-                // TODO: 데이터의 기기 권한에 맞게 수정
-                defaultText={purposeDropdownItems[0].name}
-                value={paymentType}
+                defaultText={PURPOSE_TRANSLATES[purpose as DevicePurpose]}
+                value={purpose}
                 onChange={(value) => form.setValue("paymentType", value.id as DevicePaymentType)}
                 disabled={!isEditing}
               />
             </div>
-            {isDesktopPurpose && (
+            {purpose === "TABLE" && (
               <>
                 <FormField
                   control={form.control}
