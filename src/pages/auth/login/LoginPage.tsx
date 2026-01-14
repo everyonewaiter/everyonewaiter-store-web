@@ -50,15 +50,15 @@ function LoginPage() {
             data: { code, message },
           } = errorResponse(error);
 
-          if (status === 400 || code === "FAILED_SIGN_IN") {
-            form.setError("email", { message });
-            form.setError("password", { message });
-            return;
-          }
-
           if (code === "NOT_COMPLETE_EMAIL_VERIFICATION") {
             toast.error(message);
             navigate("/email?type=not-verified");
+            return;
+          }
+
+          if (status === 400 || code === "FAILED_SIGN_IN") {
+            form.setError("email", { message });
+            form.setError("password", { message });
             return;
           }
 
