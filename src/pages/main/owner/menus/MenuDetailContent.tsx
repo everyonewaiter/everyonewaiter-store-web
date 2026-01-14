@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import logo from "@/assets/images/logo.svg";
 import { Form, FormErrorMessage } from "@/components/form/Form";
 import { Close } from "@/components/icons";
+import { Dialog } from "@/components/overlay/Dialog";
 import Button from "@/components/ui/Button/Button";
 import Image from "@/components/ui/Image";
 import cn from "@/lib/utils";
@@ -103,7 +104,9 @@ function MenuDetailContent({ entry, menu, close }: Readonly<MenuDetailContentPro
         <div className="flex flex-col gap-5 lg:gap-8">
           <div className="flex justify-between">
             <div className="flex flex-1 flex-col gap-1 lg:gap-3">
-              <h1 className="text-gray-0 text-lg font-semibold lg:text-2xl">메뉴 정보</h1>
+              <Dialog.Title className="text-gray-0 text-lg font-semibold lg:text-2xl">
+                메뉴 정보
+              </Dialog.Title>
               <p className="text-xs font-normal text-gray-300 lg:text-sm">
                 메뉴의 세부 정보를 입력하고 옵션을 설정해 주세요.
               </p>
