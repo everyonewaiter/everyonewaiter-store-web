@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, type FocusEvent } from "react";
 import dayjs from "dayjs";
 import { overlay } from "overlay-kit";
 import { Trash } from "@/components/icons";
@@ -103,7 +103,12 @@ function MainDevicePage() {
     setCheckedDevices(checkedDevices.length === data.length ? [] : data);
   };
 
+  const handleCheckboxFocus = (e: FocusEvent<HTMLButtonElement>) => {
+    e.currentTarget.blur();
+  };
+
   const handleDeleteDevice = () => {
+    if (checkedDevices.length === 0) return;
     overlay.open((overlayProps) => (
       <DeviceDeleteModal {...overlayProps} deleteItem={checkedDevices} />
     ));
@@ -132,6 +137,7 @@ function MainDevicePage() {
                 <Checkbox
                   checked={data.length > 0 && checkedDevices.length === data.length}
                   onCheckedChange={handleCheckAll}
+                  onFocus={handleCheckboxFocus}
                 />
               </Table.Head>
               {columns.map((column) => (
@@ -147,10 +153,14 @@ function MainDevicePage() {
                 key={deviceRow.deviceId}
                 onClick={() => handleDetailDevice(deviceRow.deviceId)}
               >
-                <Table.Head style={{ flex: (66 / 1394) * 100 }}>
+                <Table.Head
+                  style={{ flex: (66 / 1394) * 100 }}
+                  onClick={(e) => e.stopPropagation()}
+                >
                   <Checkbox
                     checked={checkedDevices.includes(deviceRow)}
                     onCheckedChange={() => handleCheckDevice(deviceRow)}
+                    onFocus={handleCheckboxFocus}
                   />
                 </Table.Head>
                 {columns.map((column) => (
@@ -169,6 +179,7 @@ function MainDevicePage() {
               <Checkbox
                 checked={checkedDevices.includes(device)}
                 onCheckedChange={() => handleCheckDevice(device)}
+                onFocus={handleCheckboxFocus}
               />
               {index + 1}
             </div>
