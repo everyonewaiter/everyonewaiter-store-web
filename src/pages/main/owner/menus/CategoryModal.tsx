@@ -111,7 +111,7 @@ function CategoryModal({ isOpen, close }: Readonly<ModalProps>) {
                   <Button
                     variant="outline"
                     className={cn(
-                      "center size-7 rounded-lg md:size-10 md:rounded-xl",
+                      "center size-7 rounded-lg md:size-7 lg:size-10 lg:rounded-xl",
                       isCreating ? "border-status-error" : "border-gray-600"
                     )}
                     onClick={() => {
@@ -123,9 +123,9 @@ function CategoryModal({ isOpen, close }: Readonly<ModalProps>) {
                     }}
                   >
                     {isCreating ? (
-                      <Trash className="text-status-error size-5 md:size-6" />
+                      <Trash className="text-status-error size-4 lg:size-6" />
                     ) : (
-                      <DragDrop className="size-5 text-gray-100 md:size-6" />
+                      <DragDrop className="size-4 text-gray-100 lg:size-8" />
                     )}
                   </Button>
                 }
