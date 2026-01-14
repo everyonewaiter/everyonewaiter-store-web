@@ -70,6 +70,7 @@ function DialogWrapper({
   return (
     <DialogPortal data-slot="dialog-portal">
       <DialogOverlay />
+      <Dialog.Description className="sr-only" />
       <DialogPrimitive.Content
         data-slot="dialog-content"
         className={cn(
