@@ -6,7 +6,7 @@ const signupSchema = z
     phoneNumber: z
       .string()
       .min(1, "휴대폰 번호를 입력해주세요.")
-      .regex(/^01[016789][1-9]\d{6,7}$/, "유효하지 않은 휴대폰 번호 형식입니다."),
+      .regex(/^01[016789]-\d{3,4}-\d{4}$/, "유효하지 않은 휴대폰 번호 형식입니다."),
     authCode: z
       .string()
       .min(1, "인증번호를 입력해주세요.")
