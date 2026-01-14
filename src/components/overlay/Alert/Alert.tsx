@@ -6,7 +6,7 @@ import type { ModalProps } from "@/types/overlay";
 
 interface AlertProps extends ModalProps {
   layoutClassName?: string;
-  footer: ReactNode;
+  footer?: ReactNode;
 }
 
 function Alert({
@@ -21,7 +21,7 @@ function Alert({
       <Dialog.Wrapper className={layoutClassName}>
         <Dialog.Title className="center h-20! lg:h-25!">{children}</Dialog.Title>
         <Dialog.Description className="sr-only" />
-        <Dialog.Footer>{footer}</Dialog.Footer>
+        {footer && <Dialog.Footer>{footer}</Dialog.Footer>}
       </Dialog.Wrapper>
     </Dialog>
   );
@@ -31,7 +31,7 @@ export default Alert;
 
 function AlertCancel({ children, ...props }: Readonly<PropsWithChildren<ButtonProps>>) {
   return (
-    <Dialog.Close asChild>
+    <Dialog.Close className="flex-1">
       <Button
         color={props.color || "grey"}
         responsive
@@ -52,18 +52,20 @@ Alert.Cancel = AlertCancel;
 
 function AlertAction({ children, ...props }: Readonly<PropsWithChildren<ButtonProps>>) {
   return (
-    <Button
-      color={props.color || "primary"}
-      responsive
-      responsiveButtons={{
-        lg: { buttonSize: "lg", className: "w-full" },
-        md: { buttonSize: "sm", className: "w-full" },
-        sm: { buttonSize: "sm", className: "w-full" },
-      }}
-      {...props}
-    >
-      {children ?? "확인"}
-    </Button>
+    <div className="flex-1">
+      <Button
+        color={props.color || "primary"}
+        responsive
+        responsiveButtons={{
+          lg: { buttonSize: "lg", className: "w-full" },
+          md: { buttonSize: "sm", className: "w-full" },
+          sm: { buttonSize: "sm", className: "w-full" },
+        }}
+        {...props}
+      >
+        {children ?? "확인"}
+      </Button>
+    </div>
   );
 }
 AlertAction.displayName = "Alert.Action";
