@@ -1,9 +1,13 @@
 import type { AxiosError } from "axios";
 
 export const errorResponse = (error: unknown) => {
-  return (error as AxiosError).response?.data as {
-    code: string;
-    timestamp: string;
-    message: string;
+  const axiosError = error as AxiosError;
+  return {
+    status: axiosError.response?.status,
+    data: axiosError.response?.data as {
+      code: string;
+      timestamp: string;
+      message: string;
+    },
   };
 };
