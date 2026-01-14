@@ -31,10 +31,18 @@ AlertDialogOverlay.displayName = AlertDialogPrimitive.Overlay.displayName;
 
 const AlertDialogContent = forwardRef<
   ComponentRef<typeof AlertDialogPrimitive.Content>,
-  ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Content>
->(({ className, ...props }, ref) => (
+  ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Content> & {
+    onOverlayClick?: () => void;
+  }
+>(({ className, onOverlayClick, ...props }, ref) => (
   <AlertDialogPortal>
-    <AlertDialogOverlay />
+    <AlertDialogOverlay
+      onClick={(e) => {
+        if (e.target === e.currentTarget && onOverlayClick) {
+          onOverlayClick();
+        }
+      }}
+    />
     <AlertDialogPrimitive.Content
       ref={ref}
       className={cn(
