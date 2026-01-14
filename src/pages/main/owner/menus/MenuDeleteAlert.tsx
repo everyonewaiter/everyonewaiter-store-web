@@ -1,45 +1,43 @@
 import Alert from "@/components/overlay/Alert/Alert";
-import type { AlertProps } from "@/types/overlay";
+import type { Menu } from "@/types/domain/menu";
+import type { ModalProps } from "@/types/overlay";
 
-function MenuDeleteAlert({ close }: Readonly<Pick<AlertProps, "close">>) {
+interface MenuDeleteAlertProps extends ModalProps {
+  deleteItems: Menu[];
+}
+
+function MenuDeleteAlert({ deleteItems, ...props }: Readonly<MenuDeleteAlertProps>) {
+  const renderText = () => {
+    if (deleteItems?.length === 1) {
+      return `을`;
+    }
+    return ` 외 ${deleteItems?.length - 1}개의 메뉴를`;
+  };
+
   const handleConfirm = () => {
     // TODO: 메뉴 삭제 로직 구현
   };
 
   return (
-    <Alert onClose={close} layoutClassName="w-[calc(100%-40px)]">
-      <Alert.Header className="h-14 md:h-25">
-        <Alert.Title className="text-base! md:text-xl!">
-          선택한 메뉴를 삭제하시겠습니까?
-        </Alert.Title>
-      </Alert.Header>
-
-      <Alert.Footer>
-        <Alert.Cancel
-          color="grey"
-          onClick={close}
-          responsive
-          responsiveButtons={{
-            sm: { buttonSize: "sm", className: "w-full" },
-            md: { buttonSize: "lg", className: "w-full" },
-            lg: { buttonSize: "lg", className: "w-full" },
-          }}
-        >
-          닫기
-        </Alert.Cancel>
-        <Alert.Action
-          color="primary"
-          responsive
-          responsiveButtons={{
-            sm: { buttonSize: "sm", className: "w-full" },
-            md: { buttonSize: "lg", className: "w-full" },
-            lg: { buttonSize: "lg", className: "w-full" },
-          }}
-          onClick={handleConfirm}
-        >
-          삭제
-        </Alert.Action>
-      </Alert.Footer>
+    <Alert
+      {...props}
+      footer={
+        <>
+          <Alert.Cancel onClick={close}>닫기</Alert.Cancel>
+          {deleteItems?.length > 0 && <Alert.Action onClick={handleConfirm}>삭제</Alert.Action>}
+        </>
+      }
+    >
+      <strong className="text-gray-0 font-semibold md:text-base md:whitespace-pre-line lg:text-xl lg:whitespace-normal">
+        {deleteItems?.length ? (
+          <>
+            <span className="text-primary">{deleteItems[0].name}</span>
+            {`${renderText()}\n삭제하시겠습니까?`}
+          </>
+        ) : (
+          "선택한 기기가 없습니다."
+        )}
+      </strong>
     </Alert>
   );
 }

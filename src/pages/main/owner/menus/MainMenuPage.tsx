@@ -49,7 +49,9 @@ function MainMenuPage() {
   };
 
   const handleOpenMenuDeleteAlert = () => {
-    overlay.open((overlayProps) => <MenuDeleteAlert {...overlayProps} />);
+    overlay.open((overlayProps) => (
+      <MenuDeleteAlert {...overlayProps} deleteItems={checkedMenus} />
+    ));
   };
 
   const handleSaveChanges = () => {
@@ -65,7 +67,7 @@ function MainMenuPage() {
           <Button
             color="grey"
             className="size-8 shrink-0 rounded-xl bg-gray-700"
-            onClick={handleOpenCategoryModal}
+            onClick={() => !isChangedMenuOrder && handleOpenCategoryModal()}
           >
             <Settings className="size-4.5 text-gray-300" />
           </Button>
@@ -129,21 +131,24 @@ function MainMenuPage() {
         )}
       </div>
       <div className="grid grid-cols-2 gap-x-4 gap-y-4 py-4 md:grid-cols-4 md:gap-x-3.5 lg:gap-x-6.5 lg:gap-y-10">
-        <button
-          className="center flex aspect-152/210 flex-col gap-1 rounded-xl border border-dashed border-gray-400 bg-gray-700 md:aspect-159/220 lg:aspect-329/440 lg:gap-2 lg:rounded-3xl"
-          onClick={() => {
-            if (isMobile === true || isMobile === undefined) {
-              navigate(`/menus/create`, { state: { menuId: "create", entry: "create" } });
-            } else {
-              handleOpenCreateMenuModal();
-            }
-          }}
-        >
-          <Plus className="size-8 text-gray-100 lg:size-10" />
-          <span className="text-gray-0 text-base font-medium lg:text-lg">메뉴 추가</span>
-        </button>
+        {!isChangedMenuOrder && (
+          <button
+            className="center flex aspect-152/210 flex-col gap-1 rounded-xl border border-dashed border-gray-400 bg-gray-700 md:aspect-159/220 lg:aspect-329/440 lg:gap-2 lg:rounded-3xl"
+            onClick={() => {
+              if (isMobile === true || isMobile === undefined) {
+                navigate(`/menus/create`, { state: { menuId: "create", entry: "create" } });
+              } else {
+                handleOpenCreateMenuModal();
+              }
+            }}
+          >
+            <Plus className="size-8 text-gray-100 lg:size-10" />
+            <span className="text-gray-0 text-base font-medium lg:text-lg">메뉴 추가</span>
+          </button>
+        )}
         {menus.map((menu) => (
           <MenuCard
+            className={isChangedMenuOrder ? "pointer-events-none" : ""}
             key={menu.menuId}
             menu={menu}
             isChecked={checkedMenus.includes(menu)}
@@ -163,6 +168,7 @@ function MainMenuPage() {
                 handleOpenMenuDetailModal();
               }
             }}
+            disabled={isChangedMenuOrder}
           />
         ))}
       </div>
