@@ -66,7 +66,22 @@ function MainMenuPage() {
         <div className="hide-scrollbar flex flex-1 shrink-0 items-center gap-1 overflow-x-auto md:gap-2 lg:gap-3">
           <Button
             color="grey"
-            className="size-8 shrink-0 rounded-xl bg-gray-700"
+            responsive
+            responsiveButtons={{
+              lg: {
+                buttonSize: "custom",
+                className:
+                  "shrink-0 size-12 rounded-xl bg-gray-700 items-center justify-center p-0",
+              },
+              md: {
+                buttonSize: "custom",
+                className: "rounded-xl shrink-0 size-9 bg-gray-700 items-center justify-center p-0",
+              },
+              sm: {
+                buttonSize: "custom",
+                className: "rounded-xl shrink-0 size-9 bg-gray-700 items-center justify-center p-0",
+              },
+            }}
             onClick={() => !isChangedMenuOrder && handleOpenCategoryModal()}
           >
             <Settings className="size-4.5 text-gray-300" />
