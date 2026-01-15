@@ -3,6 +3,19 @@ import Checkbox from "@/components/ui/Checkbox";
 import cn from "@/lib/utils";
 import type { Menu } from "@/types/domain/menu";
 
+const MENU_LABEL_TRANSLATE = {
+  BEST: "BEST",
+  NEW: "NEW",
+  DEFAULT: "기본",
+  RECOMMEND: "추천",
+};
+
+const MENU_STATE_TRANSLATE = {
+  DEFAULT: "기본",
+  HIDE: "숨김",
+  SOLD_OUT: "품절",
+};
+
 interface MenuCardProps {
   menu: Menu;
   isChecked: boolean;
@@ -56,13 +69,18 @@ function MenuCard({
           {(menu.state !== "DEFAULT" || menu.label !== "DEFAULT") && (
             <div className="flex items-center gap-2">
               {menu.label !== "DEFAULT" && (
-                <button className="w-fit rounded-3xl bg-[#3900B514] px-3 py-1 text-xs text-[#3900B5] md:px-4 lg:text-sm">
-                  {menu.label}
+                <button
+                  className={cn(
+                    "w-fit rounded-3xl px-3 py-1 text-xs md:px-4 lg:text-sm",
+                    menu.label === "BEST" ? "bg-orange-400 text-white" : "bg-primary text-white"
+                  )}
+                >
+                  {MENU_LABEL_TRANSLATE[menu.label]}
                 </button>
               )}
               {menu.state !== "DEFAULT" && (
-                <button className="w-fit rounded-3xl bg-[#F2202014] px-3 py-1 text-xs text-[#F22020] md:px-4 lg:text-sm">
-                  {menu.state}
+                <button className="w-fit rounded-3xl bg-[#3900B514] px-3 py-1 text-xs text-[#3900B5] md:px-4 lg:text-sm">
+                  {MENU_STATE_TRANSLATE[menu.state]}
                 </button>
               )}
             </div>
