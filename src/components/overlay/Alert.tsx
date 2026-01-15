@@ -29,21 +29,10 @@ function Alert({
 
 export default Alert;
 
-function AlertCancel({ children, ...props }: Readonly<PropsWithChildren<ButtonProps>>) {
+function AlertCancel({ children, className, ...props }: Readonly<PropsWithChildren<ButtonProps>>) {
   return (
-    <Dialog.Close className="flex-1">
-      <Button
-        color={props.color || "grey"}
-        responsive
-        responsiveButtons={{
-          lg: { buttonSize: "lg", className: "w-full" },
-          md: { buttonSize: "sm", className: "w-full" },
-          sm: { buttonSize: "sm", className: "w-full" },
-        }}
-        {...props}
-      >
-        {children ?? "닫기"}
-      </Button>
+    <Dialog.Close asChild className={className || "lg:button-lg button-sm w-full flex-1"}>
+      <Button color={props.color || "grey"}>{children ?? "닫기"}</Button>
     </Dialog.Close>
   );
 }
