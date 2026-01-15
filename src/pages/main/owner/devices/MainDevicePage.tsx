@@ -108,7 +108,6 @@ function MainDevicePage() {
   };
 
   const handleDeleteDevice = () => {
-    if (checkedDevices.length === 0) return;
     overlay.open((overlayProps) => (
       <DeviceDeleteModal {...overlayProps} deleteItem={checkedDevices} />
     ));
