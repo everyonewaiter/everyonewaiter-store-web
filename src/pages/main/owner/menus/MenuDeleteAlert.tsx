@@ -35,7 +35,7 @@ function MenuDeleteAlert({ deleteItems, ...props }: Readonly<MenuDeleteAlertProp
             {`${renderText()}\n삭제하시겠습니까?`}
           </>
         ) : (
-          "선택한 기기가 없습니다."
+          "선택한 메뉴가 없습니다."
         )}
       </strong>
     </Alert>
