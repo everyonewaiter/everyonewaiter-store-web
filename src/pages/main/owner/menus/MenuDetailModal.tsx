@@ -4,12 +4,12 @@ import { MENU_DETAILS_MOCK } from "@/pages/main/owner/menus/mock";
 import type { ModalProps } from "@/types/overlay";
 
 interface MenuDetailModalProps extends ModalProps {
-  // menuId?: string;
+  menuId?: string;
   entry: "create" | "detail";
 }
 
-function MenuDetailModal({ entry, ...props }: Readonly<MenuDetailModalProps>) {
-  const menu = MENU_DETAILS_MOCK[0];
+function MenuDetailModal({ entry, menuId, ...props }: Readonly<MenuDetailModalProps>) {
+  const menu = MENU_DETAILS_MOCK.find((menu) => menu.menuId === menuId) ?? MENU_DETAILS_MOCK[0];
 
   return (
     <Dialog open={props.isOpen} onOpenChange={(open) => !open && props.close()}>
