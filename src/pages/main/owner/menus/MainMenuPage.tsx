@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { rectSortingStrategy } from "@dnd-kit/sortable";
 import Lottie from "lottie-react";
 import { overlay } from "overlay-kit";
 import useMediaQuery from "react-responsive";
@@ -7,6 +8,7 @@ import successApplication from "@/assets/json/success-application.json";
 import { Plus, Settings, Trash, UpsideDown } from "@/components/icons";
 import MobileTitle from "@/components/layout/MobileTitle";
 import Button from "@/components/ui/Button/Button";
+import { DragList } from "@/components/ui/Drag/DragList";
 import CategoryModal from "@/pages/main/owner/menus/CategoryModal";
 import MenuCard from "@/pages/main/owner/menus/MenuCard";
 import MenuDeleteAlert from "@/pages/main/owner/menus/MenuDeleteAlert";
@@ -16,36 +18,58 @@ import type { Menu } from "@/types/domain/menu";
 
 function MainMenuPage() {
   const navigate = useNavigate();
-  const [selectedCategory, setSelectedCategory] = useState<string | null>("all");
-  const [checkedMenus, setCheckedMenus] = useState<Menu[]>([]);
-
   const isMobile = useMediaQuery({ maxWidth: 959 });
 
-  // 카테고리 존재 여부 확인
-  // const hasCategory = CATEGORIES_MOCK.length > 0;
-  const hasCategory = true;
+  const [selectedCategory, setSelectedCategory] = useState<string | null>("all");
+  const [checkedMenus, setCheckedMenus] = useState<Menu[]>([]);
+  const [categories, setCategories] = useState(CATEGORIES_MOCK);
 
-  const menus =
+  const filteredMenus =
     selectedCategory === "all"
       ? MENUS_MOCK
       : MENUS_MOCK.filter((menu) => menu.categoryId === selectedCategory);
 
-  const [isChangedMenuOrder, setIsChangedMenuOrder] = useState(false);
+  const [menus, setMenus] = useState<Menu[]>(filteredMenus);
+  const [originalMenus, setOriginalMenus] = useState<Menu[]>(filteredMenus);
 
-  /**
-   * TODO:
-   * @param menuId - 메뉴 ID
-   */
-  const handleOpenMenuDetailModal = () => {
-    overlay.open((overlayProps) => <MenuDetailModal {...overlayProps} entry="detail" />);
+  const hasCategory = categories.length > 0;
+
+  const [isSaving, setIsSaving] = useState(false);
+  const [isChangedMenuOrder, setIsChangedMenuOrder] = useState(false);
+  const [changeOrdersList, setChangeOrdersList] = useState<
+    {
+      sourceId: string;
+      targetId: string;
+      where: "PREV" | "NEXT";
+    }[]
+  >([]);
+
+  const handleCategoryChange = (categoryId: string) => {
+    const newFilteredMenus =
+      categoryId === "all"
+        ? MENUS_MOCK
+        : MENUS_MOCK.filter((menu) => menu.categoryId === categoryId);
+
+    setSelectedCategory(categoryId);
+    setMenus(newFilteredMenus);
+    setOriginalMenus(newFilteredMenus);
+    setCheckedMenus([]);
+  };
+
+  const handleOpenCategoryModal = () => {
+    overlay.open((overlayProps) => (
+      <CategoryModal {...overlayProps} categories={categories} onSave={setCategories} />
+    ));
+  };
+
+  const handleOpenMenuDetailModal = (menuId: string) => {
+    overlay.open((overlayProps) => (
+      <MenuDetailModal {...overlayProps} entry="detail" menuId={menuId} />
+    ));
   };
 
   const handleOpenCreateMenuModal = () => {
     overlay.open((overlayProps) => <MenuDetailModal {...overlayProps} entry="create" />);
-  };
-
-  const handleOpenCategoryModal = () => {
-    overlay.open((overlayProps) => <CategoryModal {...overlayProps} />);
   };
 
   const handleOpenMenuDeleteAlert = () => {
@@ -54,9 +78,28 @@ function MainMenuPage() {
     ));
   };
 
-  const handleSaveChanges = () => {
-    // TODO: 메뉴 순서 변경 로직 구현
+  const handleSaveChanges = async () => {
+    setIsSaving(true);
+
+    changeOrdersList.forEach(() => {
+      // TODO: 메뉴 순서 변경 로직 구현
+    });
+
+    setOriginalMenus(menus);
+    setChangeOrdersList([]);
     setIsChangedMenuOrder(false);
+    setIsSaving(false);
+  };
+
+  const handleResetChanges = () => {
+    setMenus(originalMenus);
+    setChangeOrdersList([]);
+    setIsChangedMenuOrder(false);
+  };
+
+  const handleStartChangeOrder = () => {
+    setOriginalMenus(menus);
+    setIsChangedMenuOrder(true);
   };
 
   return hasCategory ? (
@@ -83,34 +126,46 @@ function MainMenuPage() {
               },
             }}
             onClick={() => !isChangedMenuOrder && handleOpenCategoryModal()}
+            disabled={isChangedMenuOrder}
           >
             <Settings className="size-4.5 text-gray-300" />
           </Button>
-          {[{ categoryId: "all", name: "전체" }, ...CATEGORIES_MOCK].map((category) => {
+          {[{ categoryId: "all", name: "전체" }, ...categories].map((category) => {
             const isSelected = selectedCategory === category.categoryId;
             return (
               <Button
                 key={category.categoryId}
                 color="black"
-                variant={isSelected ? "default" : "outline"}
+                variant={isSelected || isChangedMenuOrder ? "default" : "outline"}
                 responsive
                 responsiveButtons={{
                   lg: {
                     buttonSize: "lg",
                     className: isSelected
                       ? "h-10!"
-                      : "h-10! border-gray-300 text-[15px] font-normal text-gray-300",
+                      : isChangedMenuOrder
+                        ? "h-10! text-[15px] font-normal text-gray-300"
+                        : "h-10! border-gray-300 text-[15px] font-normal text-gray-300",
                   },
                   md: {
                     buttonSize: "sm",
-                    className: isSelected ? "" : "border-gray-300 text-s font-normal text-gray-300",
+                    className: isSelected
+                      ? ""
+                      : isChangedMenuOrder
+                        ? "text-s font-normal text-gray-300"
+                        : "border-gray-300 text-s font-normal text-gray-300",
                   },
                   sm: {
                     buttonSize: "sm",
-                    className: isSelected ? "" : "border-gray-300 text-s font-normal text-gray-300",
+                    className: isSelected
+                      ? ""
+                      : isChangedMenuOrder
+                        ? "text-s font-normal text-gray-300"
+                        : "border-gray-300 text-s font-normal text-gray-300",
                   },
                 }}
-                onClick={() => setSelectedCategory(category.categoryId)}
+                onClick={() => handleCategoryChange(category.categoryId)}
+                disabled={isChangedMenuOrder}
               >
                 {category.name}
               </Button>
@@ -122,15 +177,23 @@ function MainMenuPage() {
             <div className="text-primary center h-9 rounded-lg bg-[#F220200A] px-4 text-xs font-normal md:text-sm">
               메뉴의 순서 변경은 메뉴를 꾹 누르신 후, 원하시는 자리로 메뉴를 이동해주세요
             </div>
-            <Button variant="outline" className="button-sm" onClick={handleSaveChanges}>
-              저장
+            <Button
+              variant="outline"
+              className="button-sm"
+              onClick={handleSaveChanges}
+              disabled={isSaving}
+            >
+              {isSaving ? "저장중..." : "저장"}
+            </Button>
+            <Button color="grey" className="button-sm" onClick={handleResetChanges}>
+              취소
             </Button>
           </div>
         ) : (
           <div className="flex items-center justify-end gap-4 lg:justify-start lg:gap-6">
             <button
               className="flex items-center gap-1 text-sm font-medium text-gray-300 lg:gap-2 lg:text-lg"
-              onClick={() => setIsChangedMenuOrder(true)}
+              onClick={handleStartChangeOrder}
             >
               <UpsideDown className="size-5 lg:size-6" />
               순서변경
@@ -161,31 +224,44 @@ function MainMenuPage() {
             <span className="text-gray-0 text-base font-medium lg:text-lg">메뉴 추가</span>
           </button>
         )}
-        {menus.map((menu) => (
-          <MenuCard
-            className={isChangedMenuOrder ? "pointer-events-none" : ""}
-            key={menu.menuId}
-            menu={menu}
-            isChecked={checkedMenus.includes(menu)}
-            onCheckedChange={() => {
-              if (checkedMenus.includes(menu)) {
-                setCheckedMenus(checkedMenus.filter((m) => m.menuId !== menu.menuId));
-              } else {
-                setCheckedMenus([...checkedMenus, menu]);
-              }
-            }}
-            onClick={() => {
-              if (isMobile === true || isMobile === undefined) {
-                navigate(`/menus/${menu.menuId}`, {
-                  state: { menuId: menu.menuId, entry: "detail" },
-                });
-              } else {
-                handleOpenMenuDetailModal();
-              }
-            }}
-            disabled={isChangedMenuOrder}
-          />
-        ))}
+        <DragList
+          items={menus}
+          onReorder={(items, sourceId, targetId, where) => {
+            setMenus(items);
+            setChangeOrdersList((prev) => [
+              ...prev,
+              { sourceId: String(sourceId), targetId: String(targetId), where },
+            ]);
+          }}
+          canDrag={isChangedMenuOrder}
+          keyExtractor={(item) => item.menuId}
+          strategy={rectSortingStrategy}
+          renderItem={(menu) => (
+            <MenuCard
+              className={isChangedMenuOrder ? "pointer-events-none" : ""}
+              key={menu.menuId}
+              menu={menu}
+              isChecked={checkedMenus.includes(menu)}
+              onCheckedChange={() => {
+                if (checkedMenus.includes(menu)) {
+                  setCheckedMenus(checkedMenus.filter((m) => m.menuId !== menu.menuId));
+                } else {
+                  setCheckedMenus([...checkedMenus, menu]);
+                }
+              }}
+              onClick={() => {
+                if (isMobile === true || isMobile === undefined) {
+                  navigate(`/menus/${menu.menuId}`, {
+                    state: { menuId: menu.menuId, entry: "detail" },
+                  });
+                } else {
+                  handleOpenMenuDetailModal(menu.menuId);
+                }
+              }}
+              disabled={isChangedMenuOrder}
+            />
+          )}
+        />
       </div>
     </div>
   ) : (
