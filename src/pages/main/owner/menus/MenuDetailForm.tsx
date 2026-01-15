@@ -33,6 +33,11 @@ function MenuDetailForm({ canEdit, isDetail }: Readonly<MenuDetailFormProps>) {
   const categories = CATEGORIES_MOCK;
 
   const form = useFormContext<MenuSchema>();
+  const currentLabel = form.watch("label");
+  const currentSpicy = form.watch("spicy");
+  const currentState = form.watch("state");
+  const currentCategoryId = form.watch("categoryId");
+  const currentPrintEnabled = form.watch("printEnabled");
 
   const commonStyle = (): ResponsiveButtonProps["responsiveButtons"][ScreenSize] => {
     return {
@@ -53,9 +58,15 @@ function MenuDetailForm({ canEdit, isDetail }: Readonly<MenuDetailFormProps>) {
             id: category.categoryId,
             name: category.name,
           }))}
+          value={currentCategoryId}
           defaultText="카테고리를 선택해주세요."
           disabled={!canEdit}
           triggerClassName={form.formState.errors.categoryId && "border-status-error"}
+          onChange={(item) => {
+            if (canEdit) {
+              form.setValue("categoryId", item.id);
+            }
+          }}
         />
         {form.formState.errors.categoryId && (
           <FormErrorMessage>{form.formState.errors.categoryId.message}</FormErrorMessage>
@@ -106,11 +117,12 @@ function MenuDetailForm({ canEdit, isDetail }: Readonly<MenuDetailFormProps>) {
             </Button>
           ) : (
             <div className="flex items-center gap-2">
-              {["기본", "BEST", "추천", "NEW"].map((label) => {
-                const isSelected = LABEL_TRNASLATE[form.getValues("label") as MenuLabel] === label;
+              {Object.keys(LABEL_TRNASLATE).map((labelKey) => {
+                const displayLabel = LABEL_TRNASLATE[labelKey as MenuLabel];
+                const isSelected = currentLabel === labelKey;
                 return (
                   <Button
-                    key={label}
+                    key={labelKey}
                     variant="outline"
                     color={isSelected ? "primary" : "grey"}
                     responsive
@@ -122,8 +134,14 @@ function MenuDetailForm({ canEdit, isDetail }: Readonly<MenuDetailFormProps>) {
                       md: commonStyle(),
                       sm: commonStyle(),
                     }}
+                    onClick={() => {
+                      if (canEdit) {
+                        form.setValue("label", labelKey as MenuLabel);
+                      }
+                    }}
+                    disabled={!canEdit}
                   >
-                    {label}
+                    {displayLabel}
                   </Button>
                 );
               })}
@@ -148,27 +166,33 @@ function MenuDetailForm({ canEdit, isDetail }: Readonly<MenuDetailFormProps>) {
           </Button>
         ) : (
           <div className="flex items-center gap-2">
-            {[1, 2, 3].map((spicy) => (
-              <Button
-                key={spicy}
-                color={form.getValues("spicy") === spicy ? "primary" : "grey"}
-                variant="outline"
-                responsive
-                responsiveButtons={{
-                  lg: {
-                    buttonSize: "sm",
-                    className: cn(
-                      "w-fit rounded-[40px]!",
-                      form.getValues("spicy") === spicy ? "" : "border-gray-500!"
-                    ),
-                  },
-                  md: commonStyle(),
-                  sm: commonStyle(),
-                }}
-              >
-                {`🌶️`.repeat(spicy)}
-              </Button>
-            ))}
+            {[1, 2, 3].map((spicy) => {
+              const isSelected = currentSpicy === spicy;
+              return (
+                <Button
+                  key={spicy}
+                  color={isSelected ? "primary" : "grey"}
+                  variant="outline"
+                  responsive
+                  responsiveButtons={{
+                    lg: {
+                      buttonSize: "sm",
+                      className: cn("w-fit rounded-[40px]!", isSelected ? "" : "border-gray-500!"),
+                    },
+                    md: commonStyle(),
+                    sm: commonStyle(),
+                  }}
+                  onClick={() => {
+                    if (canEdit) {
+                      form.setValue("spicy", isSelected ? 0 : spicy);
+                    }
+                  }}
+                  disabled={!canEdit}
+                >
+                  {`🌶️`.repeat(spicy)}
+                </Button>
+              );
+            })}
           </div>
         )}
       </div>
@@ -194,11 +218,12 @@ function MenuDetailForm({ canEdit, isDetail }: Readonly<MenuDetailFormProps>) {
           </Button>
         ) : (
           <div className="flex items-center gap-2">
-            {["기본", "숨김", "품절"].map((state) => {
-              const isSelected = STATE_TRNASLATE[form.getValues("state") as MenuState] === state;
+            {(Object.keys(STATE_TRNASLATE) as MenuState[]).map((stateKey) => {
+              const state = STATE_TRNASLATE[stateKey];
+              const isSelected = currentState === stateKey;
               return (
                 <Button
-                  key={state}
+                  key={stateKey}
                   variant="outline"
                   color={isSelected ? "primary" : "grey"}
                   responsive
@@ -210,6 +235,12 @@ function MenuDetailForm({ canEdit, isDetail }: Readonly<MenuDetailFormProps>) {
                     md: commonStyle(),
                     sm: commonStyle(),
                   }}
+                  onClick={() => {
+                    if (canEdit) {
+                      form.setValue("state", stateKey);
+                    }
+                  }}
+                  disabled={!canEdit}
                 >
                   {state}
                 </Button>
@@ -220,7 +251,15 @@ function MenuDetailForm({ canEdit, isDetail }: Readonly<MenuDetailFormProps>) {
       </div>
       <div className="flex items-center justify-between">
         <span className="text-gray-0 text-xs font-normal lg:text-sm">주방 프린터에 출력하기</span>
-        <Switch disabled={!canEdit} checked={form.getValues("printEnabled")} />
+        <Switch
+          disabled={!canEdit}
+          checked={currentPrintEnabled}
+          onCheckedChange={(checked) => {
+            if (canEdit) {
+              form.setValue("printEnabled", checked);
+            }
+          }}
+        />
       </div>
     </>
   );
