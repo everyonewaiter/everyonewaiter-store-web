@@ -6,6 +6,7 @@ import type { ResponsiveButtonProps, ScreenSize } from "@/components/ui/Button/B
 import Dropdown from "@/components/ui/Dropdown";
 import Label from "@/components/ui/Label";
 import Switch from "@/components/ui/Switch";
+import { formatPrice } from "@/lib/format";
 import cn from "@/lib/utils";
 import { CATEGORIES_MOCK } from "@/pages/main/owner/menus/mock";
 import type { MenuSchema } from "@/schema/menu.schema";
@@ -91,7 +92,10 @@ function MenuDetailForm({ canEdit, isDetail }: Readonly<MenuDetailFormProps>) {
         control={form.control}
         name="price"
         label="가격"
-        inputProps={{ placeholder: "가격을 입력해주세요." }}
+        inputProps={{
+          placeholder: "가격을 입력해주세요.",
+          onChange: (e) => form.setValue("price", formatPrice(e.target.value)),
+        }}
         disabled={!canEdit}
       />
       <div className="flex flex-col gap-3">
