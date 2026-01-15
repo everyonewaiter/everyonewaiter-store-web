@@ -184,7 +184,7 @@ function MenuDetailContent({ entry, menu, close }: Readonly<MenuDetailContentPro
             </div>
           </div>
         </div>
-        <div className="bottom-0 flex w-full justify-center bg-white md:sticky md:z-10 md:pt-5 lg:relative lg:pt-10">
+        <div className="-bottom-5 flex w-full justify-center bg-white pb-5 md:sticky md:z-10 md:pt-5 lg:relative lg:pt-10 lg:pb-0">
           {isDetail ? (
             <Button
               color="black"
