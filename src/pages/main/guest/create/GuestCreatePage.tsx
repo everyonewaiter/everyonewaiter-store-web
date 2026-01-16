@@ -2,7 +2,6 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, useWatch } from "react-hook-form";
 import { useLocation, useNavigate } from "react-router-dom";
-import dashedBorder from "@/assets/images/dashed.svg";
 import logo from "@/assets/images/logo.svg";
 import Spinner from "@/components/feedback/Spinner";
 import { Form, FormErrorMessage } from "@/components/form/Form";
@@ -41,7 +40,7 @@ function GuestCreate() {
   useFormBlocker(form.formState.isDirty && !isSubmitting);
 
   const { handleOpenAddress } = useOpenDaumPostcode((address) => {
-    form.setValue("address", address, { shouldDirty: true });
+    form.setValue("address", address, { shouldDirty: true, shouldValidate: true });
   });
 
   const handleSubmit = form.handleSubmit((data) => {
@@ -193,15 +192,9 @@ function GuestCreate() {
               />
               <button
                 type="button"
-                className="relative flex h-35 w-full flex-col items-center justify-center gap-2 rounded-2xl border border-gray-600 bg-gray-700 md:h-40 md:gap-3 md:border-none"
+                className="relative flex h-35 w-full flex-col items-center justify-center gap-2 rounded-2xl border border-dashed border-gray-600 bg-gray-700 md:h-40 md:gap-3"
                 onClick={() => fileInputRef.current?.click()}
               >
-                <img
-                  src={dashedBorder}
-                  alt=""
-                  className="pointer-events-none absolute inset-0 hidden h-full w-full rounded-2xl object-cover md:block"
-                  aria-hidden="true"
-                />
                 {(file?.type === "image/jpeg" ||
                   file?.type === "image/jpg" ||
                   file?.type === "image/png") &&
@@ -226,9 +219,7 @@ function GuestCreate() {
                     </div>
                   </>
                 )}
-                {form.formState.errors.file && (
-                  <FormErrorMessage>{form.formState.errors.file.message}</FormErrorMessage>
-                )}
+
                 <input
                   type="file"
                   className="hidden"
@@ -237,6 +228,9 @@ function GuestCreate() {
                   onChange={handleFileChange}
                 />
               </button>
+              {form.formState.errors.file && (
+                <FormErrorMessage>{form.formState.errors.file.message}</FormErrorMessage>
+              )}
             </div>
             <div className="w-full shrink-0">
               <Button
