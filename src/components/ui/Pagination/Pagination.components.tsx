@@ -58,10 +58,21 @@ type PaginationPreviousProps = {
   iconClassName?: string;
 } & ComponentProps<typeof PaginationLink>;
 
-function PaginationPrevious({ className, iconClassName, ...props }: PaginationPreviousProps) {
+function PaginationPrevious({
+  className,
+  iconClassName,
+  hasPrevPage,
+  ...props
+}: PaginationPreviousProps) {
   return (
     <PaginationLink aria-label="Go to previous page" className={className} {...props}>
-      <ChevronLeft className={cn("text-gray-400 md:size-5 lg:size-6", iconClassName)} />
+      <ChevronLeft
+        className={cn(
+          hasPrevPage ? "text-gray-100" : "text-gray-400",
+          "md:size-5 lg:size-6",
+          iconClassName
+        )}
+      />
     </PaginationLink>
   );
 }
@@ -71,10 +82,16 @@ type PaginationNextProps = {
   iconClassName?: string;
 } & ComponentProps<typeof PaginationLink>;
 
-function PaginationNext({ className, iconClassName, ...props }: PaginationNextProps) {
+function PaginationNext({ className, iconClassName, hasNextPage, ...props }: PaginationNextProps) {
   return (
     <PaginationLink aria-label="Go to next page" className={className} {...props}>
-      <ChevronRight className={cn("text-gray-400 md:size-5 lg:size-6", iconClassName)} />
+      <ChevronRight
+        className={cn(
+          hasNextPage ? "text-gray-100" : "text-gray-400",
+          "md:size-5 lg:size-6",
+          iconClassName
+        )}
+      />
     </PaginationLink>
   );
 }
@@ -84,10 +101,21 @@ type PaginationFastPrevProps = {
   iconClassName?: string;
 } & ComponentProps<typeof PaginationLink>;
 
-function PaginationFastPrev({ className, iconClassName, ...props }: PaginationFastPrevProps) {
+function PaginationFastPrev({
+  className,
+  iconClassName,
+  hasPrevPage,
+  ...props
+}: PaginationFastPrevProps) {
   return (
     <PaginationLink aria-label="Go to fast backward page" className={className} {...props}>
-      <ChevronDoubleLeft className={cn("text-gray-500 md:size-5 lg:size-6", iconClassName)} />
+      <ChevronDoubleLeft
+        className={cn(
+          hasPrevPage ? "text-gray-100" : "text-gray-400",
+          "md:size-5 lg:size-6",
+          iconClassName
+        )}
+      />
     </PaginationLink>
   );
 }
@@ -97,10 +125,21 @@ type PaginationFastNextProps = {
   iconClassName?: string;
 } & ComponentProps<typeof PaginationLink>;
 
-function PaginationFastNext({ className, iconClassName, ...props }: PaginationFastNextProps) {
+function PaginationFastNext({
+  className,
+  iconClassName,
+  hasNextPage,
+  ...props
+}: PaginationFastNextProps) {
   return (
     <PaginationLink aria-label="Go to fast forward page" className={className} {...props}>
-      <ChevronDoubleRight className={cn("text-gray-500 md:size-5 lg:size-6", iconClassName)} />
+      <ChevronDoubleRight
+        className={cn(
+          hasNextPage ? "text-gray-100" : "text-gray-400",
+          "md:size-5 lg:size-6",
+          iconClassName
+        )}
+      />
     </PaginationLink>
   );
 }
