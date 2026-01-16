@@ -32,7 +32,7 @@ export const storeApplicationListMock: StoreApplicationList = {
     },
 
     {
-      registrationId: "2",
+      registrationId: "3",
       accountId: "1",
       name: "매장 - 접수~반려",
       ceoName: "대표자명",
@@ -46,7 +46,7 @@ export const storeApplicationListMock: StoreApplicationList = {
       updatedAt: "2021-01-01",
     },
     {
-      registrationId: "3",
+      registrationId: "4",
       accountId: "1",
       name: "매장 - 접수~재접수",
       ceoName: "대표자명",
@@ -61,7 +61,7 @@ export const storeApplicationListMock: StoreApplicationList = {
     },
 
     {
-      registrationId: "3",
+      registrationId: "5",
       accountId: "1",
       name: "매장 - 접수~재접수",
       ceoName: "대표자명",
@@ -75,7 +75,7 @@ export const storeApplicationListMock: StoreApplicationList = {
       updatedAt: "2021-01-01",
     },
     {
-      registrationId: "3",
+      registrationId: "6",
       accountId: "14",
       name: "매장 - 접수~재접수",
       ceoName: "대표자명",
@@ -89,7 +89,7 @@ export const storeApplicationListMock: StoreApplicationList = {
       updatedAt: "2021-01-01",
     },
     {
-      registrationId: "4",
+      registrationId: "7",
       accountId: "1",
       name: "매장 - 접수~승인",
       ceoName: "대표자명",
@@ -104,7 +104,7 @@ export const storeApplicationListMock: StoreApplicationList = {
     },
 
     {
-      registrationId: "4",
+      registrationId: "8",
       accountId: "1",
       name: "매장 - 접수~승인",
       ceoName: "대표자명",
@@ -118,7 +118,7 @@ export const storeApplicationListMock: StoreApplicationList = {
       updatedAt: "2021-01-01",
     },
     {
-      registrationId: "4",
+      registrationId: "9",
       accountId: "1",
       name: "매장 - 접수~승인",
       ceoName: "대표자명",
@@ -132,7 +132,7 @@ export const storeApplicationListMock: StoreApplicationList = {
       updatedAt: "2021-01-01",
     },
     {
-      registrationId: "4",
+      registrationId: "10",
       accountId: "1",
       name: "매장 - 접수~승인",
       ceoName: "대표자명",

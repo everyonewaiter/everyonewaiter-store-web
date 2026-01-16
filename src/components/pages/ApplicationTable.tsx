@@ -62,7 +62,7 @@ function ApplicationTable({ type, applicationData }: Readonly<ApplicationTablePr
 
   const handleClick = (application: StoreApplication) => {
     const sameRegistrationApplications = applicationData.filter(
-      (item) => item.registrationId === application.registrationId
+      (item) => item.name === application.name
     );
     const lastStatus = sameRegistrationApplications.at(-1)?.status;
 
