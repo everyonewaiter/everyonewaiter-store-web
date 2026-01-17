@@ -69,7 +69,9 @@ function MainMenuPage() {
   };
 
   const handleOpenCreateMenuModal = () => {
-    overlay.open((overlayProps) => <MenuDetailModal {...overlayProps} entry="create" />);
+    overlay.open((overlayProps) => (
+      <MenuDetailModal {...overlayProps} entry="create" initialCategoryId={selectedCategory!} />
+    ));
   };
 
   const handleOpenMenuDeleteAlert = () => {
@@ -102,6 +104,18 @@ function MainMenuPage() {
     setIsChangedMenuOrder(true);
   };
 
+  const categoryLgClassName = (isSelected: boolean) => {
+    if (isSelected) return "h-10!";
+    if (isChangedMenuOrder) return "h-10! text-[15px] font-normal text-gray-300";
+    return "h-10! border-gray-300 text-[15px] font-normal text-gray-300";
+  };
+
+  const categoryMdSmClassName = (isSelected: boolean) => {
+    if (isSelected) return "";
+    if (isChangedMenuOrder) return "text-s font-normal text-gray-300";
+    return "border-gray-300 text-s font-normal text-gray-300";
+  };
+
   return hasCategory ? (
     <div className="hide-scrollbar w-full overflow-x-hidden px-5 py-4.5 md:px-0">
       <MobileTitle>메뉴 관리</MobileTitle>
@@ -114,7 +128,7 @@ function MainMenuPage() {
               lg: {
                 buttonSize: "custom",
                 className:
-                  "shrink-0 size-12 rounded-xl bg-gray-700 items-center justify-center p-0",
+                  "shrink-0 size-10 py-1 rounded-xl bg-gray-700 items-center justify-center",
               },
               md: {
                 buttonSize: "custom",
@@ -128,7 +142,7 @@ function MainMenuPage() {
             onClick={() => !isChangedMenuOrder && handleOpenCategoryModal()}
             disabled={isChangedMenuOrder}
           >
-            <Settings className="size-4.5 text-gray-300" />
+            <Settings className="size-5 text-gray-300 lg:size-6" />
           </Button>
           {[{ categoryId: "all", name: "전체" }, ...categories].map((category) => {
             const isSelected = selectedCategory === category.categoryId;
@@ -141,27 +155,15 @@ function MainMenuPage() {
                 responsiveButtons={{
                   lg: {
                     buttonSize: "lg",
-                    className: isSelected
-                      ? "h-10!"
-                      : isChangedMenuOrder
-                        ? "h-10! text-[15px] font-normal text-gray-300"
-                        : "h-10! border-gray-300 text-[15px] font-normal text-gray-300",
+                    className: categoryLgClassName(isSelected),
                   },
                   md: {
                     buttonSize: "sm",
-                    className: isSelected
-                      ? ""
-                      : isChangedMenuOrder
-                        ? "text-s font-normal text-gray-300"
-                        : "border-gray-300 text-s font-normal text-gray-300",
+                    className: categoryMdSmClassName(isSelected),
                   },
                   sm: {
                     buttonSize: "sm",
-                    className: isSelected
-                      ? ""
-                      : isChangedMenuOrder
-                        ? "text-s font-normal text-gray-300"
-                        : "border-gray-300 text-s font-normal text-gray-300",
+                    className: categoryMdSmClassName(isSelected),
                   },
                 }}
                 onClick={() => handleCategoryChange(category.categoryId)}
