@@ -154,7 +154,7 @@ function CategoryModal({ isOpen, close, categories, onSave }: Readonly<CategoryM
                       {isCreating ? (
                         <Trash className="text-status-error size-4 lg:size-6" />
                       ) : (
-                        <DragDrop className="size-4 text-gray-100 lg:size-8" />
+                        <DragDrop className="size-4 text-gray-100 lg:size-6" />
                       )}
                     </Button>
                   }
