@@ -2,6 +2,7 @@ import { type PropsWithChildren, type ReactNode } from "react";
 import { Dialog } from "@/components/overlay/Dialog";
 import Button from "@/components/ui/Button/Button";
 import type { ButtonProps } from "@/components/ui/Button/Button";
+import cn from "@/lib/utils";
 import type { ModalProps } from "@/types/overlay";
 
 interface AlertProps extends ModalProps {
@@ -21,7 +22,7 @@ function Alert({
       <Dialog.Wrapper className={layoutClassName}>
         <Dialog.Title className="center h-20! lg:h-25!">{children}</Dialog.Title>
         <Dialog.Description className="sr-only" />
-        <Dialog.Footer>{footer}</Dialog.Footer>
+        {footer && <Dialog.Footer>{footer}</Dialog.Footer>}
       </Dialog.Wrapper>
     </Dialog>
   );
@@ -31,15 +32,10 @@ export default Alert;
 
 function AlertCancel({ children, ...props }: Readonly<PropsWithChildren<ButtonProps>>) {
   return (
-    <Dialog.Close asChild>
+    <Dialog.Close asChild className="w-full">
       <Button
         color={props.color || "grey"}
-        responsive
-        responsiveButtons={{
-          lg: { buttonSize: "lg", className: "w-full" },
-          md: { buttonSize: "sm", className: "w-full" },
-          sm: { buttonSize: "sm", className: "w-full" },
-        }}
+        className={cn("lg:button-lg button-sm w-full", props.className)}
         {...props}
       >
         {children ?? "닫기"}
@@ -52,18 +48,15 @@ Alert.Cancel = AlertCancel;
 
 function AlertAction({ children, ...props }: Readonly<PropsWithChildren<ButtonProps>>) {
   return (
-    <Button
-      color={props.color || "primary"}
-      responsive
-      responsiveButtons={{
-        lg: { buttonSize: "lg", className: "w-full" },
-        md: { buttonSize: "sm", className: "w-full" },
-        sm: { buttonSize: "sm", className: "w-full" },
-      }}
-      {...props}
-    >
-      {children ?? "확인"}
-    </Button>
+    <div className="w-full">
+      <Button
+        color={props.color || "primary"}
+        className={cn("lg:button-lg button-sm w-full", props.className)}
+        {...props}
+      >
+        {children ?? "확인"}
+      </Button>
+    </div>
   );
 }
 AlertAction.displayName = "Alert.Action";

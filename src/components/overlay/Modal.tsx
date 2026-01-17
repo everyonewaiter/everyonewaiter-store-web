@@ -8,28 +8,28 @@ interface ModalProps extends ComponentProps<typeof Dialog> {
     action?: ReactNode;
     cancel?: ReactNode;
   };
+  topRightContent?: ReactNode;
   title?: ReactNode;
-  hasCloseIcon?: boolean;
 }
 
 function Modal({
   children,
   footerContent,
+  topRightContent,
   title,
-  hasCloseIcon = true,
   ...props
 }: Readonly<PropsWithChildren<ModalProps>>) {
   return (
     <Dialog {...props}>
       <Dialog.Wrapper className="flex h-125 w-80 flex-col gap-5! rounded-[20px] px-4 py-5 md:h-125 md:w-91 md:gap-6 md:p-5 lg:h-185 lg:w-135 lg:gap-8 lg:p-8">
-        {(title || hasCloseIcon) && (
+        {title && (
           <Dialog.Header className="flex items-center justify-between">
             {title && (
               <Dialog.Title className="text-gray-0 text-lg font-semibold md:text-base lg:text-2xl">
                 {title}
               </Dialog.Title>
             )}
-            {hasCloseIcon && (
+            {topRightContent || (
               <Dialog.Close asChild className="cursor-pointer">
                 <Close className="size-6 lg:size-8" />
               </Dialog.Close>

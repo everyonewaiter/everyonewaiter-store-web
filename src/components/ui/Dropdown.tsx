@@ -39,6 +39,7 @@ function Dropdown({
     <div className="w-full">
       <DropdownMenu.Root open={isOpen} onOpenChange={disabled ? undefined : setIsOpen} {...props}>
         <DropdownMenu.Trigger
+          disabled={disabled}
           className={cn(
             "text-s flex h-9! cursor-pointer flex-row items-center rounded-lg! border border-gray-600 pr-3 pl-3 font-normal transition-colors hover:border-gray-500 focus:outline-none disabled:cursor-default! disabled:border-gray-500 disabled:bg-gray-700 disabled:text-gray-300 lg:h-12! lg:rounded-xl! lg:pl-4 lg:text-[15px]!",
             hasError && "border-status-error",
@@ -47,7 +48,6 @@ function Dropdown({
               : "h-12 w-full justify-between rounded-xl py-2.5",
             triggerClassName
           )}
-          disabled={disabled}
         >
           {selectedItem ? selectedItem.name : defaultText}
           <ChevronDown
