@@ -6,10 +6,12 @@ export const getFormattedMenuName: <T extends { name: string }>(menus: T[]) => s
   return `${menus[0].name} 외 ${menus.length - 1}개`;
 };
 
-export const formatPrice = (value: string, standardValue: number) => {
-  const numericValue = Number(value.replaceAll(",", "")) || 0;
-  if (numericValue > standardValue) return null;
-  return numericValue ? String(numericValue) : "";
+export const formatPrice = (value: string) => {
+  const numbers = value.replaceAll(/\D/g, "");
+
+  if (numbers === "") return numbers;
+
+  return Number(numbers).toLocaleString("ko-KR");
 };
 
 export const formatPhoneNumber = (e: ChangeEvent<HTMLInputElement>) => {

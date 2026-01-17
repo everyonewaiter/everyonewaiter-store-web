@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { createPortal } from "react-dom";
-import Alert from "@/components/overlay/Alert/Alert";
+import Alert from "@/components/overlay/Alert";
 
 interface LeaveConfirmModalProps {
   isOpen: boolean;
@@ -26,17 +26,17 @@ function LeaveConfirmModal({ isOpen, onCancel, onConfirm }: Readonly<LeaveConfir
 
   return createPortal(
     <Alert
-      onClose={onCancel}
-      layoutClassName="w-80! md:w-100!"
+      isOpen={isOpen}
+      close={() => {}}
       footer={
-        <Alert.Footer>
-          <Alert.Cancel color="grey" onClick={onCancel} className="button-sm lg:button-lg">
+        <>
+          <Alert.Cancel color="grey" onClick={onCancel} className="button-lg">
             취소
           </Alert.Cancel>
           <Alert.Action color="black" onClick={onConfirm} className="button-sm lg:button-lg">
             나가기
           </Alert.Action>
-        </Alert.Footer>
+        </>
       }
     >
       <div className="flex w-full flex-col gap-2 py-3">
