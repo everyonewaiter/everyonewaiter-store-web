@@ -23,7 +23,7 @@ function MenuDeleteAlert({ deleteItems, ...props }: Readonly<MenuDeleteAlertProp
       {...props}
       footer={
         <>
-          <Alert.Cancel onClick={close}>닫기</Alert.Cancel>
+          <Alert.Cancel>닫기</Alert.Cancel>
           {deleteItems?.length > 0 && <Alert.Action onClick={handleConfirm}>삭제</Alert.Action>}
         </>
       }
