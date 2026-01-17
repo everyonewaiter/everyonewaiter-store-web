@@ -61,11 +61,6 @@ function ApplicationTable({ type, applicationData }: Readonly<ApplicationTablePr
   );
 
   const handleClick = (application: StoreApplication) => {
-    const sameRegistrationApplications = applicationData.filter(
-      (item) => item.name === application.name
-    );
-    const lastStatus = sameRegistrationApplications.at(-1)?.status;
-
     if (type === "guest") {
       overlay.open((overlayProps) => (
         <ApplicationModal application={application} showReapplyButton={false} {...overlayProps} />
@@ -73,39 +68,22 @@ function ApplicationTable({ type, applicationData }: Readonly<ApplicationTablePr
       return;
     }
 
-    if (lastStatus === "APPLY") {
+    if (application.status === "APPLY") {
       overlay.open((overlayProps) => <ApplicationWaitingModal {...overlayProps} />);
-      return;
-    }
-
-    if (lastStatus === "REJECT" || lastStatus === "REAPPLY") {
-      if (application.status === "APPLY") return;
+    } else {
       overlay.open((overlayProps) => (
         <ApplicationModal
           application={application}
-          showReapplyButton={lastStatus === "REJECT"}
+          showReapplyButton={application.status === "REJECT"}
           {...overlayProps}
         />
       ));
-      return;
     }
-
-    if (lastStatus === "APPROVE") {
-      if (["APPLY", "REAPPLY", "REJECT"].includes(application.status)) return;
-      overlay.open((overlayProps) => (
-        <ApplicationModal application={application} showReapplyButton={false} {...overlayProps} />
-      ));
-      return;
-    }
-
-    overlay.open((overlayProps) => (
-      <ApplicationModal application={application} {...overlayProps} />
-    ));
   };
 
   return (
     <>
-      <article className="hidden py-6 md:block">
+      <article className="hidden flex-1 md:flex">
         <Table>
           <Table.Header>
             <Table.Row>
