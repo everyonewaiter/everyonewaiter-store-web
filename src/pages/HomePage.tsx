@@ -13,7 +13,7 @@ function HomePage() {
   // TODO: 페이지네이션 구현 (md:6, lg:10)
 
   return (
-    <div className="flex h-full flex-col py-6">
+    <div className="flex h-full flex-col gap-3 py-6 md:gap-4">
       <div className="flex items-center justify-end">
         <Button
           variant="outline"
@@ -21,7 +21,7 @@ function HomePage() {
           responsiveButtons={{
             lg: { buttonSize: "lg" },
             md: { buttonSize: "sm" },
-            sm: { buttonSize: "sm" },
+            sm: { buttonSize: "sm", className: "mr-5" },
           }}
           onClick={() => navigate("/create")}
         >
@@ -31,7 +31,7 @@ function HomePage() {
       <div className="flex-1 overflow-y-auto px-5 md:px-0">
         <ApplicationTable type="user" applicationData={storeApplicationListMock.content} />
       </div>
-      <div className="mt-auto flex justify-center pt-4">
+      <div className="mt-auto flex justify-center">
         <Pagination
           currentPage={page}
           pagination={storeApplicationListMock}
