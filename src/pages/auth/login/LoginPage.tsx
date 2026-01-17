@@ -2,8 +2,7 @@ import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { toast } from "sonner";
 import { accountMutations } from "@/api/account/mutations";
 import logoTextVertical from "@/assets/images/logo-text-vertical.svg";
@@ -40,15 +39,14 @@ function LoginPage() {
       },
       {
         onSuccess: (data) => {
-          localStorage.setItem("accessToken", data.accessToken);
+          localStorage.setItem("token", data.accessToken);
           navigate("/");
         },
         onError: (error) => {
           setIsSubmitting(false);
-          const {
-            status,
-            data: { code, message },
-          } = errorResponse(error);
+          const { status, data } = errorResponse(error);
+          const code = data?.code;
+          const message = data?.message;
 
           if (code === "NOT_COMPLETE_EMAIL_VERIFICATION") {
             toast.error(message);
