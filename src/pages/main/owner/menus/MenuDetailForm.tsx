@@ -60,7 +60,10 @@ function MenuDetailForm({ canEdit, isDetail }: Readonly<MenuDetailFormProps>) {
             name: category.name,
           }))}
           value={currentCategoryId}
-          defaultText="카테고리를 선택해주세요."
+          defaultText={
+            categories.find((category) => category.categoryId === currentCategoryId)?.name ??
+            "카테고리를 선택해주세요."
+          }
           disabled={!canEdit}
           triggerClassName={form.formState.errors.categoryId && "border-status-error"}
           onChange={(item) => {

@@ -6,9 +6,10 @@ import type { ModalProps } from "@/types/overlay";
 interface MenuDetailModalProps extends ModalProps {
   menuId?: string;
   entry: "create" | "detail";
+  initialCategoryId?: string;
 }
 
-function MenuDetailModal({ entry, menuId, ...props }: Readonly<MenuDetailModalProps>) {
+function MenuDetailModal({ menuId, entry, ...props }: Readonly<MenuDetailModalProps>) {
   const menu = MENU_DETAILS_MOCK.find((menu) => menu.menuId === menuId) ?? MENU_DETAILS_MOCK[0];
 
   return (

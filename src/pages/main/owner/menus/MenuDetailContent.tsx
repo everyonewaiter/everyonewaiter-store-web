@@ -20,9 +20,15 @@ interface MenuDetailContentProps extends ModalProps {
   entry: "create" | "detail";
   menu: MenuDetail;
   close: () => void;
+  initialCategoryId?: string;
 }
 
-function MenuDetailContent({ entry, menu, close }: Readonly<MenuDetailContentProps>) {
+function MenuDetailContent({
+  entry,
+  menu,
+  close,
+  initialCategoryId,
+}: Readonly<MenuDetailContentProps>) {
   const [mode, setMode] = useState<MenuDetailMode>(entry === "create" ? "create" : "detail");
 
   const isEditing = mode === "edit";
@@ -37,7 +43,7 @@ function MenuDetailContent({ entry, menu, close }: Readonly<MenuDetailContentPro
     reValidateMode: "onChange",
     defaultValues: isCreating
       ? {
-          categoryId: "",
+          categoryId: initialCategoryId,
           name: "",
           description: "",
           price: "",
