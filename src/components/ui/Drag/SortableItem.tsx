@@ -7,7 +7,7 @@ interface SortableItemProps {
   children: ReactNode;
 }
 
-function SortableItem({ id, children }: SortableItemProps) {
+function SortableItem({ id, children }: Readonly<SortableItemProps>) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id,
   });

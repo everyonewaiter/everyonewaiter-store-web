@@ -7,6 +7,7 @@ import {
   useSensor,
   useSensors,
   type DragEndEvent,
+  type Modifier,
 } from "@dnd-kit/core";
 import {
   arrayMove,
@@ -17,14 +18,39 @@ import {
 } from "@dnd-kit/sortable";
 import SortableItem from "@/components/ui/Drag/SortableItem";
 
+const restrictToVerticalAxis: Modifier = ({ transform }) => {
+  return {
+    ...transform,
+    x: 0,
+  };
+};
+
+const restrictToParentElement: Modifier = ({ transform, draggingNodeRect, containerNodeRect }) => {
+  if (!draggingNodeRect || !containerNodeRect) {
+    return transform;
+  }
+
+  return {
+    ...transform,
+    y: Math.max(
+      containerNodeRect.top - draggingNodeRect.top,
+      Math.min(transform.y ?? 0, containerNodeRect.bottom - draggingNodeRect.bottom)
+    ),
+    x: Math.max(
+      containerNodeRect.left - draggingNodeRect.left,
+      Math.min(transform.x ?? 0, containerNodeRect.right - draggingNodeRect.right)
+    ),
+  };
+};
+
 interface DraggableListProps<T> {
   items: T[];
   onReorder: (items: T[], sourceId: string, targetId: string, where: "PREV" | "NEXT") => void;
   renderItem: (item: T, index: number) => ReactNode;
   keyExtractor: (item: T) => string | number;
-  className?: string;
   canDrag?: boolean;
   strategy?: SortingStrategy;
+  modifiers?: Modifier[];
 }
 
 export function DragList<T>({
@@ -34,7 +60,8 @@ export function DragList<T>({
   keyExtractor,
   canDrag = true,
   strategy = verticalListSortingStrategy,
-}: DraggableListProps<T>) {
+  modifiers,
+}: Readonly<DraggableListProps<T>>) {
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
@@ -60,8 +87,18 @@ export function DragList<T>({
 
   const itemIds = items.map(keyExtractor);
 
+  const defaultModifiers =
+    strategy === verticalListSortingStrategy
+      ? [restrictToVerticalAxis, restrictToParentElement]
+      : [restrictToParentElement];
+
   return canDrag ? (
-    <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+    <DndContext
+      sensors={sensors}
+      collisionDetection={closestCenter}
+      onDragEnd={handleDragEnd}
+      modifiers={modifiers ?? defaultModifiers}
+    >
       <SortableContext items={itemIds} strategy={strategy}>
         <>
           {items.map((item, index) => {

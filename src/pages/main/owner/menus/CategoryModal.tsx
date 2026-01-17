@@ -117,7 +117,7 @@ function CategoryModal({ isOpen, close, categories, onSave }: Readonly<CategoryM
           )
         }
       >
-        <div className="flex flex-1 flex-col overflow-hidden">
+        <div className="flex w-full flex-1 flex-col overflow-hidden">
           <div className="hide-scrollbar flex flex-1 flex-col gap-3 overflow-y-auto pb-4 md:gap-3 md:pb-0">
             <DragList
               items={fields}
@@ -160,7 +160,6 @@ function CategoryModal({ isOpen, close, categories, onSave }: Readonly<CategoryM
                   }
                 />
               )}
-              className="space-y-2"
             />
           </div>
           {isCreating && (
