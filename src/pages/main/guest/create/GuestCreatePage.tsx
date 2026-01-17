@@ -89,7 +89,7 @@ function GuestCreate() {
         "relative flex h-full w-full justify-center bg-white",
         isGuest
           ? "hide-scrollbar overflow-y-auto pt-5 md:items-start md:overflow-hidden md:bg-gray-700 md:py-8 lg:items-center lg:py-0"
-          : "items-start"
+          : "items-center"
       )}
     >
       <div
