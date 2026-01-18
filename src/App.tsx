@@ -39,7 +39,7 @@ const router = createBrowserRouter(
           <Route path="signup/result" element={<SignupResultPage />} />
         </Route>
 
-        <Route path="email" element={<EmailPage />} />
+        <Route path="auth/mail" element={<EmailPage />} />
       </Route>
 
       <Route element={<RootLayout />}>

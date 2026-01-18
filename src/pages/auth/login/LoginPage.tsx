@@ -50,7 +50,7 @@ function LoginPage() {
 
           if (code === "NOT_COMPLETE_EMAIL_VERIFICATION") {
             toast.error(message);
-            navigate("/email?type=not-verified");
+            navigate("/auth/mail?type=not-verified");
             return;
           }
 
