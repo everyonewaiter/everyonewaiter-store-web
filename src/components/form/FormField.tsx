@@ -49,6 +49,8 @@ function FormField<
           field.onChange(e);
         };
 
+        const formItemId = `${props.name}-form-item`;
+
         return (
           <FormItem className={formItemClassName}>
             {label && (
@@ -58,7 +60,7 @@ function FormField<
             )}
             <FormControl>
               <div className="relative flex items-center gap-2">
-                <FormInput {...field} {...restInputProps} onChange={handleChange} />
+                <FormInput {...field} {...restInputProps} id={formItemId} onChange={handleChange} />
                 {postfix}
               </div>
             </FormControl>

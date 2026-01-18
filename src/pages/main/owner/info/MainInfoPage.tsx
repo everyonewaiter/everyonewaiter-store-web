@@ -84,7 +84,7 @@ function MainInfoPage() {
         origins.length > 4 ? "items-start" : "items-start md:items-start lg:items-center lg:pb-6"
       )}
     >
-      <div className="flex w-full flex-col gap-6 md:w-68 lg:w-120 lg:gap-8">
+      <div className="flex w-full flex-col gap-6 md:w-95 lg:w-120 lg:gap-8">
         <div className="flex flex-col gap-2 lg:gap-3">
           <h2 className="text-gray-0 text-lg font-semibold lg:text-2xl">매장 정보</h2>
           <p className="text-xs font-normal whitespace-pre-line text-gray-300 lg:text-sm">{`등록된 매장 정보를 확인할 수 있습니다.\n변경된 정보가 있다면 언제든지 수정해 주세요.`}</p>

@@ -1,8 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, useWatch } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
-import dashedBorder from "@/assets/images/dashed.svg";
+import { useLocation, useNavigate } from "react-router-dom";
 import logo from "@/assets/images/logo.svg";
 import Spinner from "@/components/feedback/Spinner";
 import { Form, FormErrorMessage } from "@/components/form/Form";
@@ -12,12 +11,16 @@ import Button from "@/components/ui/Button/Button";
 import { useFormBlocker } from "@/hooks/useLeavePageBlocker";
 import useOpenDaumPostcode from "@/hooks/useOpenDaumPostcode";
 import { formatBusinessNumber, formatStorePhoneNumber } from "@/lib/format";
+import cn from "@/lib/utils";
 import { createStoreSchema, type CreateStoreSchema } from "@/schema/create-store.schema";
 
 function GuestCreate() {
   const navigate = useNavigate();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const { pathname } = useLocation();
+  const isGuest = pathname.startsWith("/guest");
 
   const form = useForm<CreateStoreSchema>({
     mode: "onSubmit",
@@ -37,7 +40,7 @@ function GuestCreate() {
   useFormBlocker(form.formState.isDirty && !isSubmitting);
 
   const { handleOpenAddress } = useOpenDaumPostcode((address) => {
-    form.setValue("address", address, { shouldDirty: true });
+    form.setValue("address", address, { shouldDirty: true, shouldValidate: true });
   });
 
   const handleSubmit = form.handleSubmit((data) => {
@@ -50,7 +53,11 @@ function GuestCreate() {
 
     // TODO: 매장 등록 로직 구현
 
-    navigate("/guest");
+    if (isGuest) {
+      navigate("/guest");
+    } else {
+      navigate("/");
+    }
   });
 
   const handleFileChange = () => {
@@ -77,8 +84,20 @@ function GuestCreate() {
   }, [fileUrl]);
 
   return (
-    <div className="flex h-full w-full justify-center bg-white pt-5 md:items-start md:bg-gray-700 md:py-8 lg:items-center lg:py-0">
-      <div className="flex w-full flex-col gap-8 rounded-4xl bg-white px-5 md:h-full md:w-180 md:flex-row md:justify-between md:gap-0 md:p-5 lg:h-auto lg:w-222 lg:p-8">
+    <div
+      className={cn(
+        "relative flex h-full w-full justify-center bg-white",
+        isGuest
+          ? "hide-scrollbar overflow-y-auto pt-5 md:items-start md:overflow-hidden md:bg-gray-700 md:py-8 lg:items-center lg:py-0"
+          : "items-center"
+      )}
+    >
+      <div
+        className={cn(
+          "flex w-full flex-col rounded-4xl bg-white px-5 md:h-full md:w-180 md:flex-row md:justify-between md:p-5 lg:h-210 lg:w-222 lg:p-8",
+          isGuest ? "gap-8" : ""
+        )}
+      >
         <div className="hidden flex-col md:flex md:gap-5 lg:gap-10">
           <img
             src={logo}
@@ -90,11 +109,16 @@ function GuestCreate() {
             <span className="font-normal whitespace-pre-line text-gray-300 md:text-xs lg:text-[15px]">{`첫 매장을 등록해볼까요?\n간단한 정보만 입력하면 바로 시작할 수 있어요!`}</span>
           </div>
         </div>
-        <div className="block md:hidden">
+        <div className={cn("block md:hidden", isGuest ? "" : "py-6")}>
           <h1 className="text-gray-0 text-center text-xl font-bold">매장 등록</h1>
         </div>
         <Form {...form}>
-          <form className="hide-scrollbar flex flex-col gap-6 overflow-y-auto md:w-87 md:gap-8 lg:w-100">
+          <form
+            className={cn(
+              "flex flex-col gap-6 md:w-87 md:gap-8 lg:w-100",
+              isGuest && "hide-scrollbar md:overflow-y-auto"
+            )}
+          >
             <div className="flex flex-col gap-3 lg:gap-4">
               <FormField
                 control={form.control}
@@ -168,15 +192,9 @@ function GuestCreate() {
               />
               <button
                 type="button"
-                className="relative flex h-35 w-full flex-col items-center justify-center gap-2 rounded-2xl border border-gray-600 bg-gray-700 md:h-40 md:gap-3 md:border-none"
+                className="relative flex h-35 w-full flex-col items-center justify-center gap-2 rounded-2xl border border-dashed border-gray-600 bg-gray-700 md:h-40 md:gap-3"
                 onClick={() => fileInputRef.current?.click()}
               >
-                <img
-                  src={dashedBorder}
-                  alt=""
-                  className="pointer-events-none absolute inset-0 hidden h-full w-full rounded-2xl object-cover md:block"
-                  aria-hidden="true"
-                />
                 {(file?.type === "image/jpeg" ||
                   file?.type === "image/jpg" ||
                   file?.type === "image/png") &&
@@ -201,9 +219,7 @@ function GuestCreate() {
                     </div>
                   </>
                 )}
-                {form.formState.errors.file && (
-                  <FormErrorMessage>{form.formState.errors.file.message}</FormErrorMessage>
-                )}
+
                 <input
                   type="file"
                   className="hidden"
@@ -212,13 +228,16 @@ function GuestCreate() {
                   onChange={handleFileChange}
                 />
               </button>
+              {form.formState.errors.file && (
+                <FormErrorMessage>{form.formState.errors.file.message}</FormErrorMessage>
+              )}
             </div>
             <div className="w-full shrink-0">
               <Button
                 type="submit"
                 responsive
                 responsiveButtons={{
-                  sm: { buttonSize: "md", className: "w-full" },
+                  sm: { buttonSize: "md", className: cn("w-full", isGuest && "mb-5") },
                   md: { buttonSize: "sm", className: "w-full" },
                   lg: { buttonSize: "lg", className: "w-full" },
                 }}

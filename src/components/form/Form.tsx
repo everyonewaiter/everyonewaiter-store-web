@@ -39,6 +39,7 @@ function FormField<
 
 const useFormField = () => {
   const fieldContext = useContext(FormFieldContext);
+  const formItemContext = useContext(FormItemContext);
   const { getFieldState } = useFormContext();
   const formState = useFormState({ name: fieldContext.name });
   const fieldState = getFieldState(fieldContext.name, formState);
@@ -47,15 +48,19 @@ const useFormField = () => {
     throw new Error("useFormField should be used within <FormField>");
   }
 
+  if (!formItemContext) {
+    throw new Error("useFormField should be used within <FormItem>");
+  }
+
   return useMemo(
     () => ({
       name: fieldContext.name,
-      formItemId: `${fieldContext.name}-form-item`,
-      formDescriptionId: `${fieldContext.name}-form-item-description`,
-      formMessageId: `${fieldContext.name}-form-item-message`,
+      formItemId: formItemContext.id,
+      formDescriptionId: `${formItemContext.id}-description`,
+      formMessageId: `${formItemContext.id}-message`,
       ...fieldState,
     }),
-    [fieldContext.name, fieldState]
+    [fieldContext.name, formItemContext.id, fieldState]
   );
 };
 
@@ -87,9 +92,9 @@ function FormLabel({
   return (
     <Label
       data-slot="form-label"
+      htmlFor={formItemId}
       data-error={!!error}
       className={cn("data-[error=true]:text-destructive leading-normal", className)}
-      htmlFor={formItemId}
       disabled={disabled}
       {...props}
     />
@@ -97,17 +102,7 @@ function FormLabel({
 }
 
 function FormControl({ ...props }: ComponentProps<typeof Slot>) {
-  const { error, formItemId, formDescriptionId, formMessageId } = useFormField();
-
-  return (
-    <Slot
-      data-slot="form-control"
-      id={formItemId}
-      aria-describedby={error ? `${formDescriptionId} ${formMessageId}` : `${formDescriptionId}`}
-      aria-invalid={!!error}
-      {...props}
-    />
-  );
+  return <Slot data-slot="form-control" {...props} />;
 }
 
 function FormDescription({ className, ...props }: ComponentProps<"p">) {
@@ -147,9 +142,15 @@ function FormMessage({ className, ...props }: ComponentProps<"p">) {
 }
 
 function FormInput({ ...props }: ComponentProps<typeof Input>) {
-  const { error } = useFormField();
+  const { error, formItemId, formDescriptionId, formMessageId } = useFormField();
   return (
-    <Input {...props} className={cn(props.className, error?.message && "border-status-error")} />
+    <Input
+      id={formItemId}
+      aria-describedby={error ? `${formDescriptionId} ${formMessageId}` : `${formDescriptionId}`}
+      aria-invalid={!!error}
+      {...props}
+      className={cn(props.className, error?.message && "border-status-error")}
+    />
   );
 }
 
@@ -184,4 +185,5 @@ export {
   FormField,
   FormErrorMessage,
   FormInput,
+  useFormField,
 };
