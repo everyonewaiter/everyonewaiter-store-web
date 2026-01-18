@@ -1,14 +1,21 @@
-import { useState } from "react";
-import { Outlet } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Outlet, useNavigate } from "react-router-dom";
 import logoTextHorizontal from "@/assets/images/logo-text-horizontal.svg";
 import MobileSidebar from "@/components/layout/MobileSidebar";
 import SectionTitle from "@/components/layout/SectionTitle";
 import Sidebar from "@/components/layout/Sidebar";
 
 function RootLayout() {
+  const navigate = useNavigate();
+
   const [isUser] = useState(true);
 
-  // TODO: 로그인 여부 확인 후 리다이렉트
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/login");
+    }
+  }, [navigate]);
 
   return (
     <MobileSidebar>
