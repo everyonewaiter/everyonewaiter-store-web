@@ -42,7 +42,7 @@ function EmailPage() {
           handleAlreadyVerified();
           return;
         }
-        if (data.code === "EXPIRED_VERIFICATION_MAIL") {
+        if (data.code === "EXPIRED_VERIFICATION_EMAIL") {
           setIsExpired(true);
           return;
         }
@@ -64,7 +64,10 @@ function EmailPage() {
     sendAuthMail(
       { email },
       {
-        onSuccess: () => toast.success("이메일 인증 확인 메일 발송 성공!"),
+        onSuccess: () => {
+          toast.success("이메일 인증 확인 메일 발송 성공!");
+          setTimeout(() => navigate("/login"), 1000);
+        },
         onError: (error) => {
           const { status, data } = errorResponse(error);
 
