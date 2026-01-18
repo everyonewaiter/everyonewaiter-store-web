@@ -1,6 +1,7 @@
 import type { ComponentProps, PropsWithChildren, ReactNode } from "react";
 import { Close } from "@/components/icons";
 import { Dialog } from "@/components/overlay/Dialog";
+import cn from "@/lib/utils";
 
 interface ModalProps extends ComponentProps<typeof Dialog> {
   wrapperProps?: ComponentProps<typeof Dialog.Wrapper>;
@@ -10,6 +11,7 @@ interface ModalProps extends ComponentProps<typeof Dialog> {
   };
   topRightContent?: ReactNode;
   title?: ReactNode;
+  className?: string;
 }
 
 function Modal({
@@ -17,11 +19,17 @@ function Modal({
   footerContent,
   topRightContent,
   title,
+  className,
   ...props
 }: Readonly<PropsWithChildren<ModalProps>>) {
   return (
     <Dialog {...props}>
-      <Dialog.Wrapper className="flex h-125 w-80 flex-col gap-5! rounded-[20px] px-4 py-5 md:h-125 md:w-91 md:gap-6 md:p-5 lg:h-185 lg:w-135 lg:gap-8 lg:p-8">
+      <Dialog.Wrapper
+        className={cn(
+          "flex h-125 w-80 flex-col gap-5! rounded-[20px] px-4 py-5 md:h-125 md:w-91 md:gap-6 md:p-5 lg:h-185 lg:w-135 lg:gap-8 lg:p-8",
+          className
+        )}
+      >
         {title && (
           <Dialog.Header className="flex items-center justify-between">
             {title && (
@@ -39,15 +47,15 @@ function Modal({
         <div className="hide-scrollbar flex flex-1 flex-col overflow-y-auto">{children}</div>
         {/* 불필요한 Spacing(gap) 방지를 위해 조건 분리함 */}
         {footerContent?.action && footerContent?.cancel ? (
-          <Dialog.Footer className="flex items-center gap-2 lg:gap-3">
+          <Dialog.Footer className="flex w-full items-center gap-2 lg:gap-3">
             {footerContent.cancel && <>{footerContent.cancel}</>}
             {footerContent.action}
           </Dialog.Footer>
         ) : (
-          <>
+          <div className="flex w-full items-center justify-center">
             {footerContent?.cancel}
             {footerContent?.action}
-          </>
+          </div>
         )}
       </Dialog.Wrapper>
     </Dialog>

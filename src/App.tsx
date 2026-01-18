@@ -49,6 +49,7 @@ const router = createBrowserRouter(
         <Route path="/guest/create" element={<GuestCreatePage />} />
 
         <Route path="/" element={<HomePage />} />
+        <Route path="/create" element={<GuestCreatePage />} />
         <Route path="/stores" element={<MainInfoPage />} />
         <Route path="/devices" element={<MainDevicePage />} />
         <Route path="/menus" element={<MainMenuPage />} />

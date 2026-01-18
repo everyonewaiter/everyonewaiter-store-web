@@ -1,6 +1,6 @@
 import { useState } from "react";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
-import { ChevronDown } from "@/components/icons";
+import { ChevronRight } from "@/components/icons";
 import cn from "@/lib/utils";
 
 interface DropdownItem {
@@ -49,11 +49,13 @@ function Dropdown({
             triggerClassName
           )}
         >
-          {selectedItem ? selectedItem.name : defaultText}
-          <ChevronDown
+          <span className="min-w-0 flex-1 overflow-hidden text-left text-ellipsis whitespace-nowrap">
+            {selectedItem ? selectedItem.name : defaultText}
+          </span>
+          <ChevronRight
             className={cn(
-              `h-6 w-6 transition-transform duration-500`,
-              isOpen && "rotate-180",
+              `h-6 w-6 shrink-0 rotate-90 transition-transform duration-500`,
+              isOpen && "rotate-270",
               type === "default" ? "text-gray-300" : "text-gray-0",
               iconClassName
             )}

@@ -1,3 +1,5 @@
+import type { ContentWithPagination } from "@/types/pagination";
+
 export type ApplicationStatus = "APPLY" | "REJECT" | "APPROVE" | "REAPPLY";
 
 export type PrinterLocation = "POS" | "HALL";
@@ -16,6 +18,20 @@ export interface StoreApplication {
   reason: string;
   createdAt: string;
   updatedAt: string;
+}
+
+export type StoreApplicationList = ContentWithPagination<StoreApplication[]>;
+
+export interface StoreApplicationWithPagination {
+  content: StoreApplication[];
+  page: number;
+  size: number;
+  pageSkipSize: number;
+  count: number;
+  fastForwardPage: number;
+  fastBackwardPage: number;
+  isFirst: boolean;
+  isLast: boolean;
 }
 
 export interface StoreSetting {

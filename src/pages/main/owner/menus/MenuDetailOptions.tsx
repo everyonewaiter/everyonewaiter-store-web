@@ -1,7 +1,7 @@
 import { useState, type ChangeEvent } from "react";
 import { useFieldArray, useFormContext } from "react-hook-form";
 import {
-  ChevronDown,
+  ChevronRight,
   Dot,
   DragDrop,
   Info,
@@ -170,10 +170,10 @@ function MenuDetailOptions({
             {canEdit && fields.length > 0 ? (
               <Dot className="text-gray-0 size-5 lg:size-6" />
             ) : (
-              <ChevronDown
+              <ChevronRight
                 className={cn(
                   "text-gray-0 size-5 lg:size-6",
-                  selectedGroup === type ? "rotate-180" : ""
+                  selectedGroup === type ? "rotate-270" : "rotate-90"
                 )}
               />
             )}
