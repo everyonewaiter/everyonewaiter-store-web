@@ -23,6 +23,7 @@ import MainMenuCategoryPage from "@/pages/main/owner/menus/category/MainMenuCate
 import MainMenuPage from "@/pages/main/owner/menus/MainMenuPage";
 import MainSettingsPage from "@/pages/main/owner/settings/MainSettingsPage";
 import RootLayout from "@/pages/main/RootLayout";
+import NotFound from "@/pages/NotFound";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -58,6 +59,7 @@ const router = createBrowserRouter(
         <Route path="/settings" element={<MainSettingsPage />} />
       </Route>
       <Route path="/guest/application" element={<GuestApplicationPage />} />
+      <Route path="*" element={<NotFound />} />
     </Route>
   )
 );
