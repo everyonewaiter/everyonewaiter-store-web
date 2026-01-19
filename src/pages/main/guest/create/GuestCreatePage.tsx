@@ -1,15 +1,20 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation } from "@tanstack/react-query";
 import { useForm, useWatch } from "react-hook-form";
 import { useLocation, useNavigate } from "react-router-dom";
+import { toast } from "sonner";
+import { storesMutations } from "@/api/stores/mutations";
 import logo from "@/assets/images/logo.svg";
 import Spinner from "@/components/feedback/Spinner";
 import { Form, FormErrorMessage } from "@/components/form/Form";
 import FormField from "@/components/form/FormField";
+import { PDFPreview } from "@/components/form/PdfViewer";
 import { FileAttach } from "@/components/icons";
 import Button from "@/components/ui/Button/Button";
 import { useFormBlocker } from "@/hooks/useLeavePageBlocker";
 import useOpenDaumPostcode from "@/hooks/useOpenDaumPostcode";
+import { errorResponse } from "@/lib/error-response";
 import { formatBusinessNumber, formatStorePhoneNumber } from "@/lib/format";
 import cn from "@/lib/utils";
 import { createStoreSchema, type CreateStoreSchema } from "@/schema/create-store.schema";
@@ -37,6 +42,8 @@ function GuestCreate() {
     },
   });
 
+  const { mutate: createStore } = useMutation(storesMutations.createStore());
+
   useFormBlocker(form.formState.isDirty && !isSubmitting);
 
   const { handleOpenAddress } = useOpenDaumPostcode((address) => {
@@ -51,13 +58,28 @@ function GuestCreate() {
 
     setIsSubmitting(true);
 
-    // TODO: 매장 등록 로직 구현
+    createStore(data, {
+      onSuccess: () => {
+        toast.success("매장 등록이 완료되었습니다.");
+        if (isGuest) {
+          navigate("/guest");
+        } else {
+          navigate("/");
+        }
+      },
+      onError: (error) => {
+        const { status, data } = errorResponse(error);
+        const code = data?.code;
+        const message = data?.message;
 
-    if (isGuest) {
-      navigate("/guest");
-    } else {
-      navigate("/");
-    }
+        if (status === 400 && code.includes("IMAGE")) {
+          form.setError("file", { message });
+          return;
+        }
+
+        toast.error(message);
+      },
+    });
   });
 
   const handleFileChange = () => {
@@ -88,7 +110,7 @@ function GuestCreate() {
       className={cn(
         "relative flex h-full w-full justify-center bg-white",
         isGuest
-          ? "hide-scrollbar overflow-y-auto pt-5 md:items-start md:overflow-hidden md:bg-gray-700 md:py-8 lg:items-center lg:py-0"
+          ? "hide-scrollbar h-fit overflow-y-auto pt-5 md:items-start md:overflow-hidden md:bg-gray-700 md:py-8 lg:items-center lg:py-0"
           : "items-center"
       )}
     >
@@ -205,6 +227,8 @@ function GuestCreate() {
                       className="h-full w-full rounded-2xl object-cover"
                     />
                   )}
+
+                {file?.type === "application/pdf" && <PDFPreview file={file} />}
 
                 {!file && (
                   <>
