@@ -61,3 +61,8 @@ export interface StoreDetail {
   createdAt: string;
   updatedAt: string;
 }
+
+export interface SimpleStore {
+  storeId: string;
+  name: string;
+}
