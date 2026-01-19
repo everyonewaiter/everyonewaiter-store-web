@@ -31,9 +31,10 @@ function Toaster({ ...props }: Readonly<ToasterProps>) {
         error: <OctagonXIcon className="size-4" />,
         loading: <Loader2Icon className="size-4 animate-spin" />,
       }}
+      position="top-right"
       style={
         {
-          "--normal-bg": "var(--popover)",
+          "--normal-bg": "white",
           "--normal-text": "var(--popover-foreground)",
           "--normal-border": "var(--border)",
           "--border-radius": "var(--radius)",
