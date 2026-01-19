@@ -26,7 +26,7 @@ Dialog.Close = forwardRef<
     <DialogPrimitive.Close
       ref={ref}
       data-slot="dialog-close"
-      className={cn("h-fit w-fit", props.className)}
+      className={cn("h-fit", props.className)}
       {...props}
     />
   );
