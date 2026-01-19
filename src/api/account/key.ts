@@ -1,3 +1,4 @@
 export const ACCOUNT_KEY = {
-  userId: (userId: string) => userId,
+  user: () => ["USER"],
+  userId: (userId: string) => ["USER", userId],
 };
