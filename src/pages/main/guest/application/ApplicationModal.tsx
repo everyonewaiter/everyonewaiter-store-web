@@ -22,9 +22,15 @@ const formType = createStoreSchema.omit({ file: true }).extend({
 
 interface ApplicationModalProps extends ModalProps {
   application: StoreApplication;
+  showReapplyButton?: boolean;
 }
 
-function ApplicationModal({ application, isOpen, close }: Readonly<ApplicationModalProps>) {
+function ApplicationModal({
+  application,
+  isOpen,
+  close,
+  showReapplyButton = false,
+}: Readonly<ApplicationModalProps>) {
   const [isEditing, setIsEditing] = useState(false);
 
   const form = useForm<z.infer<typeof formType>>({
@@ -56,18 +62,17 @@ function ApplicationModal({ application, isOpen, close }: Readonly<ApplicationMo
     <Form {...form}>
       <Modal
         title="매장 등록 신청 현황"
-        hasCloseIcon
         open={isOpen}
         onOpenChange={(open) => !open && close()}
         footerContent={{
           action:
-            application.status === "REJECT" ? (
+            application.status === "REJECT" && showReapplyButton ? (
               <Button
                 color={isEditing ? "primary" : "black"}
                 responsive
                 responsiveButtons={{
-                  lg: { buttonSize: "xl", className: "w-full outline-none" },
-                  md: { buttonSize: "sm", className: "w-full outline-none" },
+                  lg: { buttonSize: "xl", className: "w-120 outline-none" },
+                  md: { buttonSize: "sm", className: "w-75 outline-none" },
                   sm: { buttonSize: "sm", className: "w-full outline-none !h-10" },
                 }}
                 onClick={() => {
@@ -82,58 +87,12 @@ function ApplicationModal({ application, isOpen, close }: Readonly<ApplicationMo
               </Button>
             ) : null,
         }}
+        className="w-75! md:h-auto! md:w-150! lg:w-200!"
       >
-        <div className="flex flex-col gap-3 lg:gap-4">
-          <FormField control={form.control} name="name" label="상호명" disabled={!isEditing} />
-          <FormField
-            control={form.control}
-            name="license"
-            label="사업자번호"
-            disabled={!isEditing}
-            inputProps={{
-              placeholder: "사업자번호를 입력해주세요. (000-00-00000)",
-              onChange: (e) => {
-                const formatted = formatBusinessNumber(e);
-                form.setValue("license", formatted, { shouldDirty: true });
-              },
-            }}
-          />
-          <FormField
-            control={form.control}
-            name="address"
-            label="소재지"
-            disabled={!isEditing}
-            inputProps={{
-              placeholder: "소재지를 선택해주세요.",
-              readOnly: true,
-              className: "cursor-pointer focus:border-gray-400",
-              onClick: handleOpenAddress,
-              onKeyDown: (e) => {
-                if (e.key === "Enter") {
-                  e.preventDefault();
-                  handleOpenAddress();
-                }
-              },
-              tabIndex: 0,
-            }}
-          />
-          <FormField control={form.control} name="createdAt" label="신청일" disabled />
-          {application.status === "REJECT" && (
-            <FormField
-              control={form.control}
-              name="reason"
-              label="반려 사유"
-              disabled
-              inputProps={{
-                className: isEditing
-                  ? ""
-                  : "text-center !border-primary !bg-[#F2202014] !text-primary",
-              }}
-            />
-          )}
-          <div className="mt-2 flex flex-col md:mt-0">
+        <div className="flex flex-col-reverse gap-3 md:flex-row md:gap-6">
+          <div className="mt-2 flex flex-1 flex-col md:mt-0">
             <Label disabled={!isEditing}>사업자등록증</Label>
-            <div className="center mt-2 w-full flex-col gap-3 rounded-2xl bg-gray-700 px-11.5 py-6">
+            <div className="center mt-2 w-full flex-col gap-3 rounded-2xl bg-gray-700 px-6 py-6 md:p-1">
               <Image
                 src={application.image}
                 fallbackSrc={
@@ -166,6 +125,55 @@ function ApplicationModal({ application, isOpen, close }: Readonly<ApplicationMo
                 </Button>
               )}
             </div>
+          </div>
+          <div className="flex flex-1 flex-col gap-3 lg:gap-4">
+            <FormField control={form.control} name="name" label="상호명" disabled={!isEditing} />
+            <FormField
+              control={form.control}
+              name="license"
+              label="사업자번호"
+              disabled={!isEditing}
+              inputProps={{
+                placeholder: "사업자번호를 입력해주세요. (000-00-00000)",
+                onChange: (e) => {
+                  const formatted = formatBusinessNumber(e);
+                  form.setValue("license", formatted, { shouldDirty: true });
+                },
+              }}
+            />
+            <FormField
+              control={form.control}
+              name="address"
+              label="소재지"
+              disabled={!isEditing}
+              inputProps={{
+                placeholder: "소재지를 선택해주세요.",
+                readOnly: true,
+                className: "cursor-pointer focus:border-gray-400",
+                onClick: handleOpenAddress,
+                onKeyDown: (e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    handleOpenAddress();
+                  }
+                },
+                tabIndex: 0,
+              }}
+            />
+            <FormField control={form.control} name="createdAt" label="신청일" disabled />
+            {application.status === "REJECT" && (
+              <FormField
+                control={form.control}
+                name="reason"
+                label="반려 사유"
+                disabled
+                inputProps={{
+                  className: isEditing
+                    ? ""
+                    : "text-center !border-primary !bg-[#F2202014] !text-primary",
+                }}
+              />
+            )}
           </div>
         </div>
       </Modal>

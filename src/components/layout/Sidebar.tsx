@@ -68,16 +68,18 @@ function Sidebar({ onLinkClick }: Readonly<SidebarProps>) {
           className="w-39.5 md:w-37 lg:w-55"
         />
       </Link>
-      <div className="flex flex-col gap-4 px-4 md:gap-2 md:px-3 lg:px-5">
-        <Dropdown
-          // TODO: 매장 api 연결 후 조건 수정
-          dropdownItems={STORES_MOCK.filter((store) => store.id !== selectedStore.id)}
-          defaultText={STORES_MOCK[0].name}
-          triggerClassName={
-            "bg-primary border-primary text-white text-[15px] font-semibold lg:text-lg lg:font-bold pl-4 pr-3 lg:pl-5 pr-4 h-12 lg:h-14"
-          }
-          iconClassName="text-white"
-        />
+      <div className="flex min-w-0 flex-col gap-4 px-4 md:gap-2 md:px-3 lg:px-5">
+        <div className="min-w-0">
+          <Dropdown
+            // TODO: 매장 api 연결 후 조건 수정
+            dropdownItems={STORES_MOCK.filter((store) => store.id !== selectedStore.id)}
+            defaultText={STORES_MOCK[0].name}
+            triggerClassName={
+              "bg-primary border-primary text-white text-[15px] font-semibold lg:text-lg lg:font-bold pl-4 pr-3 lg:pl-5 pr-4 h-12 lg:h-14 w-full min-w-0 overflow-hidden text-ellipsis whitespace-nowrap"
+            }
+            iconClassName="text-white shrink-0"
+          />
+        </div>
         <nav>
           {sidebarItems.map((item, index) => {
             const isSelected =

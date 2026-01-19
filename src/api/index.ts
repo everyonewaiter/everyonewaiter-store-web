@@ -21,15 +21,16 @@ instance.interceptors.request.use((config) => {
 instance.interceptors.response.use(
   (response) => response,
   async (error) => {
-    const isLoginPage = window.location.pathname === "/login";
+    const isLoginPage = globalThis.window.location.pathname === "/login";
 
     if (error.response?.status === 401 && !isLoginPage) {
       await mutex.runExclusive(async () => {
         localStorage.removeItem("token");
-        window.location.href = "/login";
+        globalThis.window.location.href = "/login";
       });
     }
-    return Promise.reject(error);
+
+    throw error;
   }
 );
 
