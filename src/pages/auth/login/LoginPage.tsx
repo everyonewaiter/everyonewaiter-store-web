@@ -5,12 +5,14 @@ import { useForm } from "react-hook-form";
 import { useNavigate, Link } from "react-router-dom";
 import { toast } from "sonner";
 import { accountMutations } from "@/api/account/mutations";
+import { storesQueries } from "@/api/stores/queries";
 import logoTextVertical from "@/assets/images/logo-text-vertical.svg";
 import Spinner from "@/components/feedback/Spinner";
 import { Form } from "@/components/form/Form";
 import FormField from "@/components/form/FormField";
 import Button from "@/components/ui/Button/Button";
 import { errorResponse } from "@/lib/error-response";
+import { queryClient } from "@/lib/query-client";
 import { loginSchema, type LoginSchema } from "@/schema/auth/login.schema";
 
 function LoginPage() {
@@ -38,9 +40,16 @@ function LoginPage() {
         password: values.password,
       },
       {
-        onSuccess: (data) => {
+        onSuccess: async (data) => {
           localStorage.setItem("token", data.accessToken);
-          navigate("/");
+
+          const stores = await queryClient.fetchQuery(storesQueries.getStores());
+
+          if (stores?.length > 0) {
+            navigate("/");
+          } else {
+            navigate("/guest");
+          }
         },
         onError: (error) => {
           setIsSubmitting(false);
