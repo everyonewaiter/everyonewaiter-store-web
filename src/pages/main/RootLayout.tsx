@@ -1,4 +1,6 @@
-import { Outlet, useLocation } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { Navigate, Outlet, useLocation } from "react-router-dom";
+import { storesQueries } from "@/api/stores/queries";
 import logoTextHorizontal from "@/assets/images/logo-text-horizontal.svg";
 import MobileSidebar from "@/components/layout/MobileSidebar";
 import SectionTitle from "@/components/layout/SectionTitle";
@@ -8,7 +10,15 @@ function RootLayout() {
   const location = useLocation();
   const isGuest = location.pathname.startsWith("/guest");
 
-  // TODO: 로그인 여부 확인 후 리다이렉트
+  const { data: stores } = useQuery(storesQueries.getStores());
+
+  if ((stores?.length ?? 0) === 0 && !isGuest) {
+    return <Navigate to="/guest" replace />;
+  }
+
+  if ((stores?.length ?? 0) > 0 && isGuest) {
+    return <Navigate to="/not-found" replace />;
+  }
 
   return (
     <MobileSidebar>
@@ -23,8 +33,10 @@ function RootLayout() {
             />
             <div className="h-px w-full bg-gray-500" />
           </header>
-          <Outlet />
-          <main className="flex flex-1 items-center justify-center">1</main>
+
+          <main className="flex flex-1 items-center justify-center">
+            <Outlet />
+          </main>
         </div>
       ) : (
         // 승인된 매장이 있을 경우
