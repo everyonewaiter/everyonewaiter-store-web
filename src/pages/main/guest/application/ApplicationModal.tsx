@@ -1,12 +1,13 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
 import { storesMutations } from "@/api/stores/mutations";
 import Spinner from "@/components/feedback/Spinner";
 import { Form, FormErrorMessage } from "@/components/form/Form";
 import FormField from "@/components/form/FormField";
+import { PDFPreview } from "@/components/form/PdfViewer";
 import Modal from "@/components/overlay/Modal";
 import Button from "@/components/ui/Button/Button";
 import Image from "@/components/ui/Image";
@@ -141,6 +142,30 @@ function ApplicationModal({
     }
   };
 
+  const file = useWatch({ control: form.control, name: "file" });
+
+  const renderFile = useCallback(() => {
+    if (!file) return null;
+
+    if (typeof file === "string" && file.startsWith("license")) {
+      return (
+        <Image src={file} className="h-full w-full rounded-2xl object-cover" alt="사업자등록증" />
+      );
+    }
+
+    if (file instanceof File && file.type === "application/pdf") {
+      return <PDFPreview file={file} />;
+    }
+
+    return (
+      <img
+        src={imageFileUrl!}
+        alt="사업자등록증 미리보기"
+        className="h-full w-full rounded-2xl object-cover"
+      />
+    );
+  }, [file, imageFileUrl]);
+
   return (
     <Form {...form}>
       <Modal
@@ -178,19 +203,7 @@ function ApplicationModal({
           <div className="mt-2 flex flex-1 flex-col md:mt-0">
             <Label disabled={!isEditing}>사업자등록증</Label>
             <div className="center mt-2 w-full flex-1 flex-col gap-3 overflow-hidden rounded-2xl bg-gray-700 px-6 py-6 md:p-1">
-              {form.watch("file")?.toString().startsWith("license") ? (
-                <Image
-                  src={form.watch("file") as string}
-                  className="h-full w-full rounded-2xl object-cover"
-                  alt="사업자등록증"
-                />
-              ) : (
-                <img
-                  src={imageFileUrl!}
-                  alt="사업자등록증 미리보기"
-                  className="h-full w-full rounded-2xl object-cover"
-                />
-              )}
+              {renderFile()}
             </div>
             {isEditing && (
               <Button
