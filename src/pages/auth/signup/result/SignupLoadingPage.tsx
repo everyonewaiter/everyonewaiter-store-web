@@ -1,9 +1,22 @@
+import { useEffect } from "react";
 import Lottie from "lottie-react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import cooking from "@/assets/json/cooking.json";
 
 function SignupLoadingPage() {
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const email = searchParams.get("email");
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      navigate(`/signup/result?email=${email}`);
+    }, 1500);
+    return () => clearTimeout(timer);
+  }, [email, navigate]);
+
   return (
-    <div className="flex h-full w-full flex-col items-center justify-center text-center md:mt-[-20px] md:w-[292px] lg:w-[432px]">
+    <div className="flex h-full w-full flex-col items-center justify-center text-center md:mt-[-20px] md:w-73 lg:w-108">
       <Lottie
         animationData={cooking}
         loop
