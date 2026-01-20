@@ -1,12 +1,17 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation } from "@tanstack/react-query";
 import { useForm, useWatch } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
+import { accountMutations } from "@/api/account/mutations";
 import logoTextHorizontal from "@/assets/images/logo-text-horizontal.svg";
 import { Form, FormErrorMessage } from "@/components/form/Form";
 import FormField from "@/components/form/FormField";
 import Button from "@/components/ui/Button/Button";
 import Checkbox from "@/components/ui/Checkbox";
+import { errorResponse } from "@/lib/error-response";
+import { formatPhoneNumber } from "@/lib/format";
 import { signupSchema, type SignupSchema } from "@/schema/auth/signup.schema";
 
 function SignupPage() {
@@ -26,6 +31,14 @@ function SignupPage() {
     },
   });
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isAuthCodeVerified, setIsAuthCodeVerified] = useState(false);
+  const [stopTimer, setStopTimer] = useState(300);
+
+  const { mutate: sendAuthCode } = useMutation(accountMutations.sendAuthCode());
+  const { mutate: verifyAuthCode } = useMutation(accountMutations.verifyAuthCode());
+  const { mutate: createAccount } = useMutation(accountMutations.createAccount());
+
   useEffect(() => {
     const errors = form.formState.errors;
     if (Object.keys(errors).length > 0) {
@@ -35,23 +48,125 @@ function SignupPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [form.formState.errors]);
 
-  const onSubmit = () => {
-    // TODO: 회원가입 로직 구현
-    navigate("/signup/loading");
+  useEffect(() => {
+    if (stopTimer > 0) {
+      const timer = setTimeout(() => setStopTimer(stopTimer - 1), 1000);
+      return () => clearTimeout(timer);
+    } else if (stopTimer === 0 && isSubmitting && !isAuthCodeVerified) {
+      setIsSubmitting(false);
+      setIsAuthCodeVerified(false);
+    }
+  }, [stopTimer, isSubmitting, isAuthCodeVerified]);
+
+  const handleSendAuthCode = async () => {
+    await form.trigger("phoneNumber");
+    if (form.formState.errors.phoneNumber) return;
+
+    const phoneNumber = form.getValues("phoneNumber").replaceAll("-", "");
+
+    if (isSubmitting) {
+      if (stopTimer <= 270) {
+        setStopTimer(300);
+        sendAuthCode({ phoneNumber });
+      }
+    } else {
+      sendAuthCode(
+        { phoneNumber },
+        {
+          onSuccess: () => {
+            setIsSubmitting(true);
+            form.clearErrors("authCode");
+            setStopTimer(300);
+          },
+          onError: (error) => {
+            const { status, data } = errorResponse(error);
+
+            if (status === 400) {
+              form.setError("authCode", { message: data.message });
+              return;
+            }
+            toast.error(data.message || "인증번호 확인 중 오류가 발생했습니다.");
+          },
+        }
+      );
+    }
   };
+
+  const handleVerifyAuthCode = async () => {
+    await form.trigger("authCode");
+    if (form.formState.errors.authCode) return;
+
+    const phoneNumber = form.getValues("phoneNumber").replaceAll("-", "");
+
+    verifyAuthCode(
+      {
+        phoneNumber,
+        code: Number(form.getValues("authCode")),
+      },
+      {
+        onSuccess: () => setIsAuthCodeVerified(true),
+        onError: (error) => {
+          const { status, data } = errorResponse(error);
+
+          if (status === 400) {
+            form.setError("authCode", { message: data.message });
+            return;
+          }
+
+          toast.error(data.message || "인증번호 확인 중 오류가 발생했습니다.");
+        },
+      }
+    );
+  };
+
+  const handleSubmit = form.handleSubmit(() => {
+    createAccount(
+      {
+        email: form.getValues("email"),
+        phoneNumber: form.getValues("phoneNumber").replaceAll("-", ""),
+        password: form.getValues("password"),
+      },
+      {
+        onSuccess: () => {
+          navigate(`/signup/loading?email=${form.getValues("email")}`);
+        },
+        onError: (error) => {
+          const { status, data } = errorResponse(error);
+
+          if (data.code === "ALREADY_USE_EMAIL") {
+            form.setError("email", { message: data.message });
+            return;
+          }
+
+          if (
+            data.code === "ALREADY_USE_PHONE_NUMBER" ||
+            data.code === "EXPIRED_VERIFICATION_PHONE_NUMBER"
+          ) {
+            form.setError("phoneNumber", { message: data.message });
+            return;
+          }
+
+          if (status === 400) {
+            form.setError("email", { message: data.message });
+            form.setError("password", { message: data.message });
+            return;
+          }
+
+          toast.error(data.message || "회원가입 중 오류가 발생했습니다.");
+        },
+      }
+    );
+  });
 
   return (
     <>
       <img
         src={logoTextHorizontal}
         alt="logo text horizontal"
-        className="w-40 max-w-50 md:w-[37%]"
+        className="w-50 md:w-[37%] md:min-w-45"
       />
       <Form {...form}>
-        <form
-          className="flex flex-col gap-3 md:w-[292px] lg:w-[432px] lg:gap-4"
-          onSubmit={form.handleSubmit(onSubmit)}
-        >
+        <form className="flex flex-col gap-3 md:w-73 lg:w-108 lg:gap-4" onSubmit={handleSubmit}>
           <FormField
             control={form.control}
             name="email"
@@ -63,7 +178,11 @@ function SignupPage() {
             control={form.control}
             name="phoneNumber"
             label="휴대폰 번호"
-            inputProps={{ placeholder: "휴대폰 번호를 입력해주세요. (-없이 숫자만 입력)" }}
+            inputProps={{
+              placeholder: "휴대폰 번호를 입력해주세요. (-없이 숫자만 입력)",
+              onChange: (e) => form.setValue("phoneNumber", formatPhoneNumber(e)),
+            }}
+            disabled={isSubmitting}
             postfix={
               <Button
                 color="black"
@@ -71,9 +190,12 @@ function SignupPage() {
                 responsiveButtons={{
                   lg: { buttonSize: "lg", className: "w-[100px]" },
                   md: { buttonSize: "sm", className: "w-[88px]" },
+                  sm: { buttonSize: "sm", className: "w-20" },
                 }}
+                disabled={(isSubmitting && stopTimer > 270) || isAuthCodeVerified}
+                onClick={handleSendAuthCode}
               >
-                인증요청
+                {stopTimer <= 270 && isSubmitting ? "재요청" : "인증요청"}
               </Button>
             }
           />
@@ -83,10 +205,16 @@ function SignupPage() {
             label=""
             inputProps={{
               placeholder: "인증번호를 입력해주세요.",
-              suffix: (
-                <span className="text-s font-normal text-gray-200 lg:text-[15px]">01:00</span>
-              ),
+              suffix:
+                isSubmitting && !isAuthCodeVerified ? (
+                  <span className="text-s font-normal text-gray-200 lg:text-[15px]">{`${Math.floor(stopTimer / 60)}:${(stopTimer % 60).toString().padStart(2, "0")}`}</span>
+                ) : (
+                  <></>
+                ),
+              onChange: (e) => form.setValue("authCode", e.target.value.replaceAll(/\D/g, "")),
+              maxLength: 6,
             }}
+            disabled={!isSubmitting || isAuthCodeVerified}
             postfix={
               <Button
                 color="black"
@@ -94,7 +222,10 @@ function SignupPage() {
                 responsiveButtons={{
                   lg: { buttonSize: "lg", className: "w-[100px]" },
                   md: { buttonSize: "sm", className: "w-[88px]" },
+                  sm: { buttonSize: "sm", className: "w-20" },
                 }}
+                disabled={!isSubmitting || isAuthCodeVerified}
+                onClick={handleVerifyAuthCode}
               >
                 확인
               </Button>

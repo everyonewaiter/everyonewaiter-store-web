@@ -9,7 +9,8 @@ function PublicRouteGuard() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // TODO: 로그인된 사용자라면 /로 리다이렉트
+    const token = localStorage.getItem("token");
+    if (token) navigate("/");
   }, [navigate]);
 
   return <Outlet />;

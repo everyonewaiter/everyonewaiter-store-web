@@ -57,15 +57,15 @@ function LoginPage() {
           const code = data?.code;
           const message = data?.message;
 
-          if (status === 400 || code === "FAILED_SIGN_IN") {
-            form.setError("email", { message });
-            form.setError("password", { message });
+          if (code === "NOT_COMPLETE_EMAIL_VERIFICATION") {
+            toast.error(message);
+            navigate("/auth/mail?type=not-verified");
             return;
           }
 
-          if (code === "NOT_COMPLETE_EMAIL_VERIFICATION") {
-            toast.error(message);
-            navigate("/email?type=not-verified");
+          if (status === 400 || code === "FAILED_SIGN_IN") {
+            form.setError("email", { message });
+            form.setError("password", { message });
             return;
           }
 
