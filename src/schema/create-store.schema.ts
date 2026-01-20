@@ -19,6 +19,18 @@ const createStoreSchema = z.object({
   file: z.instanceof(File).nullable(),
 });
 
-type CreateStoreSchema = z.infer<typeof createStoreSchema>;
+const applicationFormSchema = createStoreSchema.omit({ file: true }).extend({
+  file: z.union([z.instanceof(File), z.string()]),
+  createdAt: z.string(),
+  reason: z.string().optional(),
+});
 
-export { createStoreSchema, type CreateStoreSchema };
+type CreateStoreSchema = z.infer<typeof createStoreSchema>;
+type ApplicationFormSchema = z.infer<typeof applicationFormSchema>;
+
+export {
+  createStoreSchema,
+  type CreateStoreSchema,
+  applicationFormSchema,
+  type ApplicationFormSchema,
+};
