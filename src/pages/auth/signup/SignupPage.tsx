@@ -52,8 +52,11 @@ function SignupPage() {
     if (stopTimer > 0) {
       const timer = setTimeout(() => setStopTimer(stopTimer - 1), 1000);
       return () => clearTimeout(timer);
+    } else if (stopTimer === 0 && isSubmitting && !isAuthCodeVerified) {
+      setIsSubmitting(false);
+      setIsAuthCodeVerified(false);
     }
-  }, [stopTimer]);
+  }, [stopTimer, isSubmitting, isAuthCodeVerified]);
 
   const handleSendAuthCode = async () => {
     await form.trigger("phoneNumber");
