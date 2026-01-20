@@ -147,7 +147,7 @@ function GuestCreate() {
                 name="name"
                 label="상호명"
                 inputProps={{
-                  placeholder: "상호명을 입력해주세요. (20자 이내).",
+                  placeholder: "상호명을 입력해주세요. (30자 이내).",
                   readOnly: isSubmitting,
                 }}
               />
