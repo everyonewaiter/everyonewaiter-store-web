@@ -24,6 +24,7 @@ export const storesQueries = {
         const response = await instance.get(`/stores/registrations/${registrationId}`);
         return response.data;
       },
+      enabled: !!registrationId,
     }),
   getStores: () =>
     queryOptions<{ stores: SimpleStore[] }>({
@@ -40,5 +41,6 @@ export const storesQueries = {
         const response = await instance.get(`/stores/${storeId}`);
         return response.data;
       },
+      enabled: !!storeId,
     }),
 };
