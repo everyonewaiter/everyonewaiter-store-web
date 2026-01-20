@@ -19,7 +19,7 @@ export const accountQueries = {
     }),
   getAccountByPhoneNumber: (phoneNumber: string) =>
     queryOptions<AccountResponse>({
-      queryKey: [ACCOUNT_KEY.user, phoneNumber],
+      queryKey: [ACCOUNT_KEY.user, ACCOUNT_KEY.phoneNumber(phoneNumber)],
       queryFn: async () => {
         const response = await instance.get(`/accounts/phone-number/${phoneNumber}/me`);
         return response.data;
