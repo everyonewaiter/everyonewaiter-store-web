@@ -45,9 +45,8 @@ function LoginPage() {
 
           const stores = await queryClient.fetchQuery(storesQueries.getStores());
 
-          localStorage.setItem("storeId", stores?.stores?.[0]?.storeId);
-
           if (stores?.stores?.length > 0) {
+            localStorage.setItem("storeId", stores?.stores?.[0]?.storeId);
             navigate("/");
           } else {
             navigate("/guest");
