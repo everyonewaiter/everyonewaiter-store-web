@@ -28,10 +28,13 @@ export const storesMutations = {
       mutationFn: async ({
         registrationId,
         ...data
-      }: Omit<CreateStoreSchema, "file"> & { registrationId: string }) => {
+      }: CreateStoreSchema & { registrationId: string }) => {
         const response = await instance.put(`/stores/registrations/${registrationId}`, {
-          ...data,
+          name: data.name,
+          ceoName: data.ceoName,
           address: `${data.address} ${data.detailAddress}`,
+          landline: data.landline,
+          license: data.license,
         });
         return response.data;
       },

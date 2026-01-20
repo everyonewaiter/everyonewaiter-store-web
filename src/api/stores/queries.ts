@@ -11,7 +11,7 @@ import type {
 export const storesQueries = {
   getRegistrations: (page: number, size: number = 20) =>
     queryOptions<StoreApplicationWithPagination>({
-      queryKey: [STORES_KEY.store],
+      queryKey: [STORES_KEY.store, "registrations"],
       queryFn: async () => {
         const response = await instance.get(`/stores/registrations?page=${page}&size=${size}`);
         return response.data;
@@ -26,7 +26,7 @@ export const storesQueries = {
       },
     }),
   getStores: () =>
-    queryOptions<SimpleStore[]>({
+    queryOptions<{ stores: SimpleStore[] }>({
       queryKey: [STORES_KEY.store],
       queryFn: async () => {
         const response = await instance.get(`/stores`);
