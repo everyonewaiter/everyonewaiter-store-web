@@ -31,6 +31,14 @@ function SignupPage() {
     },
   });
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isAuthCodeVerified, setIsAuthCodeVerified] = useState(false);
+  const [stopTimer, setStopTimer] = useState(300);
+
+  const { mutate: sendAuthCode } = useMutation(accountMutations.sendAuthCode());
+  const { mutate: verifyAuthCode } = useMutation(accountMutations.verifyAuthCode());
+  const { mutate: createAccount } = useMutation(accountMutations.createAccount());
+
   useEffect(() => {
     const errors = form.formState.errors;
     if (Object.keys(errors).length > 0) {
@@ -39,14 +47,6 @@ function SignupPage() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [form.formState.errors]);
-
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isAuthCodeVerified, setIsAuthCodeVerified] = useState(false);
-  const [stopTimer, setStopTimer] = useState(300);
-
-  const { mutate: sendAuthCode } = useMutation(accountMutations.sendAuthCode());
-  const { mutate: verifyAuthCode } = useMutation(accountMutations.verifyAuthCode());
-  const { mutate: createAccount } = useMutation(accountMutations.createAccount());
 
   useEffect(() => {
     if (stopTimer > 0) {
@@ -101,7 +101,7 @@ function SignupPage() {
     verifyAuthCode(
       {
         phoneNumber,
-        code: parseInt(form.getValues("authCode")),
+        code: Number(form.getValues("authCode")),
       },
       {
         onSuccess: () => setIsAuthCodeVerified(true),
@@ -127,7 +127,9 @@ function SignupPage() {
         password: form.getValues("password"),
       },
       {
-        onSuccess: () => navigate(`/signup/loading?email=${form.getValues("email")}`),
+        onSuccess: () => {
+          navigate(`/signup/loading?email=${form.getValues("email")}`);
+        },
         onError: (error) => {
           const { status, data } = errorResponse(error);
 
