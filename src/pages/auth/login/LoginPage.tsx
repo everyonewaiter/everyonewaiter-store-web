@@ -77,12 +77,14 @@ function LoginPage() {
               name="email"
               label="이메일"
               inputProps={{ placeholder: "이메일을 입력해주세요." }}
+              data-cy="email"
             />
             <FormField
               control={form.control}
               name="password"
               label="비밀번호"
               inputProps={{ placeholder: "비밀번호를 입력해주세요.", type: "password" }}
+              data-cy="password"
             />
           </div>
           <div className="flex flex-col justify-center gap-4 lg:gap-5">
@@ -96,6 +98,7 @@ function LoginPage() {
                 lg: { buttonSize: "lg" },
               }}
               disabled={isSubmitting}
+              data-cy="login-btn"
             >
               {isSubmitting ? <Spinner /> : "로그인"}
             </Button>
@@ -104,6 +107,7 @@ function LoginPage() {
               <Link
                 to="/signup"
                 className="text-primary underline underline-offset-3 lg:underline-offset-5"
+                data-cy="signup-link"
               >
                 회원가입
               </Link>
