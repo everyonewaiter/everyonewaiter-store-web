@@ -151,6 +151,11 @@ function SignupPage() {
         onError: (error) => {
           const { status, data } = errorResponse(error);
 
+          if (!data) {
+            toast.error("네트워크 오류가 발생했습니다. 다시 시도해주세요.");
+            return;
+          }
+
           if (data.code === "ALREADY_USE_EMAIL") {
             form.setError("email", { message: data.message });
             return;

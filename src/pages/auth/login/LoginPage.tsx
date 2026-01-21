@@ -45,8 +45,14 @@ function LoginPage() {
         onError: (error) => {
           setIsSubmitting(false);
           const { status, data } = errorResponse(error);
+
           const code = data?.code;
           const message = data?.message;
+
+          if (!data) {
+            toast.error("네트워크 오류가 발생했습니다. 다시 시도해주세요.");
+            return;
+          }
 
           if (code === "NOT_COMPLETE_EMAIL_VERIFICATION") {
             toast.error(message);
