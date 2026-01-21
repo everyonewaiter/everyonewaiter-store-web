@@ -11,7 +11,7 @@ import type {
 export const storesQueries = {
   getRegistrations: (page: number, size: number = 20) =>
     queryOptions<StoreApplicationWithPagination>({
-      queryKey: [STORES_KEY.store, STORES_KEY.registrations, page],
+      queryKey: STORES_KEY.registrationList(page),
       queryFn: async () => {
         const response = await instance.get(`/stores/registrations?page=${page}&size=${size}`);
         return response.data;
@@ -19,11 +19,7 @@ export const storesQueries = {
     }),
   getRegistrationDetail: (registrationId: string) =>
     queryOptions<StoreApplication>({
-      queryKey: [
-        STORES_KEY.store,
-        STORES_KEY.registrationDetail,
-        STORES_KEY.registrationId(registrationId),
-      ],
+      queryKey: STORES_KEY.registrationDetail(registrationId),
       queryFn: async () => {
         const response = await instance.get(`/stores/registrations/${registrationId}`);
         return response.data;
@@ -32,7 +28,7 @@ export const storesQueries = {
     }),
   getStores: () =>
     queryOptions<{ stores: SimpleStore[] }>({
-      queryKey: [STORES_KEY.store, STORES_KEY.stores],
+      queryKey: STORES_KEY.stores(),
       queryFn: async () => {
         const response = await instance.get(`/stores`);
         return response.data;
@@ -40,7 +36,7 @@ export const storesQueries = {
     }),
   getStoreDetail: (storeId: string) =>
     queryOptions<StoreDetail>({
-      queryKey: [STORES_KEY.store, STORES_KEY.storeDetail, STORES_KEY.storeId(storeId)],
+      queryKey: STORES_KEY.storeDetail(storeId),
       queryFn: async () => {
         const response = await instance.get(`/stores/${storeId}`);
         return response.data;

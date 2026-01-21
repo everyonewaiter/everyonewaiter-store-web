@@ -11,7 +11,7 @@ interface AccountResponse {
 export const accountQueries = {
   getMe: () =>
     queryOptions<AccountResponse>({
-      queryKey: [ACCOUNT_KEY.user],
+      queryKey: ACCOUNT_KEY.user(),
       queryFn: async () => {
         const response = await instance.get(`/accounts/me`);
         return response.data;
@@ -19,7 +19,7 @@ export const accountQueries = {
     }),
   getAccountByPhoneNumber: (phoneNumber: string) =>
     queryOptions<AccountResponse>({
-      queryKey: [ACCOUNT_KEY.user, ACCOUNT_KEY.phoneNumber(phoneNumber)],
+      queryKey: ACCOUNT_KEY.phoneNumber(phoneNumber),
       queryFn: async () => {
         const response = await instance.get(`/accounts/phone-number/${phoneNumber}/me`);
         return response.data;
