@@ -49,10 +49,17 @@ function SignupPage() {
   }, [form.formState.errors]);
 
   useEffect(() => {
-    if (stopTimer > 0) {
-      const timer = setTimeout(() => setStopTimer(stopTimer - 1), 1000);
-      return () => clearTimeout(timer);
-    } else if (stopTimer === 0 && isSubmitting && !isAuthCodeVerified) {
+    if (!isSubmitting || isAuthCodeVerified) return;
+
+    const interval = setInterval(() => {
+      setStopTimer((prev) => prev - 1);
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [isSubmitting, isAuthCodeVerified]);
+
+  useEffect(() => {
+    if (stopTimer === 0 && isSubmitting && !isAuthCodeVerified) {
       setIsSubmitting(false);
       setIsAuthCodeVerified(false);
     }
@@ -75,17 +82,23 @@ function SignupPage() {
         {
           onSuccess: () => {
             setIsSubmitting(true);
-            form.clearErrors("authCode");
+            form.clearErrors("phoneNumber");
             setStopTimer(300);
           },
           onError: (error) => {
-            const { status, data } = errorResponse(error);
+            const { data } = errorResponse(error);
 
-            if (status === 400) {
-              form.setError("authCode", { message: data.message });
+            if (!data) {
+              toast.error("네트워크 오류가 발생했습니다. 다시 시도해주세요.");
               return;
             }
-            toast.error(data.message || "인증번호 확인 중 오류가 발생했습니다.");
+
+            if (data.code === "UNMATCHED_VERIFICATION_CODE") {
+              form.setError("phoneNumber", { message: "인증 번호가 일치하지 않습니다." });
+              return;
+            }
+
+            form.setError("phoneNumber", { message: data.message });
           },
         }
       );
@@ -107,6 +120,11 @@ function SignupPage() {
         onSuccess: () => setIsAuthCodeVerified(true),
         onError: (error) => {
           const { status, data } = errorResponse(error);
+
+          if (!data) {
+            toast.error("네트워크 오류가 발생했습니다. 다시 시도해주세요.");
+            return;
+          }
 
           if (status === 400) {
             form.setError("authCode", { message: data.message });
@@ -173,6 +191,7 @@ function SignupPage() {
             label="이메일"
             inputProps={{ placeholder: "이메일을 입력해주세요." }}
             description="이메일 인증을 위해 정확한 이메일을 입력해주세요!"
+            data-cy="email"
           />
           <FormField
             control={form.control}
@@ -182,6 +201,7 @@ function SignupPage() {
               placeholder: "휴대폰 번호를 입력해주세요. (-없이 숫자만 입력)",
               onChange: (e) => form.setValue("phoneNumber", formatPhoneNumber(e)),
             }}
+            data-cy="phoneNumber"
             disabled={isSubmitting}
             postfix={
               <Button
@@ -192,8 +212,13 @@ function SignupPage() {
                   md: { buttonSize: "sm", className: "w-[88px]" },
                   sm: { buttonSize: "sm", className: "w-20" },
                 }}
-                disabled={(isSubmitting && stopTimer > 270) || isAuthCodeVerified}
+                disabled={
+                  (isSubmitting && stopTimer > 270) ||
+                  isAuthCodeVerified ||
+                  !form.watch("phoneNumber")
+                }
                 onClick={handleSendAuthCode}
+                data-cy="phoneNumber-btn"
               >
                 {stopTimer <= 270 && isSubmitting ? "재요청" : "인증요청"}
               </Button>
@@ -207,13 +232,17 @@ function SignupPage() {
               placeholder: "인증번호를 입력해주세요.",
               suffix:
                 isSubmitting && !isAuthCodeVerified ? (
-                  <span className="text-s font-normal text-gray-200 lg:text-[15px]">{`${Math.floor(stopTimer / 60)}:${(stopTimer % 60).toString().padStart(2, "0")}`}</span>
+                  <span
+                    className="text-s font-normal text-gray-200 lg:text-[15px]"
+                    data-cy="authCode-time"
+                  >{`${Math.floor(stopTimer / 60)}:${(stopTimer % 60).toString().padStart(2, "0")}`}</span>
                 ) : (
                   <></>
                 ),
               onChange: (e) => form.setValue("authCode", e.target.value.replaceAll(/\D/g, "")),
               maxLength: 6,
             }}
+            data-cy="authCode"
             disabled={!isSubmitting || isAuthCodeVerified}
             postfix={
               <Button
@@ -226,6 +255,7 @@ function SignupPage() {
                 }}
                 disabled={!isSubmitting || isAuthCodeVerified}
                 onClick={handleVerifyAuthCode}
+                data-cy="authCode-btn"
               >
                 확인
               </Button>
@@ -236,12 +266,14 @@ function SignupPage() {
             name="password"
             label="비밀번호"
             inputProps={{ placeholder: "비밀번호를 입력해주세요.", type: "password" }}
+            data-cy="password"
           />
           <FormField
             control={form.control}
             name="passwordConfirm"
             label="비밀번호 확인"
             inputProps={{ placeholder: "비밀번호를 다시 입력해주세요.", type: "password" }}
+            data-cy="passwordConfirm"
           />
           <div className="mt-1 flex flex-col gap-2 md:mt-0">
             <div className="flex flex-col gap-5 rounded-[10px] border border-gray-600 p-4 lg:gap-6">
@@ -256,6 +288,7 @@ function SignupPage() {
                 <Checkbox
                   hasError={!!form.formState.errors.agreeToTerms}
                   onCheckedChange={(checked: boolean) => form.setValue("agreeToTerms", checked)}
+                  data-cy="agreeToTerms"
                 />
                 <span className="text-gray-0 text-s font-normal lg:text-sm">
                   개인정보 수집에 동의합니다. (필수)
@@ -273,6 +306,7 @@ function SignupPage() {
               sm: { buttonSize: "sm", className: "mt-2" },
             }}
             disabled={!useWatch({ control: form.control, name: "agreeToTerms" })}
+            data-cy="signup-btn"
           >
             가입하기
           </Button>
