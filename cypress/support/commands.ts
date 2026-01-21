@@ -44,11 +44,13 @@ Cypress.Commands.add("phoneNumberRequestLimit", () => {
   cy.get("[data-cy=phoneNumber-btn]:visible").click();
 });
 
-Cypress.Commands.add("visitDev", (type: "signup") => {
+Cypress.Commands.add("visitDev", (path: string) => {
   const baseURL = "http://localhost:5173";
 
-  if (type === "signup") {
+  if (path === "signup") {
     cy.visit(`${baseURL}/signup`);
+  } else if (path === "login") {
+    cy.visit(`${baseURL}/login`);
   }
   cy.get("#root").should("not.be.empty");
 });
