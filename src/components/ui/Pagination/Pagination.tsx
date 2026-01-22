@@ -67,7 +67,7 @@ export default function Pagination({
             <PaginationComponents.PaginationFastPrev
               hasPrevPage={hasPrevious}
               onClick={handleFastBackward}
-              className={cn(!hasPrevious ? "pointer-events-none opacity-50" : "cursor-pointer")}
+              className={cn(hasPrevious ? "cursor-pointer" : "pointer-events-none opacity-50")}
               iconClassName={cn(hasPrevious && "text-gray-100!")}
             />
           </PaginationComponents.PaginationItem>
@@ -76,7 +76,7 @@ export default function Pagination({
             <PaginationComponents.PaginationPrevious
               hasPrevPage={hasPrevious}
               onClick={handlePrevious}
-              className={cn(!hasPrevious ? "pointer-events-none opacity-50" : "cursor-pointer")}
+              className={cn(hasPrevious ? "cursor-pointer" : "pointer-events-none opacity-50")}
               iconClassName={cn(hasPrevious && "text-gray-100!")}
             />
           </PaginationComponents.PaginationItem>
@@ -93,7 +93,7 @@ export default function Pagination({
             <PaginationComponents.PaginationNext
               hasNextPage={hasNext}
               onClick={handleNext}
-              className={cn(!hasNext ? "pointer-events-none opacity-50" : "cursor-pointer")}
+              className={cn(hasNext ? "cursor-pointer" : "pointer-events-none opacity-50")}
               iconClassName={cn(hasNext && "text-gray-100!")}
             />
           </PaginationComponents.PaginationItem>
@@ -102,7 +102,7 @@ export default function Pagination({
             <PaginationComponents.PaginationFastNext
               hasNextPage={hasNext}
               onClick={handleFastForward}
-              className={cn(!hasNext ? "pointer-events-none opacity-50" : "cursor-pointer")}
+              className={cn(hasNext ? "cursor-pointer" : "pointer-events-none opacity-50")}
               iconClassName={cn(hasNext && "text-gray-100!")}
             />
           </PaginationComponents.PaginationItem>
