@@ -61,14 +61,7 @@ function ApplicationTable({ type, applicationData }: Readonly<ApplicationTablePr
   );
 
   const handleClick = (application: StoreApplication) => {
-    if (type === "guest") {
-      overlay.open((overlayProps) => (
-        <ApplicationModal application={application} showReapplyButton={false} {...overlayProps} />
-      ));
-      return;
-    }
-
-    if (application.status === "APPLY") {
+    if (type !== "guest" && application.status === "APPLY") {
       overlay.open((overlayProps) => <ApplicationWaitingModal {...overlayProps} />);
     } else {
       overlay.open((overlayProps) => (

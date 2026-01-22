@@ -30,10 +30,10 @@ function LeaveConfirmModal({ isOpen, onCancel, onConfirm }: Readonly<LeaveConfir
       close={() => {}}
       footer={
         <>
-          <Alert.Cancel color="grey" onClick={onCancel} className="button-lg">
+          <Alert.Cancel color="grey" onClick={onCancel}>
             취소
           </Alert.Cancel>
-          <Alert.Action color="black" onClick={onConfirm} className="button-sm lg:button-lg">
+          <Alert.Action color="black" onClick={onConfirm}>
             나가기
           </Alert.Action>
         </>

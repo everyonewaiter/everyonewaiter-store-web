@@ -22,7 +22,9 @@ import MenuDetailPage from "@/pages/main/owner/menus/[menuId]/MenuDetailPage";
 import MainMenuCategoryPage from "@/pages/main/owner/menus/category/MainMenuCategoryPage";
 import MainMenuPage from "@/pages/main/owner/menus/MainMenuPage";
 import MainSettingsPage from "@/pages/main/owner/settings/MainSettingsPage";
+import PrivateRouteGuard from "@/pages/main/PrivateRouteGuard";
 import RootLayout from "@/pages/main/RootLayout";
+import NotFound from "@/pages/NotFound";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -44,20 +46,23 @@ const router = createBrowserRouter(
         <Route path="auth/mail" element={<EmailPage />} />
       </Route>
 
-      <Route element={<RootLayout />}>
-        <Route path="/guest" element={<GuestPage />} />
-        <Route path="/guest/create" element={<GuestCreatePage />} />
+      <Route element={<PrivateRouteGuard />}>
+        <Route element={<RootLayout />}>
+          <Route path="/guest" element={<GuestPage />} />
+          <Route path="/guest/create" element={<GuestCreatePage />} />
 
-        <Route path="/" element={<HomePage />} />
-        <Route path="/create" element={<GuestCreatePage />} />
-        <Route path="/stores" element={<MainInfoPage />} />
-        <Route path="/devices" element={<MainDevicePage />} />
-        <Route path="/menus" element={<MainMenuPage />} />
-        <Route path="/menus/category" element={<MainMenuCategoryPage />} />
-        <Route path="/menus/:menuId" element={<MenuDetailPage />} />
-        <Route path="/settings" element={<MainSettingsPage />} />
+          <Route path="/" element={<HomePage />} />
+          <Route path="/create" element={<GuestCreatePage />} />
+          <Route path="/stores" element={<MainInfoPage />} />
+          <Route path="/devices" element={<MainDevicePage />} />
+          <Route path="/menus" element={<MainMenuPage />} />
+          <Route path="/menus/category" element={<MainMenuCategoryPage />} />
+          <Route path="/menus/:menuId" element={<MenuDetailPage />} />
+          <Route path="/settings" element={<MainSettingsPage />} />
+        </Route>
+        <Route path="/guest/application" element={<GuestApplicationPage />} />
       </Route>
-      <Route path="/guest/application" element={<GuestApplicationPage />} />
+      <Route path="*" element={<NotFound />} />
     </Route>
   )
 );

@@ -1,4 +1,6 @@
-import { useState } from "react";
+import { useMemo } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { storesQueries } from "@/api/stores/queries";
 import error from "@/assets/json/error.json";
 import successApplication from "@/assets/json/success-application.json";
 import waiting from "@/assets/json/waiting.json";
@@ -23,8 +25,18 @@ const content = {
 };
 
 function GuestPage() {
-  // TODO: 매장 목록 확인 후 초기값, 대기, 반려 표시
-  const [status] = useState<"initial" | "pending" | "rejected">("initial");
+  const { data: storeList } = useQuery(storesQueries.getRegistrations(1, 1));
+  const storeStatus = storeList?.content?.[0]?.status;
+
+  const status = useMemo<"initial" | "pending" | "rejected">(() => {
+    if (storeStatus === "APPLY") {
+      return "pending";
+    }
+    if (storeStatus === "REJECT") {
+      return "rejected";
+    }
+    return "initial";
+  }, [storeStatus]);
 
   return (
     <div className="center h-full w-full bg-white md:bg-gray-700">
