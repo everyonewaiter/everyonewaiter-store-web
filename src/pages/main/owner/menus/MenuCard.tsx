@@ -1,4 +1,4 @@
-import loginBg from "@/assets/images/login-bg.png";
+import loginBg from "@/assets/images/login-bg-md@2x.webp";
 import Checkbox from "@/components/ui/Checkbox";
 import cn from "@/lib/utils";
 import type { Menu } from "@/types/domain/menu";

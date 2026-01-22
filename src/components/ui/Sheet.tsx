@@ -1,6 +1,27 @@
-import type { ComponentProps } from "react";
+import type { ComponentProps, ReactNode } from "react";
 import * as SheetPrimitive from "@radix-ui/react-dialog";
 import cn from "@/lib/utils";
+
+function VisuallyHidden({ children }: Readonly<{ children: ReactNode }>) {
+  return (
+    <span
+      style={{
+        position: "absolute",
+        border: 0,
+        width: 1,
+        height: 1,
+        padding: 0,
+        margin: -1,
+        overflow: "hidden",
+        clip: "rect(0, 0, 0, 0)",
+        whiteSpace: "nowrap",
+        wordWrap: "normal",
+      }}
+    >
+      {children}
+    </span>
+  );
+}
 
 function Sheet({ ...props }: Readonly<ComponentProps<typeof SheetPrimitive.Root>>) {
   return <SheetPrimitive.Root data-slot="sheet" {...props} />;
@@ -38,15 +59,18 @@ function SheetContent({
   className,
   children,
   side = "right",
+  title,
   ...props
 }: Readonly<ComponentProps<typeof SheetPrimitive.Content>> & {
   side?: "top" | "right" | "bottom" | "left";
+  title?: string;
 }) {
   return (
     <SheetPortal>
       <SheetOverlay />
       <SheetPrimitive.Content
         data-slot="sheet-content"
+        aria-describedby={undefined}
         className={cn(
           "data-[state=open]:animate-in data-[state=closed]:animate-out fixed z-50 flex flex-col gap-4 bg-white shadow-lg transition ease-in-out data-[state=closed]:duration-300 data-[state=open]:duration-500",
           side === "right" &&
@@ -61,6 +85,9 @@ function SheetContent({
         )}
         {...props}
       >
+        <VisuallyHidden>
+          <SheetPrimitive.Title>{title ?? "Sheet"}</SheetPrimitive.Title>
+        </VisuallyHidden>
         {children}
       </SheetPrimitive.Content>
     </SheetPortal>

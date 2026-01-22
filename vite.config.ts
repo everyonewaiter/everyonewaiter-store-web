@@ -15,9 +15,14 @@ export default defineConfig({
       },
     }),
   ],
+  optimizeDeps: {
+    include: ["pdfjs-dist"],
+  },
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "src"),
+      // PDF.js worker 경로 해결
+      "pdfjs-dist/build/pdf.worker.min.mjs": "pdfjs-dist/build/pdf.worker.min.mjs",
     },
   },
   test: {

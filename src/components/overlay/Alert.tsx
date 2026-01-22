@@ -32,15 +32,17 @@ export default Alert;
 
 function AlertCancel({ children, ...props }: Readonly<PropsWithChildren<ButtonProps>>) {
   return (
-    <Dialog.Close asChild className="w-full">
-      <Button
-        color={props.color || "grey"}
-        className={cn("lg:button-lg button-sm w-full", props.className)}
-        {...props}
-      >
-        {children ?? "닫기"}
-      </Button>
-    </Dialog.Close>
+    <div className="flex-1">
+      <Dialog.Close asChild>
+        <Button
+          color={props.color || "grey"}
+          className={cn("lg:button-lg button-sm w-full", props.className)}
+          {...props}
+        >
+          {children ?? "닫기"}
+        </Button>
+      </Dialog.Close>
+    </div>
   );
 }
 AlertCancel.displayName = "Alert.Cancel";
@@ -48,7 +50,7 @@ Alert.Cancel = AlertCancel;
 
 function AlertAction({ children, ...props }: Readonly<PropsWithChildren<ButtonProps>>) {
   return (
-    <div className="w-full">
+    <div className="flex-1">
       <Button
         color={props.color || "primary"}
         className={cn("lg:button-lg button-sm w-full", props.className)}
