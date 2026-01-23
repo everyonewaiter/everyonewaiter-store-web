@@ -9,17 +9,17 @@ interface AccountResponse {
 }
 
 export const accountQueries = {
-  getMe: (userId: string) =>
-    queryOptions<AccountResponse, Error, undefined>({
-      queryKey: [ACCOUNT_KEY.userId(userId)],
+  getMe: () =>
+    queryOptions<AccountResponse>({
+      queryKey: ACCOUNT_KEY.user(),
       queryFn: async () => {
         const response = await instance.get(`/accounts/me`);
         return response.data;
       },
     }),
   getAccountByPhoneNumber: (phoneNumber: string) =>
-    queryOptions<AccountResponse, Error, undefined>({
-      queryKey: ["phoneNumber"],
+    queryOptions<AccountResponse>({
+      queryKey: ACCOUNT_KEY.phoneNumber(phoneNumber),
       queryFn: async () => {
         const response = await instance.get(`/accounts/phone-number/${phoneNumber}/me`);
         return response.data;

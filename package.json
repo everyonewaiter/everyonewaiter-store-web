@@ -39,6 +39,7 @@
     "lottie-react": "^2.4.1",
     "lucide-react": "^0.562.0",
     "overlay-kit": "^1.8.6",
+    "pdfjs-dist": "^5.4.530",
     "react": "^19.2.0",
     "react-daum-postcode": "^3.2.0",
     "react-dom": "^19.2.0",

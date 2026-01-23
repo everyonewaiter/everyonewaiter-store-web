@@ -17,7 +17,7 @@ export default function Image({
 }: Readonly<ImageProps>) {
   const [useFallback, setUseFallback] = useState(false);
 
-  const cdnSrc = src && src.trim() !== "" ? `${import.meta.env.VITE_API_PUBLIC_CDN}/${src}` : "";
+  const cdnSrc = src && src?.trim() !== "" ? `${import.meta.env.VITE_PUBLIC_CDN}/${src}` : "";
   const currentSrc = useFallback && fallbackSrc ? fallbackSrc : cdnSrc;
 
   const handleError: ReactEventHandler<HTMLImageElement> = (e) => {

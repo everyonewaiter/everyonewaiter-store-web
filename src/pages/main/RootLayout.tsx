@@ -1,21 +1,26 @@
-import { useEffect } from "react";
-import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { Navigate, Outlet, useLocation } from "react-router-dom";
+import { storesQueries } from "@/api/stores/queries";
 import logoTextHorizontal from "@/assets/images/logo-text-horizontal.svg";
 import MobileSidebar from "@/components/layout/MobileSidebar";
 import SectionTitle from "@/components/layout/SectionTitle";
 import Sidebar from "@/components/layout/Sidebar";
 
 function RootLayout() {
-  const navigate = useNavigate();
   const location = useLocation();
   const isGuest = location.pathname.startsWith("/guest");
 
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      navigate("/login");
-    }
-  }, [navigate]);
+  const { data: stores, isLoading } = useQuery(storesQueries.getStores());
+
+  if ((stores?.stores?.length ?? 0) === 0 && !isGuest) {
+    return <Navigate to="/guest" replace />;
+  }
+
+  if ((stores?.stores?.length ?? 0) > 0 && isGuest) {
+    return <Navigate to="/" replace />;
+  }
+
+  if (isLoading) return null;
 
   return (
     <MobileSidebar>
@@ -30,8 +35,10 @@ function RootLayout() {
             />
             <div className="h-px w-full bg-gray-500" />
           </header>
-          <Outlet />
-          <main className="flex flex-1 items-center justify-center">1</main>
+
+          <main className="flex flex-1 items-center justify-center">
+            <Outlet />
+          </main>
         </div>
       ) : (
         // 승인된 매장이 있을 경우
