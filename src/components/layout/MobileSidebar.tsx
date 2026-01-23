@@ -20,7 +20,7 @@ function MobileSidebar({ children }: Readonly<MobileSidebarProps>) {
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <SheetContent side="left" className="mt-7 rounded-tr-3xl rounded-br-3xl md:hidden">
-        <Sidebar onLinkClick={() => setIsOpen(false)} />
+        <Sidebar closeMobile={() => setIsOpen(false)} />
       </SheetContent>
 
       <div className="flex h-dvh flex-col md:h-full">

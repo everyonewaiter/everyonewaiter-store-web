@@ -1,10 +1,12 @@
+import { lazy } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { storesQueries } from "@/api/stores/queries";
 import logoTextHorizontal from "@/assets/images/logo-text-horizontal.svg";
 import MobileSidebar from "@/components/layout/MobileSidebar";
 import SectionTitle from "@/components/layout/SectionTitle";
-import Sidebar from "@/components/layout/Sidebar";
+
+const Sidebar = lazy(() => import("@/components/layout/Sidebar"));
 
 function RootLayout() {
   const location = useLocation();
