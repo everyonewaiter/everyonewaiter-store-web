@@ -14,10 +14,12 @@ import Button from "@/components/ui/Button/Button";
 import { errorResponse } from "@/lib/error-response";
 import { queryClient } from "@/lib/query-client";
 import { loginSchema, type LoginSchema } from "@/schema/auth/login.schema";
+import { useStoreId } from "@/stores/useStoreId";
 
 function LoginPage() {
   const navigate = useNavigate();
   const { mutate: login } = useMutation(accountMutations.signIn());
+  const { setStoreId } = useStoreId();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -46,7 +48,7 @@ function LoginPage() {
           const stores = await queryClient.fetchQuery(storesQueries.getStores());
 
           if (stores?.stores?.length > 0) {
-            localStorage.setItem("storeId", stores?.stores?.[0]?.storeId);
+            setStoreId(stores?.stores?.[0]?.storeId);
             navigate("/");
           } else {
             navigate("/guest");
