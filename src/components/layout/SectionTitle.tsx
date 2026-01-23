@@ -1,10 +1,11 @@
 import { useRef, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { User } from "@/components/icons";
 import useOutsideClick from "@/hooks/useOutSideClick";
 
 function SectionTitle() {
   const location = useLocation();
+  const navigate = useNavigate();
   const buttonRef = useRef<HTMLButtonElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -35,7 +36,9 @@ function SectionTitle() {
   const email = "asdf@gmail.com";
 
   const handleLogout = () => {
-    // TODO: 로그아웃 로직
+    localStorage.removeItem("storeId");
+    localStorage.removeItem("token");
+    navigate("/login");
     setIsOpenUser(false);
   };
 
