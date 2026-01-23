@@ -182,7 +182,13 @@ function DeviceDetailModal({ deviceId, ...props }: Readonly<DeviceDetailModalPro
           </div>
         ) : (
           <div className="flex flex-col gap-3 lg:gap-4">
-            <FormField control={form.control} name="name" label="기기 이름" disabled={!isEditing} />
+            <FormField
+              control={form.control}
+              name="name"
+              label="기기 이름"
+              disabled={!isEditing}
+              inputProps={{ readOnly: isSubmitting }}
+            />
             <FormField control={form.control} name="createdAt" label="등록일시" disabled />
             <FormField
               control={form.control}
@@ -198,7 +204,7 @@ function DeviceDetailModal({ deviceId, ...props }: Readonly<DeviceDetailModalPro
                 defaultText={PURPOSE_TRANSLATES[purpose as DevicePurpose]}
                 value={purpose}
                 onChange={(value) => form.setValue("paymentType", value.id as DevicePaymentType)}
-                disabled={!isEditing}
+                disabled={!isEditing || isSubmitting}
               />
             </div>
             {purpose === "TABLE" && (
@@ -214,6 +220,7 @@ function DeviceDetailModal({ deviceId, ...props }: Readonly<DeviceDetailModalPro
                       const value = Number(e.target.value.replaceAll(/\D/g, ""));
                       form.setValue("tableNo", value, { shouldValidate: true });
                     },
+                    readOnly: isSubmitting,
                   }}
                 />
                 <div className="flex flex-col gap-2">
@@ -226,7 +233,7 @@ function DeviceDetailModal({ deviceId, ...props }: Readonly<DeviceDetailModalPro
                     onChange={(value) =>
                       form.setValue("paymentType", value.id as DevicePaymentType)
                     }
-                    disabled={!isEditing}
+                    disabled={!isEditing || isSubmitting}
                   />
                 </div>
               </>
