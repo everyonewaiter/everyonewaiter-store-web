@@ -1,4 +1,11 @@
+import { useState } from "react";
+import { useMutation } from "@tanstack/react-query";
+import { toast } from "sonner";
+import { deviceMutations } from "@/api/device/mutations";
+import Spinner from "@/components/feedback/Spinner";
 import Alert from "@/components/overlay/Alert";
+import { errorResponse } from "@/lib/error-response";
+import { useStoreId } from "@/stores/useStoreId";
 import type { Device } from "@/types/domain/device";
 import type { ModalProps } from "@/types/overlay";
 
@@ -7,6 +14,11 @@ interface DeviceDeleteModalProps extends ModalProps {
 }
 
 function DeviceDeleteModal({ deleteItem, ...props }: Readonly<DeviceDeleteModalProps>) {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const { storeId } = useStoreId();
+  const { mutate: deleteDevice } = useMutation(deviceMutations.deleteDevice());
+
   const renderText = () => {
     if (deleteItem.length === 1) {
       return `을`;
@@ -15,7 +27,25 @@ function DeviceDeleteModal({ deleteItem, ...props }: Readonly<DeviceDeleteModalP
   };
 
   const handleDelete = () => {
-    // TODO: 삭제 로직 추가
+    setIsSubmitting(true);
+    deleteDevice(
+      {
+        deviceId: deleteItem[0].deviceId,
+        storeId: storeId!,
+      },
+      {
+        onSuccess: () => {
+          toast.success("기기가 삭제되었습니다.");
+          setIsSubmitting(false);
+          props.close();
+        },
+        onError: (error) => {
+          const { data } = errorResponse(error);
+          const message = data?.message;
+          toast.error(message);
+        },
+      }
+    );
   };
 
   return (
@@ -23,8 +53,12 @@ function DeviceDeleteModal({ deleteItem, ...props }: Readonly<DeviceDeleteModalP
       {...props}
       footer={
         <>
-          <Alert.Cancel>닫기</Alert.Cancel>
-          {deleteItem.length > 0 && <Alert.Action onClick={handleDelete}>삭제</Alert.Action>}
+          <Alert.Cancel disabled={isSubmitting}>닫기</Alert.Cancel>
+          {deleteItem.length > 0 && (
+            <Alert.Action onClick={handleDelete}>
+              {isSubmitting ? <Spinner /> : "삭제"}
+            </Alert.Action>
+          )}
         </>
       }
     >
