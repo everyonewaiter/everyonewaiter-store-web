@@ -20,7 +20,7 @@ describe("Login Flow", () => {
 
     cy.get("[data-cy=login-btn]:visible").click();
 
-    cy.url().should("not.include", "/login");
+    cy.location("pathname").should("eq", "/");
   });
 
   it("아이디, 비밀번호가 맞지 않을 경우 안내 문구가 뜨는가?", () => {
