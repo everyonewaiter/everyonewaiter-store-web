@@ -5,7 +5,7 @@ import type { Device, DeviceDetail } from "@/types/domain/device";
 import type { ContentWithPagination } from "@/types/pagination";
 
 export const deviceQueries = {
-  getDevices: (storeId: string, page: number, size: number) =>
+  getDevices: (storeId: string, page: number, size: number = 20) =>
     queryOptions<ContentWithPagination<Device[]>>({
       queryKey: DEVICE_KEY.device,
       queryFn: async () => {
