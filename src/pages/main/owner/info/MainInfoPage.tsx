@@ -1,51 +1,67 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useForm, useWatch } from "react-hook-form";
+import { toast } from "sonner";
+import { storesMutations } from "@/api/stores/mutations";
+import { storesQueries } from "@/api/stores/queries";
+import Spinner from "@/components/feedback/Spinner";
 import { Form } from "@/components/form/Form";
 import FormField from "@/components/form/FormField";
 import { EditContained, Plus } from "@/components/icons";
 import Button from "@/components/ui/Button/Button";
-import { formatBusinessNumber } from "@/lib/format";
+import { errorResponse } from "@/lib/error-response";
+import { formatBusinessNumber, formatStorePhoneNumber } from "@/lib/format";
 import cn from "@/lib/utils";
 import InfoOriginBox from "@/pages/main/owner/info/InfoOriginBox";
-import { STORE_DETAIL_MOCK } from "@/pages/main/owner/info/mock";
 import type { StoreInfoSchema } from "@/schema/store-info.schema";
 
 function MainInfoPage() {
-  const data = STORE_DETAIL_MOCK;
+  const storeId = localStorage.getItem("storeId");
+  const { data: storeDetail } = useQuery(storesQueries.getStoreDetail(storeId!));
+  const { mutate: updateStore } = useMutation(storesMutations.updateStore());
 
   const form = useForm<StoreInfoSchema>({
     mode: "onSubmit",
     reValidateMode: "onChange",
     defaultValues: {
-      name: data.name,
-      license: `${data.license.slice(0, 3)}-${data.license.slice(3, 5)}-${data.license.slice(5)}`,
-      address: data.address,
-      origins: data.setting.countryOfOrigins.map((origin) => ({
-        id: crypto.randomUUID(),
-        item: origin.item,
-        origin: origin.origin,
-      })),
+      name: "",
+      license: "",
+      address: "",
+      landline: "",
+      origins: [],
     },
   });
 
+  useEffect(() => {
+    if (storeDetail) {
+      form.reset({
+        name: storeDetail.name,
+        license: storeDetail.license,
+        address: storeDetail.address,
+        landline: storeDetail.landline,
+        origins: storeDetail.setting.countryOfOrigins.map((origin) => ({
+          id: crypto.randomUUID(),
+          item: origin.item,
+          origin: origin.origin,
+        })),
+      });
+    }
+  }, [storeDetail, form]);
+
   const [isEditing, setIsEditing] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const origins = useWatch({ control: form.control, name: "origins" });
+  const landline = useWatch({ control: form.control, name: "landline" });
 
   const addOrigin = () => {
     if (origins.at(-1)?.item === "") return;
     form.setValue("origins", [...origins, { id: crypto.randomUUID(), item: "", origin: "" }]);
   };
 
-  const handleDelete = (id: string) => {
-    form.setValue(
-      "origins",
-      origins.filter((origin) => origin.id !== id)
-    );
-  };
-
   const handleSave = () => {
     if (isEditing) {
+      setIsSubmitting(true);
       const origins = form.getValues("origins");
 
       for (const origin of origins) {
@@ -68,10 +84,35 @@ function MainInfoPage() {
           origin: origin.origin.trim(),
         }));
 
-      // TODO: 저장 로직
-      form.clearErrors("origins");
-      form.setValue("origins", filteredOrigins);
-      setIsEditing(false);
+      updateStore(
+        {
+          storeId: storeId!,
+          landline: landline || "",
+          setting: {
+            ...storeDetail?.setting,
+            ksnetDeviceNo: storeDetail?.setting.ksnetDeviceNo || "",
+            extraTableCount: storeDetail?.setting.extraTableCount || 0,
+            printerLocation: storeDetail?.setting.printerLocation || "POS",
+            showMenuPopup: storeDetail?.setting.showMenuPopup || false,
+            showOrderTotalPrice: storeDetail?.setting.showOrderTotalPrice || false,
+            showOrderMenuImage: storeDetail?.setting.showOrderMenuImage || false,
+            staffCallOptions: storeDetail?.setting.staffCallOptions || [],
+            countryOfOrigins: filteredOrigins,
+          },
+        },
+        {
+          onSuccess: () => {
+            form.clearErrors("origins");
+            form.setValue("origins", filteredOrigins);
+            setIsEditing(false);
+            setIsSubmitting(false);
+          },
+          onError: (error) => {
+            const { data } = errorResponse(error);
+            toast.error(data?.message);
+          },
+        }
+      );
     } else {
       setIsEditing(true);
     }
@@ -100,7 +141,17 @@ function MainInfoPage() {
               inputProps={{ onChange: (e) => form.setValue("license", formatBusinessNumber(e)) }}
             />
             <FormField control={form.control} name="address" label="주소" disabled />
-            <InfoOriginBox isEditing={isEditing} onDelete={handleDelete} />
+            <FormField
+              control={form.control}
+              name="landline"
+              label="매장 전화번호"
+              disabled={!isEditing}
+              inputProps={{
+                onChange: (e) => form.setValue("landline", formatStorePhoneNumber(e)),
+                maxLength: 13,
+              }}
+            />
+            <InfoOriginBox isEditing={isEditing} />
           </form>
         </Form>
         {isEditing && (
@@ -121,20 +172,53 @@ function MainInfoPage() {
             <Plus className="size-7 text-gray-300" />
           </Button>
         )}
-        <Button
-          color="black"
-          variant={isEditing ? "default" : "outline"}
-          responsive
-          responsiveButtons={{
-            lg: { buttonSize: "lg", className: "text-lg !text-medium" },
-            md: { buttonSize: "sm", className: "!h-8.5" },
-            sm: { buttonSize: "sm", className: "!h-8.5" },
-          }}
-          onClick={handleSave}
-        >
-          {!isEditing && <EditContained className="size-5 lg:size-6" />}
-          {isEditing ? "저장하기" : "수정하기"}
-        </Button>
+
+        {isEditing ? (
+          <div className="flex items-center gap-2">
+            <Button
+              color="grey"
+              responsive
+              responsiveButtons={{
+                lg: { buttonSize: "lg", className: "text-lg !text-medium" },
+                md: { buttonSize: "sm", className: "!h-8.5" },
+                sm: { buttonSize: "sm", className: "!h-8.5" },
+              }}
+              onClick={() => setIsEditing(false)}
+              disabled={isSubmitting}
+            >
+              취소하기
+            </Button>
+            <Button
+              color="black"
+              variant={isEditing ? "default" : "outline"}
+              responsive
+              responsiveButtons={{
+                lg: { buttonSize: "lg", className: "text-lg !text-medium flex-1" },
+                md: { buttonSize: "sm", className: "!h-8.5 flex-1" },
+                sm: { buttonSize: "sm", className: "!h-8.5 flex-1" },
+              }}
+              onClick={handleSave}
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? <Spinner /> : "저장하기"}
+            </Button>
+          </div>
+        ) : (
+          <Button
+            color="black"
+            variant={isEditing ? "default" : "outline"}
+            responsive
+            responsiveButtons={{
+              lg: { buttonSize: "lg", className: "text-lg !text-medium" },
+              md: { buttonSize: "sm", className: "!h-8.5" },
+              sm: { buttonSize: "sm", className: "!h-8.5" },
+            }}
+            onClick={handleSave}
+          >
+            <EditContained className="size-5 lg:size-6" />
+            수정하기
+          </Button>
+        )}
       </div>
     </div>
   );
