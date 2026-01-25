@@ -23,7 +23,7 @@ import type { PrinterLocation, StoreSetting } from "@/types/domain/store";
 
 function MainSettingsPage() {
   const storeId = localStorage.getItem("storeId");
-  
+
   const form = useForm<SettingsSchema>({
     resolver: zodResolver(settingsSchema),
     mode: "onSubmit",
@@ -40,6 +40,7 @@ function MainSettingsPage() {
   });
 
   const [newStaffCallOption, setNewStaffCallOption] = useState<string>("");
+  const [isDragging, setIsDragging] = useState(false);
 
   const printerLocation = useWatch({ control: form.control, name: "printerLocation" });
   const deviceNo = useWatch({ control: form.control, name: "ksnetDeviceNo" });
@@ -56,7 +57,7 @@ function MainSettingsPage() {
   const { mutate: updateStore } = useMutation(storesMutations.updateStore());
 
   useEffect(() => {
-    if (storeDetail) { 
+    if (storeDetail) {
       form.reset({
         ksnetDeviceNo: storeDetail?.setting?.ksnetDeviceNo,
         printerLocation: storeDetail?.setting?.printerLocation,
@@ -70,7 +71,7 @@ function MainSettingsPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [storeDetail])
 
-  const handleUpdateStore = ({ key, value, successHandler, settledHandler }: {key: keyof StoreSetting, value: string | boolean | number | string[], successHandler?: () => void, settledHandler?: () => void} ) => {
+  const handleUpdateStore = ({ key, value, successHandler, settledHandler }: { key: keyof StoreSetting, value: string | boolean | number | string[], successHandler?: () => void, settledHandler?: () => void }) => {
     if (!storeDetail) return;
 
     updateStore({
@@ -91,7 +92,7 @@ function MainSettingsPage() {
   }
 
   const handleChangePrinterLocation = (location: PrinterLocation) => {
-    handleUpdateStore({ 
+    handleUpdateStore({
       key: "printerLocation",
       value: location,
       successHandler: () => form.setValue("printerLocation", location)
@@ -139,7 +140,7 @@ function MainSettingsPage() {
       successHandler: () => setNewStaffCallOption("")
     })
   };
-  
+
   const handleDeleteStaffCallOption = (option: string) => {
     handleUpdateStore({
       key: "staffCallOptions",
@@ -331,10 +332,14 @@ function MainSettingsPage() {
                   })
                 }}
                 renderItem={(option) => (
-                  <SettingsStaffCallChip key={option} onDelete={() => handleDeleteStaffCallOption(option)}>{option}</SettingsStaffCallChip>
+                  <SettingsStaffCallChip key={option} onDelete={() => {
+                    if (isDragging) return;
+                    handleDeleteStaffCallOption(option)
+                  }}>{option}</SettingsStaffCallChip>
                 )}
                 className="flex flex-wrap gap-x-3 gap-y-3 lg:gap-x-2 lg:gap-y-2"
-              /> 
+                onDragStateChange={(isDragging) => setIsDragging(isDragging)}
+              />
             </SettingsSection>
           </div>
         </div>

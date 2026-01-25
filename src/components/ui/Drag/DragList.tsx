@@ -52,6 +52,7 @@ interface DraggableListProps<T> {
   strategy?: SortingStrategy;
   modifiers?: Modifier[];
   className?: string;
+  onDragStateChange?: (isDragging: boolean) => void;
 }
 
 export function DragList<T>({
@@ -63,6 +64,7 @@ export function DragList<T>({
   strategy = verticalListSortingStrategy,
   modifiers,
   className,
+  onDragStateChange,
 }: Readonly<DraggableListProps<T>>) {
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -71,7 +73,13 @@ export function DragList<T>({
     })
   );
 
+  const handleDragStart = () => {
+    onDragStateChange?.(true);
+  };
+
   const handleDragEnd = ({ active, over }: DragEndEvent) => {
+    onDragStateChange?.(false);
+
     if (over && active.id !== over.id) {
       const oldIndex = items.findIndex((item) => keyExtractor(item) === active.id);
       const newIndex = items.findIndex((item) => keyExtractor(item) === over.id);
@@ -98,6 +106,7 @@ export function DragList<T>({
     <DndContext
       sensors={sensors}
       collisionDetection={closestCenter}
+      onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
       modifiers={modifiers ?? defaultModifiers}
     >
