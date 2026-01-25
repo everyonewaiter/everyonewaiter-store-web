@@ -1,24 +1,35 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { rectSortingStrategy } from '@dnd-kit/sortable';
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { useForm, useWatch } from "react-hook-form";
+import { toast } from 'sonner';
+import { storesMutations } from '@/api/stores/mutations';
+import { storesQueries } from '@/api/stores/queries';
+import Spinner from '@/components/feedback/Spinner';
 import { Form, FormErrorMessage } from "@/components/form/Form";
 import { Info } from "@/components/icons";
 import Button from "@/components/ui/Button/Button";
+import { DragList } from '@/components/ui/Drag/DragList';
 import Input from "@/components/ui/Input";
+import { errorResponse } from '@/lib/error-response';
+import { queryClient } from '@/lib/query-client';
 import cn from "@/lib/utils";
 import SettingsSection from "@/pages/main/owner/settings/SettingsSection";
 import SettingsStaffCallChip from "@/pages/main/owner/settings/SettingsStaffCallChip";
 import SettingsSwitchItem from "@/pages/main/owner/settings/SettingsSwitchItem";
 import { settingsSchema, type SettingsSchema } from "@/schema/stores/settings.schema";
-import type { PrinterLocation } from "@/types/domain/store";
+import type { PrinterLocation, StoreSetting } from "@/types/domain/store";
 
 function MainSettingsPage() {
+  const storeId = localStorage.getItem("storeId");
+  
   const form = useForm<SettingsSchema>({
     resolver: zodResolver(settingsSchema),
     mode: "onSubmit",
     reValidateMode: "onChange",
     defaultValues: {
-      ksnetDeviceNo: "DPTOTEST03",
+      ksnetDeviceNo: "",
       printerLocation: "POS",
       showMenuPopup: false,
       showOrderTotalPrice: false,
@@ -33,26 +44,108 @@ function MainSettingsPage() {
   const printerLocation = useWatch({ control: form.control, name: "printerLocation" });
   const deviceNo = useWatch({ control: form.control, name: "ksnetDeviceNo" });
   const staffCallOptions = useWatch({ control: form.control, name: "staffCallOptions" });
+  const extraTableCount = useWatch({ control: form.control, name: "extraTableCount" });
 
-  const handleAddStaffCallOption = () => {
-    // TODO: 직원 호출 옵션 추가 로직
-    form.trigger("staffCallOptions");
-  };
+  const [isSubmitting, setIsSubmitting] = useState({
+    ksnetDeviceNo: false,
+    extraTableCount: false,
+    staffCallOptions: false
+  })
+
+  const { data: storeDetail } = useQuery(storesQueries.getStoreDetail(storeId!));
+  const { mutate: updateStore } = useMutation(storesMutations.updateStore());
+
+  useEffect(() => {
+    if (storeDetail) { 
+      form.reset({
+        ksnetDeviceNo: storeDetail?.setting?.ksnetDeviceNo,
+        printerLocation: storeDetail?.setting?.printerLocation,
+        showMenuPopup: storeDetail?.setting?.showMenuPopup,
+        showOrderTotalPrice: storeDetail?.setting?.showOrderTotalPrice,
+        showOrderMenuImage: storeDetail?.setting?.showOrderMenuImage,
+        staffCallOptions: storeDetail?.setting?.staffCallOptions,
+        extraTableCount: storeDetail?.setting?.extraTableCount,
+      })
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [storeDetail])
+
+  const handleUpdateStore = ({ key, value, successHandler, settledHandler }: {key: keyof StoreSetting, value: string | boolean | number | string[], successHandler?: () => void, settledHandler?: () => void} ) => {
+    if (!storeDetail) return;
+
+    updateStore({
+      storeId: storeId!,
+      landline: storeDetail?.landline,
+      setting: {
+        ...storeDetail?.setting,
+        [key]: value
+      },
+    }, {
+      onSuccess: () => {
+        successHandler?.();
+        queryClient.invalidateQueries(storesQueries.getStoreDetail(storeId!))
+      },
+      onError: (error) => toast.error(errorResponse(error).data.message),
+      onSettled: settledHandler
+    });
+  }
 
   const handleChangePrinterLocation = (location: PrinterLocation) => {
-    // TODO: 프린터 위치 변경 로직
-    form.setValue("printerLocation", location);
+    handleUpdateStore({ 
+      key: "printerLocation",
+      value: location,
+      successHandler: () => form.setValue("printerLocation", location)
+    })
   };
 
   const handleRegisterDeviceNumber = () => {
-    // TODO: 기기 번호 등록 로직
     form.trigger("ksnetDeviceNo");
+
+    setIsSubmitting({ ...isSubmitting, ksnetDeviceNo: true });
+
+    handleUpdateStore({
+      key: "ksnetDeviceNo",
+      value: deviceNo,
+      settledHandler: () => setIsSubmitting({ ...isSubmitting, ksnetDeviceNo: false })
+    })
   };
 
   const handleRegisterExtraTableCount = () => {
-    // TODO: 추가 테이블 수 등록 로직
     form.trigger("extraTableCount");
+
+    setIsSubmitting({ ...isSubmitting, extraTableCount: true });
+
+    handleUpdateStore({
+      key: "extraTableCount",
+      value: extraTableCount,
+      settledHandler: () => setIsSubmitting({ ...isSubmitting, extraTableCount: false })
+    })
   };
+
+  const handleChangeSwitch = (key: keyof StoreSetting, value: boolean) => {
+    handleUpdateStore({
+      key: key,
+      value: value,
+      successHandler: () => form.setValue(key, value)
+    })
+  }
+
+  const handleAddStaffCallOption = () => {
+    form.trigger("staffCallOptions");
+
+    handleUpdateStore({
+      key: "staffCallOptions",
+      value: [...staffCallOptions, newStaffCallOption],
+      successHandler: () => setNewStaffCallOption("")
+    })
+  };
+  
+  const handleDeleteStaffCallOption = (option: string) => {
+    handleUpdateStore({
+      key: "staffCallOptions",
+      value: staffCallOptions.filter((o) => o !== option),
+    })
+  }
 
   return (
     <Form {...form}>
@@ -112,6 +205,7 @@ function MainSettingsPage() {
                     },
                   }}
                   onClick={handleRegisterDeviceNumber}
+                  disabled={storeDetail?.setting?.ksnetDeviceNo === deviceNo || isSubmitting.ksnetDeviceNo}
                 >
                   등록
                 </Button>
@@ -152,8 +246,9 @@ function MainSettingsPage() {
                     },
                   }}
                   onClick={handleRegisterExtraTableCount}
+                  disabled={storeDetail?.setting?.extraTableCount === extraTableCount || isSubmitting.extraTableCount}
                 >
-                  등록
+                  {isSubmitting.extraTableCount ? <Spinner /> : "등록"}
                 </Button>
               </div>
               <FormErrorMessage className="mb-[1.5px]">
@@ -164,13 +259,15 @@ function MainSettingsPage() {
               <SettingsSwitchItem
                 propName="showOrderMenuImage"
                 label="홀 주문 내역에서 메뉴 이미지 표시하기"
+                onChange={(checked) => handleChangeSwitch("showOrderMenuImage", checked)}
               />
             </SettingsSection>
             <SettingsSection title="주문" className="pb-5">
-              <SettingsSwitchItem propName="showMenuPopup" label="손님 테이블 메뉴 팝업창 띄우기" />
+              <SettingsSwitchItem propName="showMenuPopup" label="손님 테이블 메뉴 팝업창 띄우기" onChange={(checked) => handleChangeSwitch("showMenuPopup", checked)} />
               <SettingsSwitchItem
                 propName="showOrderTotalPrice"
                 label="손님 테이블 주문 내역에서 총 주문금액 표시하기"
+                onChange={(checked) => handleChangeSwitch("showOrderTotalPrice", checked)}
               />
               <div className="flex flex-col gap-3">
                 <label
@@ -186,6 +283,9 @@ function MainSettingsPage() {
                     className="h-8! rounded-[10px]! py-1.5! text-xs! lg:h-9!"
                     value={newStaffCallOption}
                     onChange={(e) => setNewStaffCallOption(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' && !e.nativeEvent.isComposing) handleAddStaffCallOption();
+                    }}
                   />
                   <Button
                     color="black"
@@ -210,11 +310,22 @@ function MainSettingsPage() {
                   {form.formState.errors.staffCallOptions?.message}
                 </FormErrorMessage>
               </div>
-              <div className="flex flex-wrap gap-x-3 gap-y-3 lg:gap-x-2 lg:gap-y-2">
-                {staffCallOptions.map((option) => (
-                  <SettingsStaffCallChip key={option}>{option}</SettingsStaffCallChip>
-                ))}
-              </div>
+              <DragList
+                strategy={rectSortingStrategy}
+                items={staffCallOptions}
+                keyExtractor={(option) => option}
+                onReorder={(items) => {
+                  form.setValue("staffCallOptions", items)
+                  handleUpdateStore({
+                    key: "staffCallOptions",
+                    value: items,
+                  })
+                }}
+                renderItem={(option) => (
+                  <SettingsStaffCallChip key={option} onDelete={() => handleDeleteStaffCallOption(option)}>{option}</SettingsStaffCallChip>
+                )}
+                className="flex flex-wrap gap-x-3 gap-y-3 lg:gap-x-2 lg:gap-y-2"
+              /> 
             </SettingsSection>
           </div>
         </div>
