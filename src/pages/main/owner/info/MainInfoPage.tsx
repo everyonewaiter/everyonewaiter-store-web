@@ -60,62 +60,53 @@ function MainInfoPage() {
   };
 
   const handleSave = () => {
-    if (isEditing) {
-      setIsSubmitting(true);
-      const origins = form.getValues("origins");
+    if (!storeDetail) return;
 
-      for (const origin of origins) {
-        const hasItem = origin.item.trim().length > 0;
-        const hasOrigin = origin.origin.trim().length > 0;
+    setIsSubmitting(true);
+    const origins = form.getValues("origins");
 
-        if ((hasItem && !hasOrigin) || (!hasItem && hasOrigin)) {
-          form.setError("origins", {
-            message: "품목과 원산지를 모두 입력해주세요.",
-          });
-          return;
-        }
+    for (const origin of origins) {
+      const hasItem = origin.item.trim().length > 0;
+      const hasOrigin = origin.origin.trim().length > 0;
+
+      if ((hasItem && !hasOrigin) || (!hasItem && hasOrigin)) {
+        form.setError("origins", {
+          message: "품목과 원산지를 모두 입력해주세요.",
+        });
+        return;
       }
-
-      const filteredOrigins = origins
-        .filter((origin) => origin.item.trim().length > 0 && origin.origin.trim().length > 0)
-        .map((origin) => ({
-          ...origin,
-          item: origin.item.trim(),
-          origin: origin.origin.trim(),
-        }));
-
-      updateStore(
-        {
-          storeId: storeId!,
-          landline: landline || "",
-          setting: {
-            ...storeDetail?.setting,
-            ksnetDeviceNo: storeDetail?.setting.ksnetDeviceNo || "",
-            extraTableCount: storeDetail?.setting.extraTableCount || 0,
-            printerLocation: storeDetail?.setting.printerLocation || "POS",
-            showMenuPopup: storeDetail?.setting.showMenuPopup || false,
-            showOrderTotalPrice: storeDetail?.setting.showOrderTotalPrice || false,
-            showOrderMenuImage: storeDetail?.setting.showOrderMenuImage || false,
-            staffCallOptions: storeDetail?.setting.staffCallOptions || [],
-            countryOfOrigins: filteredOrigins,
-          },
-        },
-        {
-          onSuccess: () => {
-            form.clearErrors("origins");
-            form.setValue("origins", filteredOrigins);
-            setIsEditing(false);
-            setIsSubmitting(false);
-          },
-          onError: (error) => {
-            const { data } = errorResponse(error);
-            toast.error(data?.message);
-          },
-        }
-      );
-    } else {
-      setIsEditing(true);
     }
+
+    const filteredOrigins = origins
+      .filter((origin) => origin.item.trim().length > 0 && origin.origin.trim().length > 0)
+      .map((origin) => ({
+        ...origin,
+        item: origin.item.trim(),
+        origin: origin.origin.trim(),
+      }));
+
+    updateStore(
+      {
+        storeId: storeId!,
+        landline: landline || "",
+        setting: {
+          ...storeDetail?.setting,
+          countryOfOrigins: filteredOrigins,
+        },
+      },
+      {
+        onSuccess: () => {
+          form.clearErrors("origins");
+          form.setValue("origins", filteredOrigins);
+          setIsEditing(false);
+          setIsSubmitting(false);
+        },
+        onError: (error) => {
+          const { data } = errorResponse(error);
+          toast.error(data?.message);
+        },
+      }
+    );
   };
 
   return (
@@ -197,7 +188,7 @@ function MainInfoPage() {
                 md: { buttonSize: "sm", className: "!h-8.5 flex-1" },
                 sm: { buttonSize: "sm", className: "!h-8.5 flex-1" },
               }}
-              onClick={handleSave}
+              onClick={() => isEditing ? handleSave() : setIsEditing(true)}
               disabled={isSubmitting}
             >
               {isSubmitting ? <Spinner /> : "저장하기"}
@@ -213,7 +204,7 @@ function MainInfoPage() {
               md: { buttonSize: "sm", className: "!h-8.5" },
               sm: { buttonSize: "sm", className: "!h-8.5" },
             }}
-            onClick={handleSave}
+              onClick={() => isEditing ? handleSave() : setIsEditing(true)}
           >
             <EditContained className="size-5 lg:size-6" />
             수정하기
