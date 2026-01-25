@@ -63,8 +63,7 @@ function InfoOriginBox({ isEditing }: Readonly<InfoOriginBoxProps>) {
                 >
                   {isEditing ? (
                     <Input
-                      value={field.item}
-                      onChange={(e) => form.setValue(`origins.${index}.item`, e.target.value)}
+                      {...form.register(`origins.${index}.item`)}
                       className="h-full! rounded-none! border-none! text-center"
                     />
                   ) : (
@@ -79,8 +78,7 @@ function InfoOriginBox({ isEditing }: Readonly<InfoOriginBoxProps>) {
                 >
                   {isEditing ? (
                     <Input
-                      value={field.origin}
-                      onChange={(e) => form.setValue(`origins.${index}.origin`, e.target.value)}
+                      {...form.register(`origins.${index}.origin`)}
                       className="h-full! rounded-none! border-none! text-center"
                     />
                   ) : (
