@@ -51,6 +51,7 @@ interface DraggableListProps<T> {
   canDrag?: boolean;
   strategy?: SortingStrategy;
   modifiers?: Modifier[];
+  className?: string;
 }
 
 export function DragList<T>({
@@ -61,6 +62,7 @@ export function DragList<T>({
   canDrag = true,
   strategy = verticalListSortingStrategy,
   modifiers,
+  className,
 }: Readonly<DraggableListProps<T>>) {
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -100,7 +102,7 @@ export function DragList<T>({
       modifiers={modifiers ?? defaultModifiers}
     >
       <SortableContext items={itemIds} strategy={strategy}>
-        <>
+        <div className={className}>
           {items.map((item, index) => {
             const id = keyExtractor(item);
             return (
@@ -109,7 +111,7 @@ export function DragList<T>({
               </SortableItem>
             );
           })}
-        </>
+        </div>
       </SortableContext>
     </DndContext>
   ) : (
