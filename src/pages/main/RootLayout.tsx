@@ -12,6 +12,8 @@ function RootLayout() {
 
   const { data: stores, isLoading } = useQuery(storesQueries.getStores());
 
+  if (isLoading) return null;
+
   if ((stores?.stores?.length ?? 0) === 0 && !isGuest) {
     return <Navigate to="/guest" replace />;
   }
@@ -19,8 +21,6 @@ function RootLayout() {
   if ((stores?.stores?.length ?? 0) > 0 && isGuest) {
     return <Navigate to="/" replace />;
   }
-
-  if (isLoading) return null;
 
   return (
     <MobileSidebar>
