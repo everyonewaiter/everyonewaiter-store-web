@@ -188,7 +188,12 @@ function MainSettingsPage() {
                 <Input
                   placeholder="기기 번호를 입력해주세요"
                   className="h-8! rounded-[10px]! py-1.5! text-xs! lg:h-9!"
-                  {...form.register("ksnetDeviceNo")}
+                  {...form.register("ksnetDeviceNo", {
+                    onChange: (e) => {
+                      const filtered = e.target.value.toUpperCase().replaceAll(/[^A-Z0-9]/g, "");
+                      form.setValue("ksnetDeviceNo", filtered);
+                    }
+                  })}
                 />
                 <Button
                   color="black"
@@ -229,6 +234,10 @@ function MainSettingsPage() {
                   className="h-8! rounded-[10px]! py-1.5! text-xs! lg:h-9!"
                   {...form.register("extraTableCount", {
                     setValueAs: (value) => (value === "" ? 0 : Number(value)),
+                    onChange: (e) => {
+                      const number = e.target.value.replaceAll(/\D/g, "");
+                      form.setValue("extraTableCount", number);
+                    },
                   })}
                 />
                 <Button
