@@ -1,5 +1,6 @@
 import loginBg from "@/assets/images/login-bg-md@2x.webp";
 import Checkbox from "@/components/ui/Checkbox";
+import Image from '@/components/ui/Image';
 import cn from "@/lib/utils";
 import type { Menu } from "@/types/domain/menu";
 
@@ -49,7 +50,7 @@ function MenuCard({
       tabIndex={0}
       onClick={onClick}
     >
-      <img src={loginBg} alt={menu.name} className="h-full w-full object-cover" draggable="false" />
+      <Image src={menu.image} alt={menu.name} className="h-full w-full object-cover" draggable="false" fallbackSrc={loginBg} />
       {!disabled && (
         <div
           className="absolute top-2.5 left-2.5 z-10 lg:top-4 lg:left-4"
