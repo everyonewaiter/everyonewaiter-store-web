@@ -1,122 +1,79 @@
-import { useState } from "react";
 import { rectSortingStrategy } from "@dnd-kit/sortable";
-import Lottie from "lottie-react";
 import { overlay } from "overlay-kit";
 import useMediaQuery from "react-responsive";
 import { useNavigate } from "react-router-dom";
-import successApplication from "@/assets/json/success-application.json";
 import { Plus, Settings, Trash, UpsideDown } from "@/components/icons";
 import MobileTitle from "@/components/layout/MobileTitle";
 import Button from "@/components/ui/Button/Button";
 import { DragList } from "@/components/ui/Drag/DragList";
+import useCheckMenu from '@/hooks/menu/useCheckMenu';
+import useMenu from '@/hooks/menu/useMenu';
+import useMenuMove from '@/hooks/menu/useMenuMove';
+import CategoryEmptyState from '@/pages/main/owner/menus/CategoryEmptyState';
 import CategoryModal from "@/pages/main/owner/menus/CategoryModal";
 import MenuCard from "@/pages/main/owner/menus/MenuCard";
 import MenuDeleteAlert from "@/pages/main/owner/menus/MenuDeleteAlert";
 import MenuDetailModal from "@/pages/main/owner/menus/MenuDetailModal";
-import { CATEGORIES_MOCK, MENUS_MOCK } from "@/pages/main/owner/menus/mock";
-import type { Menu } from "@/types/domain/menu";
 
 function MainMenuPage() {
   const navigate = useNavigate();
   const isMobile = useMediaQuery({ maxWidth: 959 });
 
-  const [selectedCategory, setSelectedCategory] = useState<string | null>("all");
-  const [checkedMenus, setCheckedMenus] = useState<Menu[]>([]);
-  const [categories, setCategories] = useState(CATEGORIES_MOCK);
+  const { selectedCategory, setSelectedCategory, getCategories, getMenus } = useMenu()
+  const { isChangedToMenuOrder, isSubmittingOrderChange, changeToMenuOrder, saveMoves, resetMoves, addToChangeList } = useMenuMove()
+  const { checkedMenus, toggleCheckMenu, resetCheckedMenus } = useCheckMenu()
 
-  const filteredMenus =
-    selectedCategory === "all"
-      ? MENUS_MOCK
-      : MENUS_MOCK.filter((menu) => menu.categoryId === selectedCategory);
-
-  const [menus, setMenus] = useState<Menu[]>(filteredMenus);
-  const [originalMenus, setOriginalMenus] = useState<Menu[]>(filteredMenus);
-
-  const hasCategory = categories.length > 0;
-
-  const [isSaving, setIsSaving] = useState(false);
-  const [isChangedMenuOrder, setIsChangedMenuOrder] = useState(false);
-  const [changeOrdersList, setChangeOrdersList] = useState<
-    {
-      sourceId: string;
-      targetId: string;
-      where: "PREV" | "NEXT";
-    }[]
-  >([]);
-
-  const handleCategoryChange = (categoryId: string) => {
-    const newFilteredMenus =
-      categoryId === "all"
-        ? MENUS_MOCK
-        : MENUS_MOCK.filter((menu) => menu.categoryId === categoryId);
-
-    setSelectedCategory(categoryId);
-    setMenus(newFilteredMenus);
-    setOriginalMenus(newFilteredMenus);
-    setCheckedMenus([]);
-  };
-
+  /**
+   * 카테고리 모달 열기 기능
+   */
   const handleOpenCategoryModal = () => {
-    overlay.open((overlayProps) => (
-      <CategoryModal {...overlayProps} categories={categories} onSave={setCategories} />
-    ));
+    overlay.open((overlayProps) => <CategoryModal {...overlayProps} categories={getCategories.data ?? []} />);
   };
 
-  const handleOpenMenuDetailModal = (menuId: string) => {
-    overlay.open((overlayProps) => (
-      <MenuDetailModal {...overlayProps} entry="detail" menuId={menuId} />
-    ));
-  };
-
+  /**
+   * 메뉴 추가 모달 열기 기능
+   */
   const handleOpenCreateMenuModal = () => {
-    overlay.open((overlayProps) => (
-      <MenuDetailModal {...overlayProps} entry="create" initialCategoryId={selectedCategory!} />
-    ));
+    overlay.open((overlayProps) => <MenuDetailModal {...overlayProps} entry="create" initialCategoryId={selectedCategory} />);
   };
 
+  /**
+   * 메뉴 상세 모달 열기 기능
+   */
+  const handleOpenMenuDetailModal = (menuId: string) => {
+    overlay.open((overlayProps) => <MenuDetailModal {...overlayProps} entry="detail" menuId={menuId} />);
+  };
+
+  /**
+   * 메뉴 삭제 알림 모달 열기 기능
+   */
   const handleOpenMenuDeleteAlert = () => {
-    overlay.open((overlayProps) => (
-      <MenuDeleteAlert {...overlayProps} deleteItems={checkedMenus} />
-    ));
+    overlay.open((overlayProps) => <MenuDeleteAlert {...overlayProps} deleteItems={checkedMenus} />);
   };
 
-  const handleSaveChanges = async () => {
-    setIsSaving(true);
-
-    changeOrdersList.forEach(() => {
-      // TODO: 메뉴 순서 변경 로직 구현
-    });
-
-    setOriginalMenus(menus);
-    setChangeOrdersList([]);
-    setIsChangedMenuOrder(false);
-    setIsSaving(false);
-  };
-
-  const handleResetChanges = () => {
-    setMenus(originalMenus);
-    setChangeOrdersList([]);
-    setIsChangedMenuOrder(false);
-  };
-
-  const handleStartChangeOrder = () => {
-    setOriginalMenus(menus);
-    setIsChangedMenuOrder(true);
+  /**
+   * 현재 카테고리 변경 기능
+   */
+  const handleCategoryChange = (categoryId: string) => {
+    setSelectedCategory(categoryId);
+    resetCheckedMenus()
   };
 
   const categoryLgClassName = (isSelected: boolean) => {
     if (isSelected) return "h-10!";
-    if (isChangedMenuOrder) return "h-10! text-[15px] font-normal text-gray-300";
+    if (isChangedToMenuOrder) return "h-10! text-[15px] font-normal text-gray-300";
     return "h-10! border-gray-300 text-[15px] font-normal text-gray-300";
   };
 
   const categoryMdSmClassName = (isSelected: boolean) => {
     if (isSelected) return "";
-    if (isChangedMenuOrder) return "text-s font-normal text-gray-300";
+    if (isChangedToMenuOrder) return "text-s font-normal text-gray-300";
     return "border-gray-300 text-s font-normal text-gray-300";
   };
 
-  return hasCategory ? (
+  if (getCategories.isLoading) return null;
+
+  return getCategories.data && getCategories.data.length > 0 ? (
     <div className="hide-scrollbar w-full overflow-x-hidden px-5 py-4.5 md:px-0">
       <MobileTitle>메뉴 관리</MobileTitle>
       <div className="flex w-full shrink-0 flex-col justify-between gap-5 py-5 md:pt-6 md:pb-2 lg:flex-row lg:items-center">
@@ -139,18 +96,18 @@ function MainMenuPage() {
                 className: "rounded-xl shrink-0 size-9 bg-gray-700 items-center justify-center p-0",
               },
             }}
-            onClick={() => !isChangedMenuOrder && handleOpenCategoryModal()}
-            disabled={isChangedMenuOrder}
+            onClick={() => !isChangedToMenuOrder && handleOpenCategoryModal()}
+            disabled={isChangedToMenuOrder}
           >
             <Settings className="size-5 text-gray-300 lg:size-6" />
           </Button>
-          {[{ categoryId: "all", name: "전체" }, ...categories].map((category) => {
+          {[{ categoryId: "all", name: "전체" }, ...getCategories.data ?? []].map((category) => {
             const isSelected = selectedCategory === category.categoryId;
             return (
               <Button
                 key={category.categoryId}
                 color="black"
-                variant={isSelected || isChangedMenuOrder ? "default" : "outline"}
+                variant={isSelected || isChangedToMenuOrder ? "default" : "outline"}
                 responsive
                 responsiveButtons={{
                   lg: {
@@ -167,14 +124,14 @@ function MainMenuPage() {
                   },
                 }}
                 onClick={() => handleCategoryChange(category.categoryId)}
-                disabled={isChangedMenuOrder}
+                disabled={isChangedToMenuOrder}
               >
                 {category.name}
               </Button>
             );
           })}
         </div>
-        {isChangedMenuOrder ? (
+        {isChangedToMenuOrder ? (
           <div className="flex items-center justify-end gap-2">
             <div className="text-primary center h-9 rounded-lg bg-[#F220200A] px-4 text-xs font-normal md:text-sm">
               메뉴의 순서 변경은 메뉴를 꾹 누르신 후, 원하시는 자리로 메뉴를 이동해주세요
@@ -182,12 +139,12 @@ function MainMenuPage() {
             <Button
               variant="outline"
               className="button-sm"
-              onClick={handleSaveChanges}
-              disabled={isSaving}
+              onClick={saveMoves}
+              disabled={isSubmittingOrderChange}
             >
-              {isSaving ? "저장중..." : "저장"}
+              {isSubmittingOrderChange ? "저장중..." : "저장"}
             </Button>
-            <Button color="grey" className="button-sm" onClick={handleResetChanges}>
+            <Button color="grey" className="button-sm" onClick={resetMoves}>
               취소
             </Button>
           </div>
@@ -195,7 +152,7 @@ function MainMenuPage() {
           <div className="flex items-center justify-end gap-4 lg:justify-start lg:gap-6">
             <button
               className="flex items-center gap-1 text-sm font-medium text-gray-300 lg:gap-2 lg:text-lg"
-              onClick={handleStartChangeOrder}
+              onClick={changeToMenuOrder}
             >
               <UpsideDown className="size-5 lg:size-6" />
               순서변경
@@ -211,7 +168,7 @@ function MainMenuPage() {
         )}
       </div>
       <div className="grid grid-cols-2 gap-x-4 gap-y-4 py-4 md:grid-cols-4 md:gap-x-3.5 lg:gap-x-6.5 lg:gap-y-10">
-        {!isChangedMenuOrder && (
+        {!isChangedToMenuOrder && (
           <button
             className="center flex aspect-152/210 flex-col gap-1 rounded-xl border border-dashed border-gray-400 bg-gray-700 md:aspect-159/220 lg:aspect-329/440 lg:gap-2 lg:rounded-3xl"
             onClick={() => {
@@ -227,30 +184,20 @@ function MainMenuPage() {
           </button>
         )}
         <DragList
-          items={menus}
-          onReorder={(items, sourceId, targetId, where) => {
-            setMenus(items);
-            setChangeOrdersList((prev) => [
-              ...prev,
-              { sourceId: String(sourceId), targetId: String(targetId), where },
-            ]);
+          items={getMenus.data ?? []}
+          onReorder={(_, sourceId, targetId, where) => {
+            addToChangeList({ sourceId: String(sourceId), targetId: String(targetId), where });
           }}
-          canDrag={isChangedMenuOrder}
+          canDrag={isChangedToMenuOrder}
           keyExtractor={(item) => item.menuId}
           strategy={rectSortingStrategy}
           renderItem={(menu) => (
             <MenuCard
-              className={isChangedMenuOrder ? "pointer-events-none" : ""}
+              className={isChangedToMenuOrder ? "pointer-events-none" : ""}
               key={menu.menuId}
               menu={menu}
               isChecked={checkedMenus.includes(menu)}
-              onCheckedChange={() => {
-                if (checkedMenus.includes(menu)) {
-                  setCheckedMenus(checkedMenus.filter((m) => m.menuId !== menu.menuId));
-                } else {
-                  setCheckedMenus([...checkedMenus, menu]);
-                }
-              }}
+              onCheckedChange={() => toggleCheckMenu(menu)}
               onClick={() => {
                 if (isMobile === true || isMobile === undefined) {
                   navigate(`/menus/${menu.menuId}`, {
@@ -260,35 +207,14 @@ function MainMenuPage() {
                   handleOpenMenuDetailModal(menu.menuId);
                 }
               }}
-              disabled={isChangedMenuOrder}
+              disabled={isChangedToMenuOrder}
             />
           )}
         />
       </div>
     </div>
   ) : (
-    <div className="flex h-full w-full flex-col items-center justify-start gap-4 px-5 pt-6 md:flex-row md:justify-center md:px-0 md:pt-0">
-      <MobileTitle />
-      <div className="flex h-[calc(100%-160px)] w-full flex-col items-center justify-center gap-4 pt-5 md:h-auto md:w-auto md:justify-start md:gap-6 md:pt-0 lg:gap-10">
-        <Lottie
-          animationData={successApplication}
-          loop={true}
-          className="h-25 w-25 lg:h-40 lg:w-40"
-        />
-        <h2 className="text-gray-0 text-center text-base font-semibold whitespace-pre-line lg:text-2xl">{`음식의 카테고리가 등록되어있지 않아요.\n아래 버튼을 눌러 카테고리를 등록해주세요.`}</h2>
-        <Button
-          responsive
-          responsiveButtons={{
-            lg: { buttonSize: "lg", className: "w-100" },
-            md: { buttonSize: "sm", className: "w-90" },
-            sm: { buttonSize: "sm", className: "w-full absolute bottom-10 w-[calc(100%-72px)]" },
-          }}
-          onClick={() => navigate("/menus/category")}
-        >
-          카테고리 등록하기
-        </Button>
-      </div>
-    </div>
+    <CategoryEmptyState />
   );
 }
 
