@@ -1,4 +1,6 @@
+import { useQuery } from '@tanstack/react-query';
 import { useFormContext } from "react-hook-form";
+import { categoryQueries } from '@/api/categories/queries';
 import { FormErrorMessage } from "@/components/form/Form";
 import FormField from "@/components/form/FormField";
 import Button from "@/components/ui/Button/Button";
@@ -8,7 +10,6 @@ import Label from "@/components/ui/Label";
 import Switch from "@/components/ui/Switch";
 import { formatPrice } from "@/lib/format";
 import cn from "@/lib/utils";
-import { CATEGORIES_MOCK } from "@/pages/main/owner/menus/mock";
 import type { MenuSchema } from "@/schema/menu.schema";
 import type { MenuLabel, MenuState } from "@/types/domain/menu";
 
@@ -31,7 +32,8 @@ interface MenuDetailFormProps {
 }
 
 function MenuDetailForm({ canEdit, isDetail }: Readonly<MenuDetailFormProps>) {
-  const categories = CATEGORIES_MOCK;
+  const storeId = localStorage.getItem('storeId') as string;
+  const { data: categories } = useQuery(categoryQueries.getCategories({ storeId }))
 
   const form = useFormContext<MenuSchema>();
   const currentLabel = form.watch("label");
@@ -55,13 +57,13 @@ function MenuDetailForm({ canEdit, isDetail }: Readonly<MenuDetailFormProps>) {
       <div className="flex flex-col gap-2">
         <Label>카테고리</Label>
         <Dropdown
-          dropdownItems={categories.map((category) => ({
+          dropdownItems={categories?.map((category) => ({
             id: category.categoryId,
             name: category.name,
-          }))}
+          })) ?? []}
           value={currentCategoryId}
           defaultText={
-            categories.find((category) => category.categoryId === currentCategoryId)?.name ??
+            categories?.find((category) => category.categoryId === currentCategoryId)?.name ??
             "카테고리를 선택해주세요."
           }
           disabled={!canEdit}
