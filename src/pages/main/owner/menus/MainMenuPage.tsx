@@ -14,12 +14,13 @@ import CategoryModal from "@/pages/main/owner/menus/CategoryModal";
 import MenuCard from "@/pages/main/owner/menus/MenuCard";
 import MenuDeleteAlert from "@/pages/main/owner/menus/MenuDeleteAlert";
 import MenuDetailModal from "@/pages/main/owner/menus/MenuDetailModal";
+import type { Menu } from '@/types/domain/menu';
 
 function MainMenuPage() {
   const navigate = useNavigate();
   const isMobile = useMediaQuery({ maxWidth: 959 });
 
-  const { selectedCategory, setSelectedCategory, getCategories, getMenus } = useMenu()
+  const { selectedCategory, setSelectedCategory, getCategories, allMenus } = useMenu()
   const { isChangedToMenuOrder, isSubmittingOrderChange, changeToMenuOrder, saveMoves, resetMoves, addToChangeList } = useMenuMove()
   const { checkedMenus, toggleCheckMenu, resetCheckedMenus } = useCheckMenu()
 
@@ -34,14 +35,14 @@ function MainMenuPage() {
    * 메뉴 추가 모달 열기 기능
    */
   const handleOpenCreateMenuModal = () => {
-    overlay.open((overlayProps) => <MenuDetailModal {...overlayProps} entry="create" initialCategoryId={selectedCategory} />);
+    overlay.open((overlayProps) => <MenuDetailModal {...overlayProps} entry="create" initialCategoryId={selectedCategory === 'all' ? '' : selectedCategory} />);
   };
 
   /**
    * 메뉴 상세 모달 열기 기능
    */
-  const handleOpenMenuDetailModal = (menuId: string) => {
-    overlay.open((overlayProps) => <MenuDetailModal {...overlayProps} entry="detail" menuId={menuId} />);
+  const handleOpenMenuDetailModal = (menu: Menu) => {
+    overlay.open((overlayProps) => <MenuDetailModal initialCategoryId={menu.categoryId} {...overlayProps} entry="detail" menuId={menu.menuId} />);
   };
 
   /**
@@ -184,7 +185,7 @@ function MainMenuPage() {
           </button>
         )}
         <DragList
-          items={getMenus.data ?? []}
+          items={allMenus ?? []}
           onReorder={(_, sourceId, targetId, where) => {
             addToChangeList({ sourceId: String(sourceId), targetId: String(targetId), where });
           }}
@@ -204,7 +205,7 @@ function MainMenuPage() {
                     state: { menuId: menu.menuId, entry: "detail" },
                   });
                 } else {
-                  handleOpenMenuDetailModal(menu.menuId);
+                  handleOpenMenuDetailModal(menu);
                 }
               }}
               disabled={isChangedToMenuOrder}
