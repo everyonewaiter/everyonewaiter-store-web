@@ -10,7 +10,9 @@ function RootLayout() {
   const location = useLocation();
   const isGuest = location.pathname.startsWith("/guest");
 
-  const { data: stores, isLoading } = useQuery(storesQueries.getStores());
+  const { data: stores, isLoading, isError } = useQuery(storesQueries.getStores());
+
+  if (isLoading || isError) return null;
 
   if ((stores?.stores?.length ?? 0) === 0 && !isGuest) {
     return <Navigate to="/guest" replace />;
@@ -19,8 +21,6 @@ function RootLayout() {
   if ((stores?.stores?.length ?? 0) > 0 && isGuest) {
     return <Navigate to="/" replace />;
   }
-
-  if (isLoading) return null;
 
   return (
     <MobileSidebar>
