@@ -5,13 +5,14 @@ import type { Menu, MenuDetail } from '@/types/domain/menu';
 
 export const menuQueries = {
   getMenus: ({ storeId, categoryId }: { storeId: string; categoryId: string }) =>
-    queryOptions<{ menus: Menu[] }>({
+    queryOptions<{ menus: Menu[] }, Error, Menu[]>({
       queryKey: MENUS_KEY.menu(),
       queryFn: async () => {
         const response = await instance.get(`/stores/${storeId}/categories/${categoryId}/menus`);
         return response.data;
       },
       enabled: !!storeId && !!categoryId,
+      select: data => data?.menus
     }),
   getMenuDetail: ({ storeId, menuId, categoryId }: { storeId: string; menuId: string; categoryId: string }) =>
     queryOptions<MenuDetail>({
@@ -21,5 +22,6 @@ export const menuQueries = {
         return response.data;
       },
       enabled: !!storeId && !!menuId && !!categoryId,
+      select: data => data
     }),
 };
