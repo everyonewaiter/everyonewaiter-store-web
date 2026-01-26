@@ -1,6 +1,7 @@
 const MENU = "MENU";
 
 export const MENUS_KEY = {
-  menu: () => [MENU],
-  menuDetail: (menuId: string) => [MENU, menuId],
+  menu: [MENU],
+  menus: (categoryId: string) => [MENU, categoryId],
+  menuDetail: (menuId: string) => [MENU, "detail", menuId],
 };

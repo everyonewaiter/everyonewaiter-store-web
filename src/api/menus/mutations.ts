@@ -1,12 +1,13 @@
 import { mutationOptions } from '@tanstack/react-query';
 import { instance } from '@/api';
-import type { MenuSchema } from '@/schema/menu.schema';
 import type { MoveRequest, PropsWithStoreId } from '@/types/api';
-import type { MenuOptionGroup } from '@/types/domain/menu';
+import type { MenuDetail, MenuOptionGroup } from '@/types/domain/menu';
+
+type MenuDetailPayload = Omit<MenuDetail, 'menuId' | 'image' | 'menuOptionGroups'> & {menuOptionGroups: Omit<MenuOptionGroup, 'menuOptionGroupId'>[]};
 
 export const menuMutations = {
   createMenu: () => mutationOptions({
-    mutationFn: async ({ storeId, categoryId, data }: PropsWithStoreId<{ categoryId: string; data: {file: File, request: Omit<MenuSchema, 'image'>} }>) => {
+    mutationFn: async ({ storeId, categoryId, data }: PropsWithStoreId<{ categoryId: string; data: { file: File, request: MenuDetailPayload; } }>) => {
       const formData = new FormData();
       formData.append("file", data.file);
       formData.append("request", JSON.stringify(data.request));
@@ -20,13 +21,13 @@ export const menuMutations = {
     },
   }),
   updateMenu: () => mutationOptions({
-    mutationFn: async ({ storeId, menuId, data }: PropsWithStoreId<{ menuId: string; data: Omit<MenuSchema, 'categoryId' | 'image' | 'requiredOptionGroups' | 'optionalOptionGroups'> & {menuOptionGroups: Omit<MenuOptionGroup, 'menuOptionGroupId'>[]} }>) => {
+    mutationFn: async ({ storeId, menuId, data }: PropsWithStoreId<{ menuId: string; data: MenuDetailPayload; }>) => {
       const response = await instance.put(`/stores/${storeId}/menus/${menuId}`, data);
       return response.data;
     },
   }),
   updateMenuWithImage: () => mutationOptions({
-    mutationFn: async ({ storeId, menuId, data }: PropsWithStoreId<{ menuId: string; data: {file: File, request: Omit<MenuSchema, 'categoryId' | 'image' | 'requiredOptionGroups' | 'optionalOptionGroups'> & {menuOptionGroups: Omit<MenuOptionGroup, 'menuOptionGroupId'>[]}} }>) => {
+    mutationFn: async ({ storeId, menuId, data }: PropsWithStoreId<{ menuId: string; data: {file: File, request: MenuDetailPayload; } }>) => {
       const formData = new FormData();
       formData.append("file", data.file);
       formData.append("request", JSON.stringify(data.request));
