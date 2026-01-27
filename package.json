@@ -8,7 +8,8 @@
     "build": "pnpm generate:icons && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "test": "vitest",
+    "test": "cypress open",
+    "test:run": "cypress run",
     "generate:icons": "node scripts/generate-icons.js",
     "generate:re-icons": "node scripts/re-generate-icons.js",
     "prepare": "husky"
@@ -73,6 +74,7 @@
     "@typescript-eslint/parser": "^8.50.1",
     "@vitejs/plugin-react": "^5.1.1",
     "commander": "^12.1.0",
+    "cypress": "^15.9.0",
     "eslint": "^9.39.2",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-config-airbnb-typescript": "^18.0.0",
@@ -90,8 +92,7 @@
     "rollup-plugin-visualizer": "^6.0.5",
     "typescript": "~5.9.3",
     "typescript-eslint": "^8.46.4",
-    "vite": "^7.2.4",
-    "vitest": "^4.0.16"
+    "vite": "^7.2.4"
   },
   "lint-staged": {
     "*.{ts,tsx}": [
