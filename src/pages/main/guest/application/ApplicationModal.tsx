@@ -61,9 +61,7 @@ function ApplicationModal({
 
   useEffect(() => {
     return () => {
-      if (imageFileUrl) {
-        URL.revokeObjectURL(imageFileUrl);
-      }
+      if (imageFileUrl) URL.revokeObjectURL(imageFileUrl);
     };
   }, [imageFileUrl]);
 
@@ -93,15 +91,12 @@ function ApplicationModal({
     setIsSubmitting(true);
 
     try {
+      const data = form.getValues()
       const mutation =
-        form.getValues().file === application?.image ? reapplyStore : reapplyStoreWithFile;
+        data.file === application?.image ? reapplyStore : reapplyStoreWithFile;
 
       await mutation({
-        name: form.getValues().name,
-        ceoName: form.getValues().ceoName,
-        address: form.getValues().address,
-        landline: form.getValues().landline,
-        license: form.getValues().license,
+        ...data,
         registrationId: application?.registrationId,
         file: imageFile as File,
       });
@@ -190,6 +185,7 @@ function ApplicationModal({
                     setIsEditing(true);
                   }
                 }}
+                disabled={isSubmitting}
               >
                 {isEditing && isSubmitting && <Spinner />}
                 {!isEditing && "수정하고 재신청하기"}
