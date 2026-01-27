@@ -4,6 +4,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useForm, useWatch } from "react-hook-form";
 import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { STORES_KEY } from '@/api/stores/keys';
 import { storesMutations } from "@/api/stores/mutations";
 import logo from "@/assets/images/logo.svg";
 import Spinner from "@/components/feedback/Spinner";
@@ -16,6 +17,7 @@ import { useFormBlocker } from "@/hooks/useLeavePageBlocker";
 import useOpenDaumPostcode from "@/hooks/useOpenDaumPostcode";
 import { errorResponse } from "@/lib/error-response";
 import { formatBusinessNumber, formatStorePhoneNumber } from "@/lib/format";
+import { queryClient } from '@/lib/query-client';
 import cn from "@/lib/utils";
 import { createStoreSchema, type CreateStoreSchema } from "@/schema/create-store.schema";
 
@@ -61,6 +63,7 @@ function GuestCreate() {
     createStore(data, {
       onSuccess: () => {
         toast.success("매장 등록이 완료되었습니다.");
+        queryClient.invalidateQueries({queryKey: STORES_KEY.registrationList(1)});
         if (isGuest) {
           navigate("/guest");
         } else {
@@ -68,6 +71,8 @@ function GuestCreate() {
         }
       },
       onError: (error) => {
+        setIsSubmitting(false);
+
         const { status, data } = errorResponse(error);
         const code = data?.code;
         const message = data?.message;
@@ -274,6 +279,7 @@ function GuestCreate() {
                   lg: { buttonSize: "lg", className: "w-full" },
                 }}
                 onClick={handleSubmit}
+                disabled={isSubmitting}
               >
                 {isSubmitting ? <Spinner /> : "신청하기"}
               </Button>
