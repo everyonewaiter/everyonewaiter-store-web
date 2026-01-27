@@ -1,6 +1,8 @@
+const DEVICE = "DEVICE";
+
 export const DEVICE_KEY = {
-  device: ["DEVICE"],
-  deviceId: (deviceId: string) => [deviceId],
-  storeId: (storeId: string) => [storeId],
-  all: (deviceId: string, storeId: string) => [...DEVICE_KEY.device, deviceId, storeId],
+  device: () => [DEVICE],
+  list: (storeId: string, page: number, size: number) => [DEVICE, "LIST", storeId, page, size],
+  listPrefix: (storeId: string) => [DEVICE, "LIST", storeId],
+  detail: (storeId: string, deviceId: string) => [DEVICE, "DETAIL", storeId, deviceId],
 };
