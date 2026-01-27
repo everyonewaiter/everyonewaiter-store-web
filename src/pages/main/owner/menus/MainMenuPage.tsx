@@ -2,6 +2,7 @@ import { rectSortingStrategy } from "@dnd-kit/sortable";
 import { overlay } from "overlay-kit";
 import useMediaQuery from "react-responsive";
 import { useNavigate } from "react-router-dom";
+import { menuQueries } from '@/api/menus/queries';
 import { Plus, Settings, Trash, UpsideDown } from "@/components/icons";
 import MobileTitle from "@/components/layout/MobileTitle";
 import Button from "@/components/ui/Button/Button";
@@ -9,6 +10,7 @@ import { DragList } from "@/components/ui/Drag/DragList";
 import useCheckMenu from '@/hooks/menu/useCheckMenu';
 import useMenu from '@/hooks/menu/useMenu';
 import useMenuMove from '@/hooks/menu/useMenuMove';
+import { queryClient } from '@/lib/query-client';
 import CategoryEmptyState from '@/pages/main/owner/menus/CategoryEmptyState';
 import CategoryModal from "@/pages/main/owner/menus/CategoryModal";
 import MenuCard from "@/pages/main/owner/menus/MenuCard";
@@ -53,6 +55,17 @@ function MainMenuPage() {
   };
 
   /**
+   * 카테고리 데이터 미리 가져오기 기능
+   * @param categoryId 카테고리 ID
+   */
+  const handlePrefetch = (categoryId: string) => {
+    if (isChangedToMenuOrder) return;
+    if (categoryId === selectedCategory) return;
+    const storeId = localStorage.getItem('storeId') as string;
+    queryClient.prefetchQuery(menuQueries.getMenus({ storeId, categoryId }))
+  }
+
+  /**
    * 현재 카테고리 변경 기능
    */
   const handleCategoryChange = (categoryId: string) => {
@@ -93,13 +106,13 @@ function MainMenuPage() {
                 className: "rounded-xl shrink-0 size-9 bg-gray-700 items-center justify-center p-0",
               },
               sm: {
-                buttonSize: "xl",
-                className: "rounded-xl shrink-0 size-9 bg-gray-700 items-center justify-center p-0",
+                buttonSize: "custom",
+                className: "rounded-xl shrink-0 size-10 bg-gray-700 items-center justify-center p-0",
               },
             }}
             onClick={() => !isChangedToMenuOrder && handleOpenCategoryModal()}
             disabled={isChangedToMenuOrder}
-            isLoading={getCategories.isLoading}
+            aria-label="카테고리 설정 버튼"
           >
             <Settings className="size-5 text-gray-300 lg:size-6" />
           </Button>
@@ -126,8 +139,8 @@ function MainMenuPage() {
                   },
                 }}
                 onClick={() => handleCategoryChange(category.categoryId)}
+                onMouseEnter={() => handlePrefetch(category.categoryId)}
                 disabled={isChangedToMenuOrder}
-                isLoading={getCategories.isLoading}
               >
                 {category.name}
               </Button>
@@ -144,11 +157,10 @@ function MainMenuPage() {
               className="button-sm"
               disabled={isSubmittingOrderChange}
               onClick={saveMoves}
-              isLoading={getCategories.isLoading}
             >
               {isSubmittingOrderChange ? "저장중..." : "저장"}
             </Button>
-            <Button color="grey" className="button-sm" onClick={resetMoves} isLoading={getCategories.isLoading}>
+            <Button color="grey" className="button-sm" onClick={resetMoves}>
               취소
             </Button>
           </div>
