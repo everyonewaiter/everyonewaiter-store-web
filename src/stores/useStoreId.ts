@@ -1,4 +1,6 @@
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
+import { immer } from "zustand/middleware/immer";
 
 interface State {
   storeId: string | null;
@@ -9,14 +11,20 @@ interface Actions {
   clearStoreId: () => void;
 }
 
-export const useStoreId = create<State & Actions>((set) => ({
-  storeId: localStorage.getItem("storeId") ?? null,
-  setStoreId: (storeId: string) => {
-    localStorage.setItem("storeId", storeId);
-    set({ storeId });
-  },
-  clearStoreId: () => {
-    localStorage.removeItem("storeId");
-    set({ storeId: null });
-  },
-}));
+export const useStoreId = create<State & Actions>()(
+  persist(
+    immer<State & Actions>((set) => ({
+      storeId: null,
+      setStoreId: (storeId: string) => {
+        set({ storeId });
+      },
+      clearStoreId: () => {
+        set({ storeId: null });
+      },
+    })),
+    {
+      name: "storeId",
+      partialize: (state) => ({ storeId: state.storeId }),
+    }
+  ) as never
+);
