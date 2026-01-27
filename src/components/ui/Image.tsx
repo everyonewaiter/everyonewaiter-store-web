@@ -11,6 +11,8 @@ interface ImageProps extends ImgHTMLAttributes<HTMLImageElement> {
   src: string;
   alt: string;
   fallbackSrc?: string;
+  hasBlur?: boolean;
+  imageClassName?: string;
 }
 
 export default function Image({
@@ -20,6 +22,8 @@ export default function Image({
   fallbackSrc,
   alt,
   className,
+  hasBlur = false,
+  imageClassName,
   ...props
 }: Readonly<ImageProps>) {
   const wrapperRef = useRef<HTMLDivElement>(null);
@@ -64,11 +68,22 @@ export default function Image({
     }
   };
 
+  const blurClassName = () => {
+    if (hasBlur) {
+      if (loaded) return "blur-0 scale-100";
+      return "blur-sm scale-[1.03]";
+    }
+    return "";
+  };
+
   return (
-    <div ref={wrapperRef} className="relative h-full w-full overflow-hidden">
+    <div
+      ref={wrapperRef}
+      className={cn("h-full w-full relative overflow-hidden", className)}
+    >
       {/* Skeleton */}
-      {!loaded && visible && (
-        <div className="absolute inset-0 animate-pulse bg-gray-300" />
+      {!loaded && visible && hasBlur && (
+        <div className="absolute inset-0 w-full h-full animate-pulse bg-gray-700" />
       )}
 
       {visible && (
@@ -81,8 +96,8 @@ export default function Image({
           draggable={false}
           className={cn(
             "h-full w-full object-cover transition-all duration-600",
-            loaded ? "blur-0 scale-100" : "blur-sm scale-[1.03]",
-            className
+            blurClassName(),
+            imageClassName,
           )}
           {...props}
         />

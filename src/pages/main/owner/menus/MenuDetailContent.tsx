@@ -137,7 +137,8 @@ function MenuDetailContent({
                 <Image
                   src={menu?.image ?? ""}
                   alt={menu?.name ?? ""}
-                  className="aspect-320/373 rounded-xl md:aspect-240/280 lg:aspect-364/478 lg:rounded-3xl object-cover"
+                  className="h-auto aspect-320/373 rounded-xl md:aspect-240/280 lg:aspect-364/478 lg:rounded-3xl object-cover"
+                  hasBlur
                 />
               )}
               {(!menu?.image && !form.watch('image') && isCreating) && (

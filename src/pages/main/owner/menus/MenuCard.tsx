@@ -60,6 +60,7 @@ function MenuCard({
         fallbackSrc={loginBg}
         fetchPriority={index < 5 ? "high" : "auto"}
         loading={index < 5 ? "eager" : "lazy"}
+        hasBlur
       />
       {!disabled && (
         <div
