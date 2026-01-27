@@ -52,13 +52,22 @@ function MenuCard({
       tabIndex={0}
       onClick={onClick}
     >
-      <Image src={menu.image} alt={menu.name} className="h-full w-full object-cover" draggable="false" fallbackSrc={loginBg} fetchPriority={index < 5 ? "high" : "auto"} />
+      <Image
+        src={menu.image}
+        alt={menu.name}
+        className="h-full w-full object-cover"
+        draggable="false"
+        fallbackSrc={loginBg}
+        fetchPriority={index < 5 ? "high" : "auto"}
+        loading={index < 5 ? "eager" : "lazy"}
+      />
       {!disabled && (
         <div
           className="absolute top-2.5 left-2.5 z-10 lg:top-4 lg:left-4"
           role="presentation"
           onClick={(e) => e.stopPropagation()}
           onKeyDown={(e) => e.stopPropagation()}
+          aria-label="메뉴 선택 체크박스"
         >
           <Checkbox
             className="size-6 lg:size-8"

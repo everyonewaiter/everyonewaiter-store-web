@@ -47,6 +47,7 @@ function SectionTitle() {
           ref={buttonRef}
           className="center rounded-xl border border-gray-400 md:h-8 md:w-8 lg:h-12 lg:w-12 lg:rounded-2xl"
           onClick={() => setIsOpenUser((prev) => !prev)}
+          aria-label="사용자 메뉴 버튼"
         >
           <User className="text-gray-400 md:size-6 lg:size-8" />
         </button>
