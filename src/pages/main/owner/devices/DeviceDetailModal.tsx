@@ -21,7 +21,7 @@ import { useStoreId } from "@/stores/useStoreId";
 import type { DevicePaymentType, DevicePurpose } from "@/types/domain/device";
 import type { ModalProps } from "@/types/overlay";
 
-const PURPOSE_TRANSLATES = {
+const PURPOSE_TRANSLATES: Record<DevicePurpose, string> = {
   POS: "POS",
   HALL: "홀",
   TABLE: "테이블",
@@ -72,7 +72,7 @@ function DeviceDetailModal({ deviceId, ...props }: Readonly<DeviceDetailModalPro
 
   const isDesktopPurpose = ["POS", "HALL"].includes(purpose as DevicePurpose);
 
-  const purposeDropdownItems = useMemo(() => {
+  const purposeDropdownItems: { name: string; id: DevicePurpose }[] = useMemo(() => {
     if (isDesktopPurpose) {
       return [
         { name: "POS", id: "POS" },
@@ -103,7 +103,8 @@ function DeviceDetailModal({ deviceId, ...props }: Readonly<DeviceDetailModalPro
       {
         deviceId,
         name: form.getValues("name"),
-        purpose: form.getValues("purpose"),          tableNo: form.getValues("tableNo"),
+        purpose: form.getValues("purpose"),
+        tableNo: form.getValues("tableNo"),
         paymentType: form.getValues("paymentType"),
         storeId: storeId!,
       },
@@ -208,7 +209,7 @@ function DeviceDetailModal({ deviceId, ...props }: Readonly<DeviceDetailModalPro
                 dropdownItems={purposeDropdownItems}
                 defaultText={PURPOSE_TRANSLATES[purpose as DevicePurpose]}
                 value={purpose}
-                onChange={(value) => form.setValue("paymentType", value.id as DevicePaymentType)}
+                onChange={(value) => form.setValue("purpose", value.id as DevicePurpose)}
                 disabled={!isEditing || isSubmitting}
               />
             </div>
@@ -232,7 +233,11 @@ function DeviceDetailModal({ deviceId, ...props }: Readonly<DeviceDetailModalPro
                   <Label disabled={!isEditing}>결제 방식</Label>
                   <Dropdown
                     dropdownItems={paymentTypeDropdownItems}
-                    defaultText={paymentTypeDropdownItems[0].name}
+                    defaultText={
+                      paymentTypeDropdownItems.find(
+                        (item) => item.id === paymentType
+                      )?.name ?? paymentTypeDropdownItems[0].name
+                    }
                     value={paymentType}
                     onChange={(value) =>
                       form.setValue("paymentType", value.id as DevicePaymentType)
