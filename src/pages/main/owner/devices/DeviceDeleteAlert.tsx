@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
+import { DEVICE_KEY } from '@/api/device/key';
 import { deviceMutations } from "@/api/device/mutations";
 import Spinner from "@/components/feedback/Spinner";
 import Alert from "@/components/overlay/Alert";
 import { errorResponse } from "@/lib/error-response";
+import { queryClient } from '@/lib/query-client';
 import { useStoreId } from "@/stores/useStoreId";
 import type { Device } from "@/types/domain/device";
 import type { ModalProps } from "@/types/overlay";
@@ -17,7 +19,7 @@ function DeviceDeleteModal({ deleteItem, ...props }: Readonly<DeviceDeleteModalP
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const { storeId } = useStoreId();
-  const { mutate: deleteDevice } = useMutation(deviceMutations.deleteDevice());
+  const { mutateAsync: deleteDevice } = useMutation(deviceMutations.deleteDevice());
 
   const renderText = () => {
     if (deleteItem.length === 1) {
@@ -26,26 +28,26 @@ function DeviceDeleteModal({ deleteItem, ...props }: Readonly<DeviceDeleteModalP
     return ` 외 ${deleteItem.length - 1}개의 기기를`;
   };
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     setIsSubmitting(true);
-    deleteDevice(
-      {
-        deviceId: deleteItem[0].deviceId,
-        storeId: storeId!,
-      },
-      {
-        onSuccess: () => {
-          toast.success("기기가 삭제되었습니다.");
-          setIsSubmitting(false);
-          props.close();
-        },
-        onError: (error) => {
-          const { data } = errorResponse(error);
-          const message = data?.message;
-          toast.error(message);
-        },
+
+    try {
+      for (const device of deleteItem) {
+        await deleteDevice({
+          deviceId: device.deviceId,
+          storeId: storeId!,
+        });
       }
-    );
+
+      toast.success("기기가 삭제되었습니다.");
+      props.close();
+      queryClient.invalidateQueries({ queryKey: DEVICE_KEY.listPrefix(storeId!) });
+    } catch (error) {
+      setIsSubmitting(false);
+      const { data } = errorResponse(error);
+      const message = data?.message;
+      toast.error(message);
+    }
   };
 
   return (
@@ -55,7 +57,7 @@ function DeviceDeleteModal({ deleteItem, ...props }: Readonly<DeviceDeleteModalP
         <>
           <Alert.Cancel disabled={isSubmitting}>닫기</Alert.Cancel>
           {deleteItem.length > 0 && (
-            <Alert.Action onClick={handleDelete}>
+            <Alert.Action onClick={handleDelete} disabled={isSubmitting}>
               {isSubmitting ? <Spinner /> : "삭제"}
             </Alert.Action>
           )}
