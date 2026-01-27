@@ -236,16 +236,7 @@ function MainDevicePage() {
       <div className="mt-auto flex justify-center pb-6">
         <Pagination
           currentPage={page}
-          pagination={{
-            page: page,
-            size: 20,
-            isFirst: page === 1,
-            isLast: page === Math.ceil((devices?.count ?? 0) / 20),
-            pageSkipSize: devices?.pageSkipSize ?? 0,
-            count: devices?.count ?? 0,
-            fastForwardPage: devices?.fastForwardPage ?? 0,
-            fastBackwardPage: devices?.fastBackwardPage ?? 0,
-          }}
+          pagination={devices}
           onPageChange={setPage}
         />
       </div>
