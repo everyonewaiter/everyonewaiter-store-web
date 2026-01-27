@@ -1,15 +1,22 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useQuery, useQueries } from '@tanstack/react-query';
 import { categoryQueries } from '@/api/categories/queries';
 import { menuQueries } from '@/api/menus/queries';
+import type { Menu } from '@/types/domain/menu';
 
 function useMenu() {
-	const [selectedCategory, setSelectedCategory] = useState<string>('all');
-
 	const storeId = localStorage.getItem('storeId') as string;
 	const getCategories = useQuery(categoryQueries.getCategories({ storeId }))
-	const getMenus = useQuery(menuQueries.getMenus({ storeId, categoryId: selectedCategory ?? "" }))
 
+	const [manuallySelectedCategory, setManuallySelectedCategory] = useState<string | null>(null);
+	const [manuallyOrderedMenus, setManuallyOrderedMenus] = useState<Menu[] | null>(null);
+
+	const selectedCategory = useMemo(() => {
+		return manuallySelectedCategory ?? getCategories.data?.[0]?.categoryId ?? '';
+	}, [manuallySelectedCategory, getCategories.data]);
+
+	const getMenus = useQuery(menuQueries.getMenus({ storeId, categoryId: selectedCategory ?? "" }))
+	
 	const allMenusQueries = useQueries({
 		queries: getCategories.data?.map(category => 
 			menuQueries.getMenus({ storeId, categoryId: category.categoryId })
@@ -20,12 +27,31 @@ function useMenu() {
 		? allMenusQueries.flatMap(query => query.data ?? [])
 		: getMenus.data?.filter((menu) => menu.categoryId === selectedCategory)
 
+	const menus = useMemo(() => {
+		return manuallyOrderedMenus ?? allMenus ?? [];
+	}, [manuallyOrderedMenus, allMenus]);
+
+	const setMenus = (newMenus: Menu[]) => {
+		setManuallyOrderedMenus(newMenus);
+	}
+
+	const handleSetSelectedCategory = (categoryId: string) => {
+		setManuallySelectedCategory(categoryId);
+		setManuallyOrderedMenus(null);
+	}
+
+	const resetManuallyOrderedMenus = () => {
+		setManuallyOrderedMenus(null);
+	}
+
 	return {
 		storeId,
 		selectedCategory,
-		setSelectedCategory,
+		setSelectedCategory: handleSetSelectedCategory,
 		getCategories,
-		allMenus,
+		menus,
+		setMenus,
+		resetManuallyOrderedMenus,
 	}
 }
 
