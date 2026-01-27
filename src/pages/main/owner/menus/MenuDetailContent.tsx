@@ -1,10 +1,6 @@
 import { useEffect, useRef, useState, type ChangeEvent } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from '@tanstack/react-query';
 import { useForm } from "react-hook-form";
-import { toast } from 'sonner';
-import { MENUS_KEY } from '@/api/menus/keys';
-import { menuMutations } from '@/api/menus/mutations';
 import logo from "@/assets/images/logo.svg";
 import Spinner from '@/components/feedback/Spinner';
 import { Form, FormErrorMessage } from "@/components/form/Form";
@@ -12,8 +8,7 @@ import { Close } from "@/components/icons";
 import { Dialog } from "@/components/overlay/Dialog";
 import Button from "@/components/ui/Button/Button";
 import Image from "@/components/ui/Image";
-import { errorResponse } from '@/lib/error-response';
-import { queryClient } from '@/lib/query-client';
+import useMenuFormSubmit from '@/hooks/menu/useMenuFormSubmit';
 import cn from "@/lib/utils";
 import MenuDetailForm from "@/pages/main/owner/menus/MenuDetailForm";
 import MenuDetailOptions from "@/pages/main/owner/menus/MenuDetailOptions";
@@ -38,15 +33,11 @@ function MenuDetailContent({
 }: Readonly<MenuDetailContentProps>) {
   const imageRef = useRef<HTMLInputElement>(null);
   const [mode, setMode] = useState<MenuDetailMode>(entry === "create" ? "create" : "detail");
-
   const [imageFile, setImageFile] = useState<File | null>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const isEditing = mode === "edit";
   const isCreating = mode === "create";
   const isDetail = mode === "detail";
-
-  const canEdit = (isCreating || isEditing) && !isSubmitting;
 
   const form = useForm<MenuSchema>({
     resolver: zodResolver(menuSchema),
@@ -98,110 +89,16 @@ function MenuDetailContent({
   }, [menu])
 
   const [selectedGroup, setSelectedGroup] = useState<MenuOptionGroupType>("MANDATORY");
-  
-  const { mutate: createMenu } = useMutation(menuMutations.createMenu())
-  const { mutate: updateMenu } = useMutation(menuMutations.updateMenu())
-  const { mutate: updateMenuWithImage } = useMutation(menuMutations.updateMenuWithImage())
 
-  const handleSubmit = () => {
-    setIsSubmitting(true);
-    const data = form.getValues();
+  const { isSubmitting, handleSubmit } = useMenuFormSubmit({
+    form,
+    menu,
+    isCreating,
+    close,
+  });
 
-    const payload = {
-      ...data,
-      price: Number(data.price?.replaceAll(',', '')),
-      description: data.description ?? "",
-      menuOptionGroups: [
-        ...data.requiredOptionGroups.map((group) => ({
-          ...group,
-          menuOptions: group.menuOptions.map((option) => ({
-            name: option.name,
-            price: Number(option.price?.replaceAll(',', '')),
-          })),
-        })),
-        ...data.optionalOptionGroups.map((group) => ({
-          ...group,
-          menuOptions: group.menuOptions.map((option) => ({
-            name: option.name,
-            price: Number(option.price?.replaceAll(',', '')),
-          })),
-        })),
-      ],
-    }
+  const canEdit = (isCreating || isEditing) && !isSubmitting;
 
-    if (isCreating) {
-      createMenu({
-        storeId: localStorage.getItem('storeId') as string,
-        categoryId: form.getValues('categoryId'),
-        data: {
-          file: imageFile as File,
-          request: payload,
-        },
-      }, {
-        onSuccess: () => {
-          toast.success('메뉴 생성이 완료되었습니다.');
-          close()
-          queryClient.invalidateQueries({ queryKey: MENUS_KEY.menu })
-        },
-        onError: (error) => {
-          setIsSubmitting(false);
-          const { data } = errorResponse(error);
-
-          if (data.code === 'EXCEED_MAXIMUM_MENU_COUNT') {
-            form.setError('categoryId', { message: data.message });
-            return;
-          }
-
-          if (data.code === 'INVALID_DISCOUNT_OPTION_PRICE') {
-            form.setError('price', { message: data.message });
-            return;
-          }
-
-          toast.error(data.message);
-        },
-      })
-    } else {      
-      if (menu?.image === data.image) {
-        updateMenu({
-          storeId: localStorage.getItem('storeId') as string,
-          menuId: menu.menuId,
-          data: payload,
-        }, {
-        onSuccess: () => {
-          toast.success('메뉴 수정이 완료되었습니다.');
-          queryClient.invalidateQueries({ queryKey: MENUS_KEY.menuDetail(menu.menuId) })
-          queryClient.invalidateQueries({ queryKey: MENUS_KEY.menu })
-          close()
-        },
-          onError: (error) => {
-            setIsSubmitting(false);
-            toast.error(errorResponse(error).data.message)
-          },
-        })
-      } else {
-        updateMenuWithImage({
-          storeId: localStorage.getItem('storeId') as string,
-          menuId: menu.menuId,
-          data: {
-            file: imageFile as File,
-            request: payload,
-          },
-        }, {
-        onSuccess: () => {
-          toast.success('메뉴 수정이 완료되었습니다.');
-          queryClient.invalidateQueries({ queryKey: MENUS_KEY.menuDetail(menu.menuId) })
-          queryClient.invalidateQueries({ queryKey: MENUS_KEY.menu })
-          close()
-        },
-          onError: (error) => {
-            setIsSubmitting(false);
-            toast.error(errorResponse(error).data.message)
-          },
-        })
-      }
-      setMode("detail");
-    }
-  };
 
   const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -240,7 +137,7 @@ function MenuDetailContent({
                 <Image
                   src={menu?.image ?? ""}
                   alt={menu?.name ?? ""}
-                  className="aspect-320/373 rounded-xl md:aspect-240/280 lg:aspect-364/478 lg:rounded-3xl"
+                  className="aspect-320/373 rounded-xl md:aspect-240/280 lg:aspect-364/478 lg:rounded-3xl object-cover"
                 />
               )}
               {(!menu?.image && !form.watch('image') && isCreating) && (
@@ -279,8 +176,6 @@ function MenuDetailContent({
                 </Button>
               )}
               <input type="file" accept="image/png, image/jpg, image/jpeg" hidden onChange={handleImageChange} ref={imageRef} />
-              {/* TODO: 이미지 등록 로직 구현 */}
-              <input type="file" hidden />
               {form.formState.errors.image && (
                 <FormErrorMessage>{form.formState.errors.image.message}</FormErrorMessage>
               )}
@@ -334,7 +229,7 @@ function MenuDetailContent({
                 sm: { buttonSize: "sm", className: "w-full h-10!" },
               }}
               disabled={isSubmitting}
-              onClick={handleSubmit}
+              onClick={() => handleSubmit(imageFile)}
             >
               {isSubmitting ? <Spinner /> : "저장하기"}
             </Button>
