@@ -32,12 +32,14 @@ function DeviceDeleteModal({ deleteItem, ...props }: Readonly<DeviceDeleteModalP
     setIsSubmitting(true);
 
     try {
-      for (const device of deleteItem) {
-        await deleteDevice({
-          deviceId: device.deviceId,
-          storeId: storeId!,
-        });
-      }
+      await Promise.all(
+        deleteItem.map((device) =>
+          deleteDevice({
+            deviceId: device.deviceId,
+            storeId: storeId!,
+          })
+        )
+      );
 
       toast.success("기기가 삭제되었습니다.");
       props.close();
