@@ -2,6 +2,7 @@ import { rectSortingStrategy } from "@dnd-kit/sortable";
 import { overlay } from "overlay-kit";
 import useMediaQuery from "react-responsive";
 import { useNavigate } from "react-router-dom";
+import { Skeleton } from '@/components/feedback/Skeleton';
 import { Plus, Settings, Trash, UpsideDown } from "@/components/icons";
 import MobileTitle from "@/components/layout/MobileTitle";
 import Button from "@/components/ui/Button/Button";
@@ -20,10 +21,10 @@ function MainMenuPage() {
   const navigate = useNavigate();
   const isMobile = useMediaQuery({ maxWidth: 959 });
 
-  const { selectedCategory, setSelectedCategory, getCategories, allMenus } = useMenu()
+  const { selectedCategory, setSelectedCategory, getCategories, menus, setMenus } = useMenu()
   const { isChangedToMenuOrder, isSubmittingOrderChange, changeToMenuOrder, saveMoves, resetMoves, addToChangeList } = useMenuMove()
   const { checkedMenus, toggleCheckMenu, resetCheckedMenus } = useCheckMenu()
-
+  
   /**
    * 카테고리 모달 열기 기능
    */
@@ -78,6 +79,9 @@ function MainMenuPage() {
     <div className="hide-scrollbar w-full overflow-x-hidden px-5 py-4.5 md:px-0">
       <MobileTitle>메뉴 관리</MobileTitle>
       <div className="flex w-full shrink-0 flex-col justify-between gap-5 py-5 md:pt-6 md:pb-2 lg:flex-row lg:items-center">
+        {/* TODO: */}
+        <Skeleton className="flex flex-1 shrink-0 items-center gap-1 md:gap-2 lg:gap-3 w-full lg:size-10 size-9"><Skeleton.Button buttonProps={{ variant: "default", color: "grey" }} className="lg:size-10 size-9 w-12!" />
+        <Skeleton.Button buttonProps={{ variant: "default", color: "grey" }} className="lg:size-10 size-9 w-12" /></Skeleton>
         <div className="hide-scrollbar flex flex-1 shrink-0 items-center gap-1 overflow-x-auto md:gap-2 lg:gap-3">
           <Button
             color="grey"
@@ -93,7 +97,7 @@ function MainMenuPage() {
                 className: "rounded-xl shrink-0 size-9 bg-gray-700 items-center justify-center p-0",
               },
               sm: {
-                buttonSize: "custom",
+                buttonSize: "xl",
                 className: "rounded-xl shrink-0 size-9 bg-gray-700 items-center justify-center p-0",
               },
             }}
@@ -102,7 +106,7 @@ function MainMenuPage() {
           >
             <Settings className="size-5 text-gray-300 lg:size-6" />
           </Button>
-          {[{ categoryId: "all", name: "전체" }, ...getCategories.data ?? []].map((category) => {
+          {[...getCategories.data ?? []].map((category) => {
             const isSelected = selectedCategory === category.categoryId;
             return (
               <Button
@@ -140,8 +144,8 @@ function MainMenuPage() {
             <Button
               variant="outline"
               className="button-sm"
-              onClick={saveMoves}
               disabled={isSubmittingOrderChange}
+              onClick={saveMoves}
             >
               {isSubmittingOrderChange ? "저장중..." : "저장"}
             </Button>
@@ -185,8 +189,9 @@ function MainMenuPage() {
           </button>
         )}
         <DragList
-          items={allMenus ?? []}
-          onReorder={(_, sourceId, targetId, where) => {
+          items={menus}
+          onReorder={(items, sourceId, targetId, where) => {
+            setMenus(items)
             addToChangeList({ sourceId: String(sourceId), targetId: String(targetId), where });
           }}
           canDrag={isChangedToMenuOrder}

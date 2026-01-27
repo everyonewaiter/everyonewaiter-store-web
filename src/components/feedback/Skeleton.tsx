@@ -1,4 +1,6 @@
 import type { ComponentProps, PropsWithChildren } from "react";
+import type { ButtonProps } from '@/components/ui/Button/Button';
+import { buttonVariants } from '@/components/ui/Button/Button.styles';
 import cn from "@/lib/utils";
 
 function Skeleton({ className, ...props }: ComponentProps<"div">) {
@@ -43,9 +45,19 @@ function SkeletonFieldGroup({ total }: Readonly<{ total: number }>) {
   );
 }
 
+function SkeletonButton({ className, buttonProps, ...props }: { buttonProps: ButtonProps;  className?: string; } & ComponentProps<"div">) {
+  return (
+    <Skeleton
+      className={cn(buttonVariants({ variant: buttonProps.variant || "default", color: buttonProps.color || "primary", className }))}
+      {...props}
+    />
+  );
+}
+
 Skeleton.Wrapper = SkeletonWrapper;
 Skeleton.Input = SkeletonInput;
 Skeleton.Label = SkeletonLabel;
 Skeleton.FieldGroup = SkeletonFieldGroup;
+Skeleton.Button = SkeletonButton;
 
 export { Skeleton };
