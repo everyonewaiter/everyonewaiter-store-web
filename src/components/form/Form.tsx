@@ -141,7 +141,7 @@ function FormMessage({ className, ...props }: ComponentProps<"p">) {
   );
 }
 
-function FormInput({ ...props }: ComponentProps<typeof Input>) {
+function FormInput({ ...props }: ComponentProps<typeof Input> & { "data-cy"?: string }) {
   const { error, formItemId, formDescriptionId, formMessageId } = useFormField();
   return (
     <Input
@@ -149,6 +149,7 @@ function FormInput({ ...props }: ComponentProps<typeof Input>) {
       aria-describedby={error ? `${formDescriptionId} ${formMessageId}` : `${formDescriptionId}`}
       aria-invalid={!!error}
       {...props}
+      data-cy={props["data-cy"]}
       className={cn(props.className, error?.message && "border-status-error")}
     />
   );

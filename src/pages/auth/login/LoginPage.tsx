@@ -55,8 +55,14 @@ function LoginPage() {
         onError: (error) => {
           setIsSubmitting(false);
           const { status, data } = errorResponse(error);
+
           const code = data?.code;
           const message = data?.message;
+
+          if (!data) {
+            toast.error("네트워크 오류가 발생했습니다. 다시 시도해주세요.");
+            return;
+          }
 
           if (code === "NOT_COMPLETE_EMAIL_VERIFICATION") {
             toast.error(message);
@@ -87,12 +93,14 @@ function LoginPage() {
               name="email"
               label="이메일"
               inputProps={{ placeholder: "이메일을 입력해주세요." }}
+              data-cy="email"
             />
             <FormField
               control={form.control}
               name="password"
               label="비밀번호"
               inputProps={{ placeholder: "비밀번호를 입력해주세요.", type: "password" }}
+              data-cy="password"
             />
           </div>
           <div className="flex flex-col justify-center gap-4 lg:gap-5">
@@ -106,6 +114,7 @@ function LoginPage() {
                 lg: { buttonSize: "lg" },
               }}
               disabled={isSubmitting}
+              data-cy="login-btn"
             >
               {isSubmitting ? <Spinner /> : "로그인"}
             </Button>
@@ -114,6 +123,7 @@ function LoginPage() {
               <Link
                 to="/signup"
                 className="text-primary underline underline-offset-3 lg:underline-offset-5"
+                data-cy="signup-link"
               >
                 회원가입
               </Link>
