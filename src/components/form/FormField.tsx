@@ -22,6 +22,7 @@ interface FormFieldProps<
   formItemClassName?: string;
   postfix?: ReactNode;
   description?: ReactNode;
+  "data-cy"?: string;
 }
 
 function FormField<
@@ -60,12 +61,18 @@ function FormField<
             )}
             <FormControl>
               <div className="relative flex items-center gap-2">
-                <FormInput {...field} {...restInputProps} id={formItemId} onChange={handleChange} />
+                <FormInput
+                  {...field}
+                  {...restInputProps}
+                  id={formItemId}
+                  onChange={handleChange}
+                  data-cy={props["data-cy"]}
+                />
                 {postfix}
               </div>
             </FormControl>
             {fieldState.error ? (
-              <FormErrorMessage />
+              <FormErrorMessage data-cy={`${props["data-cy"]}-error`} />
             ) : (
               description && <FormDescription>{description}</FormDescription>
             )}

@@ -11,6 +11,38 @@ import globals from "globals";
 export default [
   js.configs.recommended,
 
+  // Cypress-specific config
+  {
+    files: ["cypress/**/*.ts"],
+    languageOptions: {
+      parser: tsParser,
+      parserOptions: {
+        project: "./tsconfig.eslint.json",
+        tsconfigRootDir: import.meta.dirname,
+      },
+      globals: {
+        ...globals.browser,
+        ...globals.node,
+        cy: "readonly",
+        Cypress: "readonly",
+        describe: "readonly",
+        it: "readonly",
+        expect: "readonly",
+        beforeEach: "readonly",
+        afterEach: "readonly",
+        before: "readonly",
+        after: "readonly",
+      },
+    },
+    plugins: {
+      "@typescript-eslint": tsPlugin,
+    },
+    rules: {
+      ...tsPlugin.configs.recommended.rules,
+      "@typescript-eslint/naming-convention": "off",
+    },
+  },
+
   {
     files: ["**/*.{ts,tsx}"],
 
