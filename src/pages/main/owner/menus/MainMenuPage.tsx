@@ -196,7 +196,7 @@ function MainMenuPage() {
           canDrag={isChangedToMenuOrder}
           keyExtractor={(item) => item.menuId}
           strategy={rectSortingStrategy}
-          renderItem={(menu) => (
+          renderItem={(menu, index) => (
             <MenuCard
               className={isChangedToMenuOrder ? "pointer-events-none" : ""}
               key={menu.menuId}
@@ -213,7 +213,7 @@ function MainMenuPage() {
                 }
               }}
               disabled={isChangedToMenuOrder}
-              isLoading={getCategories.isLoading}
+              index={index}
             />
           )}
         />
