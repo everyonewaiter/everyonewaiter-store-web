@@ -92,9 +92,9 @@ export function DragList<T>({
       ? [restrictToVerticalAxis, restrictToParentElement]
       : [restrictToParentElement];
 
-  return canDrag ? (
+  return (
     <DndContext
-      sensors={sensors}
+      sensors={canDrag ? sensors : []}
       collisionDetection={closestCenter}
       onDragEnd={handleDragEnd}
       modifiers={modifiers ?? defaultModifiers}
@@ -112,7 +112,5 @@ export function DragList<T>({
         </>
       </SortableContext>
     </DndContext>
-  ) : (
-    <>{items.map((item, index) => renderItem(item, index))}</>
   );
 }
