@@ -18,6 +18,7 @@ function ResponsiveButton(
     color = ColorName.PRIMARY,
     asChild = false,
     children,
+    isLoading,
     ...buttonProps
   }: ResponsiveButtonProps,
   ref: React.ForwardedRef<HTMLButtonElement>
@@ -69,13 +70,14 @@ function ResponsiveButton(
               }),
               hideButton(screenSize as ScreenSize),
               buttonStyle(buttonConfig?.buttonSize ?? "md", buttonConfig?.className ?? ""),
-              commonClassName
+              commonClassName,
+              isLoading && "animate-pulse rounded-md bg-gray-700 w-14!"
             )}
             disabled={disabled}
             type={buttonProps.type ?? "button"}
             {...buttonProps}
           >
-            {children}
+            {isLoading ? null : children}
           </Comp>
         );
       })}

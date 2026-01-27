@@ -2,7 +2,6 @@ import { rectSortingStrategy } from "@dnd-kit/sortable";
 import { overlay } from "overlay-kit";
 import useMediaQuery from "react-responsive";
 import { useNavigate } from "react-router-dom";
-import { Skeleton } from '@/components/feedback/Skeleton';
 import { Plus, Settings, Trash, UpsideDown } from "@/components/icons";
 import MobileTitle from "@/components/layout/MobileTitle";
 import Button from "@/components/ui/Button/Button";
@@ -79,9 +78,6 @@ function MainMenuPage() {
     <div className="hide-scrollbar w-full overflow-x-hidden px-5 py-4.5 md:px-0">
       <MobileTitle>메뉴 관리</MobileTitle>
       <div className="flex w-full shrink-0 flex-col justify-between gap-5 py-5 md:pt-6 md:pb-2 lg:flex-row lg:items-center">
-        {/* TODO: */}
-        <Skeleton className="flex flex-1 shrink-0 items-center gap-1 md:gap-2 lg:gap-3 w-full lg:size-10 size-9"><Skeleton.Button buttonProps={{ variant: "default", color: "grey" }} className="lg:size-10 size-9 w-12!" />
-        <Skeleton.Button buttonProps={{ variant: "default", color: "grey" }} className="lg:size-10 size-9 w-12" /></Skeleton>
         <div className="hide-scrollbar flex flex-1 shrink-0 items-center gap-1 overflow-x-auto md:gap-2 lg:gap-3">
           <Button
             color="grey"
@@ -103,6 +99,7 @@ function MainMenuPage() {
             }}
             onClick={() => !isChangedToMenuOrder && handleOpenCategoryModal()}
             disabled={isChangedToMenuOrder}
+            isLoading={getCategories.isLoading}
           >
             <Settings className="size-5 text-gray-300 lg:size-6" />
           </Button>
@@ -130,6 +127,7 @@ function MainMenuPage() {
                 }}
                 onClick={() => handleCategoryChange(category.categoryId)}
                 disabled={isChangedToMenuOrder}
+                isLoading={getCategories.isLoading}
               >
                 {category.name}
               </Button>
@@ -146,10 +144,11 @@ function MainMenuPage() {
               className="button-sm"
               disabled={isSubmittingOrderChange}
               onClick={saveMoves}
+              isLoading={getCategories.isLoading}
             >
               {isSubmittingOrderChange ? "저장중..." : "저장"}
             </Button>
-            <Button color="grey" className="button-sm" onClick={resetMoves}>
+            <Button color="grey" className="button-sm" onClick={resetMoves} isLoading={getCategories.isLoading}>
               취소
             </Button>
           </div>
@@ -173,7 +172,7 @@ function MainMenuPage() {
         )}
       </div>
       <div className="grid grid-cols-2 gap-x-4 gap-y-4 py-4 md:grid-cols-4 md:gap-x-3.5 lg:gap-x-6.5 lg:gap-y-10">
-        {!isChangedToMenuOrder && (
+        {!isChangedToMenuOrder && !getCategories.isLoading && (
           <button
             className="center flex aspect-152/210 flex-col gap-1 rounded-xl border border-dashed border-gray-400 bg-gray-700 md:aspect-159/220 lg:aspect-329/440 lg:gap-2 lg:rounded-3xl"
             onClick={() => {
@@ -214,6 +213,7 @@ function MainMenuPage() {
                 }
               }}
               disabled={isChangedToMenuOrder}
+              isLoading={getCategories.isLoading}
             />
           )}
         />

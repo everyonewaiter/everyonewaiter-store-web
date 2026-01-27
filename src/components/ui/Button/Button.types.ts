@@ -61,6 +61,10 @@ interface ResponsiveButtonProps extends BaseButtonProps {
    * - 전체 사이즈에 적용되는 공통 스타일
    */
   commonClassName?: string;
+  /**
+   * 버튼 로딩 여부
+   */
+  isLoading?: boolean;
 }
 
 export {
