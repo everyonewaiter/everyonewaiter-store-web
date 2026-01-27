@@ -28,7 +28,7 @@ export const storesQueries = {
     }),
   getStores: () =>
     queryOptions<{ stores: SimpleStore[] }>({
-      queryKey: STORES_KEY.stores(),
+      queryKey: STORES_KEY.storeList(),
       queryFn: async () => {
         const response = await instance.get(`/stores`);
         return response.data;
