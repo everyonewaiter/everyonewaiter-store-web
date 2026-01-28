@@ -17,7 +17,7 @@ export default function Loading() {
   }, []);
 
   return (
-    <div className="fixed inset-0 z-9999 bg-black/60">
+    <div className="fixed inset-0 z-9999 bg-black/70">
       <div className="flex h-dvh w-dvw flex-col items-center justify-center gap-3">
         {isLottieSupported ? (
           <Lottie
@@ -27,11 +27,10 @@ export default function Loading() {
             rendererSettings={{
               preserveAspectRatio: "xMidYMid slice",
             }}
-            height={120}
-            width={120}
+            style={{ width: 160, height: 160 }}
           />
         ) : (
-          <img src="/images/loading-replace.svg" alt="Loading animation" width={120} height={120} />
+          <img src="/images/loading-replace.svg" alt="Loading animation" width={160} height={160} />
         )}
         <div className="flex flex-col items-center">
           <span className="text-[15px] text-white">서비스를 불러오고 있어요.</span>
