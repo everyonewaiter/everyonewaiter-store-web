@@ -41,7 +41,7 @@ function Dropdown({
         <DropdownMenu.Trigger
           disabled={disabled}
           className={cn(
-            "text-s flex h-9! cursor-pointer flex-row items-center rounded-lg! border border-gray-600 pr-3 pl-3 font-normal transition-colors hover:border-gray-500 focus:outline-none disabled:cursor-default! disabled:border-gray-500 disabled:bg-gray-700 disabled:text-gray-300 lg:h-12! lg:rounded-xl! lg:pl-4 lg:text-[15px]!",
+            "text-s group flex h-9! cursor-pointer flex-row items-center rounded-lg! border border-gray-600 pr-3 pl-3 font-normal transition-colors hover:border-gray-500 focus:outline-none disabled:cursor-default! disabled:border-gray-500 disabled:bg-gray-700 disabled:text-gray-300 lg:h-12! lg:rounded-xl! lg:pl-4 lg:text-[15px]!",
             hasError && "border-status-error",
             type === "chip"
               ? "h-9.5 w-fit justify-center gap-2.5 rounded-full"
@@ -54,7 +54,7 @@ function Dropdown({
           </span>
           <ChevronRight
             className={cn(
-              `h-6 w-6 shrink-0 rotate-90 transition-transform duration-500`,
+              `size-5 shrink-0 rotate-90 transition-transform duration-500 group-disabled:hidden lg:size-6`,
               isOpen && "rotate-270",
               type === "default" ? "text-gray-300" : "text-gray-0",
               iconClassName
