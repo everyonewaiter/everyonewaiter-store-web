@@ -1,4 +1,4 @@
-import { useState, type ElementType } from "react";
+import { useMemo, useState, type ElementType } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { storesQueries } from "@/api/stores/queries";
@@ -7,7 +7,7 @@ import { Skeleton } from "@/components/feedback/Skeleton";
 import { Category, Home, Mobile, Settings, Shop } from "@/components/icons";
 import Dropdown from "@/components/ui/Dropdown";
 import cn from "@/lib/utils";
-import type { SimpleStore } from "@/types/domain/store";
+import { useStoreId } from '@/stores/useStoreId';
 
 const sidebarItems = [
   {
@@ -49,9 +49,16 @@ function Sidebar({ closeMobile }: Readonly<SidebarProps>) {
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const { data: stores, isLoading } = useQuery(storesQueries.getStores());
-  const [selectedStore, setSelectedStore] = useState<SimpleStore>(
-    stores?.stores?.[0] as SimpleStore
-  );
+  const { setStoreId } = useStoreId();
+  const [selectedStoreId, setSelectedStoreId] = useState<string | null>(null);
+
+  const selectedStore = useMemo(() => {
+    if (selectedStoreId && stores?.stores) {
+      const found = stores.stores.find((store) => store.storeId === selectedStoreId);
+      if (found) return found;
+    }
+    return stores?.stores?.[0] ?? null;
+  }, [stores, selectedStoreId]);
 
   const handleCloseMobile = () => {
     if (closeMobile) {
@@ -78,7 +85,7 @@ function Sidebar({ closeMobile }: Readonly<SidebarProps>) {
       </button>
       <div className="flex min-w-0 flex-col gap-4 px-4 md:gap-2 md:px-3 lg:px-5">
         <div className="min-w-0">
-          {isLoading ? (
+          {isLoading || !selectedStore ? (
             <Skeleton>
               <Skeleton.Input />
             </Skeleton>
@@ -94,10 +101,8 @@ function Sidebar({ closeMobile }: Readonly<SidebarProps>) {
               }
               value={selectedStore.storeId}
               onChange={(item) => {
-                setSelectedStore(
-                  stores?.stores?.find((store) => store.storeId === item.id) as SimpleStore
-                );
-                localStorage.setItem("storeId", item.id);
+                setSelectedStoreId(item.id);
+                setStoreId(item.id);
                 navigate("/");
               }}
               defaultText={selectedStore.name}
