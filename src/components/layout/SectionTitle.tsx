@@ -4,6 +4,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { accountQueries } from '@/api/account/queries';
 import { User } from "@/components/icons";
 import useOutsideClick from "@/hooks/useOutSideClick";
+import { useStoreId } from '@/stores/useStoreId';
 
 function SectionTitle() {
   const location = useLocation();
@@ -12,6 +13,8 @@ function SectionTitle() {
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const { data: account } = useQuery(accountQueries.getMe())
+
+  const { clearStoreId } = useStoreId()
 
   const [isOpenUser, setIsOpenUser] = useState(false);
 
@@ -38,7 +41,7 @@ function SectionTitle() {
   if (!getText()) return null;
 
   const handleLogout = () => {
-    localStorage.removeItem("storeId");
+    clearStoreId()
     localStorage.removeItem("token");
     navigate("/login");
     setIsOpenUser(false);
