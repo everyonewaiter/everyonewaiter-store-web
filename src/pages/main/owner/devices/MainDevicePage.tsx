@@ -1,14 +1,18 @@
 import { useState, type FocusEvent } from "react";
+import { useQuery } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import { overlay } from "overlay-kit";
+import { deviceQueries } from "@/api/device/queries";
+import Spinner from "@/components/feedback/Spinner";
 import { Trash } from "@/components/icons";
 import Button from "@/components/ui/Button/Button";
 import Checkbox from "@/components/ui/Checkbox";
 import MobileTable from "@/components/ui/MobileTable";
+import Pagination from "@/components/ui/Pagination/Pagination";
 import Table from "@/components/ui/Table";
 import DeviceDeleteModal from "@/pages/main/owner/devices/DeviceDeleteAlert";
 import DeviceDetailModal from "@/pages/main/owner/devices/DeviceDetailModal";
-import { DEVICE_MOCK } from "@/pages/main/owner/devices/mock";
+import { useStoreId } from "@/stores/useStoreId";
 import type { Device } from "@/types/domain/device";
 
 const DEVICE_TRANSLATES = {
@@ -47,7 +51,11 @@ const columns: { label: string; flex: number; props?: keyof Device }[] = [
 ];
 
 function MainDevicePage() {
-  const data = DEVICE_MOCK;
+  const { storeId } = useStoreId();
+
+  const [page, setPage] = useState(1);
+
+  const { data: devices, isLoading } = useQuery(deviceQueries.getDevices(storeId!, page));
 
   const renderCell = (column: (typeof columns)[number], deviceRow: Device) => {
     if (column.props === "paymentType") {
@@ -100,7 +108,11 @@ function MainDevicePage() {
     );
   };
   const handleCheckAll = () => {
-    setCheckedDevices(checkedDevices.length === data.length ? [] : data);
+    if (checkedDevices.length === devices?.content?.length) {
+      setCheckedDevices([]);
+    } else {
+      setCheckedDevices(devices?.content ?? []);
+    }
   };
 
   const handleCheckboxFocus = (e: FocusEvent<HTMLButtonElement>) => {
@@ -117,92 +129,118 @@ function MainDevicePage() {
     overlay.open((overlayProps) => <DeviceDetailModal {...overlayProps} deviceId={deviceId} />);
   };
 
-  return (
-    <div className="px-5 md:px-0">
-      <div className="flex items-end justify-end pt-4 lg:pt-6">
-        <button
-          className="text-status-error flex items-center gap-1 text-sm font-medium lg:text-lg"
-          onClick={handleDeleteDevice}
-        >
-          <Trash className="size-4.5 lg:size-6" />
-          삭제
-        </button>
+  if (isLoading)
+    return (
+      <div className="center flex h-full">
+        <Spinner className="size-10" />
       </div>
-      <div className="flex flex-col py-4 md:py-3 lg:py-4">
-        <Table>
-          <Table.Header>
-            <Table.Row>
-              <Table.Head style={{ flex: (66 / 1394) * 100 }}>
-                <Checkbox
-                  checked={data.length > 0 && checkedDevices.length === data.length}
-                  onCheckedChange={handleCheckAll}
-                  onFocus={handleCheckboxFocus}
-                />
-              </Table.Head>
-              {columns.map((column) => (
-                <Table.Head key={column.label} style={{ flex: (column.flex / 1394) * 100 }}>
-                  {column.label}
-                </Table.Head>
-              ))}
-            </Table.Row>
-          </Table.Header>
-          <Table.Body>
-            {data.map((deviceRow) => (
-              <Table.Row
-                key={deviceRow.deviceId}
-                onClick={() => handleDetailDevice(deviceRow.deviceId)}
-              >
-                <Table.Head
-                  style={{ flex: (66 / 1394) * 100 }}
-                  onClick={(e) => e.stopPropagation()}
-                >
+    );
+
+  if (!devices?.content?.length)
+    return (
+      <div className="center flex h-full">
+        <p className="text-gray-0 text-lg font-medium">등록된 기기가 없습니다.</p>
+      </div>
+    );
+
+  return (
+    <>
+      <div className="flex-1 overflow-y-auto px-5 md:px-0">
+        <div className="flex items-end justify-end pt-4 lg:pt-6">
+          <button
+            className="text-status-error flex items-center gap-1 text-sm font-medium lg:text-lg"
+            onClick={handleDeleteDevice}
+          >
+            <Trash className="size-4.5 lg:size-6" />
+            삭제
+          </button>
+        </div>
+        <div className="flex flex-col py-4 md:py-3 lg:py-4">
+          <Table>
+            <Table.Header>
+              <Table.Row>
+                <Table.Head style={{ flex: (66 / 1394) * 100 }}>
                   <Checkbox
-                    checked={checkedDevices.includes(deviceRow)}
-                    onCheckedChange={() => handleCheckDevice(deviceRow)}
+                    checked={
+                      (devices?.content?.length ?? 0) > 0 &&
+                      checkedDevices.length === devices?.content?.length
+                    }
+                    onCheckedChange={handleCheckAll}
                     onFocus={handleCheckboxFocus}
                   />
                 </Table.Head>
                 {columns.map((column) => (
-                  <Table.Cell key={column.label} style={{ flex: (column.flex / 1394) * 100 }}>
-                    {renderCell(column, deviceRow)}
-                  </Table.Cell>
+                  <Table.Head key={column.label} style={{ flex: (column.flex / 1394) * 100 }}>
+                    {column.label}
+                  </Table.Head>
                 ))}
               </Table.Row>
-            ))}
-          </Table.Body>
-        </Table>
-
-        {data.map((device, index) => (
-          <div className="mb-4 flex flex-col gap-2 last:mb-0 md:hidden" key={device.deviceId}>
-            <div className="text-gray-0 flex items-center gap-2.5 text-lg font-semibold">
-              <Checkbox
-                checked={checkedDevices.includes(device)}
-                onCheckedChange={() => handleCheckDevice(device)}
-                onFocus={handleCheckboxFocus}
-              />
-              {index + 1}
-            </div>
-            <MobileTable>
-              {columns.map((column, columnIndex) => (
-                <MobileTable.Row
-                  key={column.label}
-                  onClick={() => handleDetailDevice(device.deviceId)}
+            </Table.Header>
+            <Table.Body>
+              {devices?.content?.map((deviceRow) => (
+                <Table.Row
+                  key={deviceRow.deviceId}
+                  onClick={() => handleDetailDevice(deviceRow.deviceId)}
                 >
-                  <MobileTable.Head>{column.label}</MobileTable.Head>
-                  <MobileTable.Cell
-                    className={
-                      columnIndex === columns.length - 1 ? "border-b-0 whitespace-normal" : ""
-                    }
+                  <Table.Head
+                    style={{ flex: (66 / 1394) * 100 }}
+                    onClick={(e) => e.stopPropagation()}
                   >
-                    {renderCell(column, device)}
-                  </MobileTable.Cell>
-                </MobileTable.Row>
+                    <Checkbox
+                      checked={checkedDevices.includes(deviceRow)}
+                      onCheckedChange={() => handleCheckDevice(deviceRow)}
+                      onFocus={handleCheckboxFocus}
+                    />
+                  </Table.Head>
+                  {columns.map((column) => (
+                    <Table.Cell key={column.label} style={{ flex: (column.flex / 1394) * 100 }}>
+                      {renderCell(column, deviceRow)}
+                    </Table.Cell>
+                  ))}
+                </Table.Row>
               ))}
-            </MobileTable>
-          </div>
-        ))}
+            </Table.Body>
+          </Table>
+
+          {devices?.content?.map((device, index) => (
+            <div className="mb-4 flex flex-col gap-2 last:mb-0 md:hidden" key={device.deviceId}>
+              <div className="text-gray-0 flex items-center gap-2.5 text-lg font-semibold">
+                <Checkbox
+                  checked={checkedDevices.includes(device)}
+                  onCheckedChange={() => handleCheckDevice(device)}
+                  onFocus={handleCheckboxFocus}
+                />
+                {index + 1}
+              </div>
+              <MobileTable>
+                {columns.map((column, columnIndex) => (
+                  <MobileTable.Row
+                    key={column.label}
+                    onClick={() => handleDetailDevice(device.deviceId)}
+                  >
+                    <MobileTable.Head>{column.label}</MobileTable.Head>
+                    <MobileTable.Cell
+                      className={
+                        columnIndex === columns.length - 1 ? "border-b-0 whitespace-normal" : ""
+                      }
+                    >
+                      {renderCell(column, device)}
+                    </MobileTable.Cell>
+                  </MobileTable.Row>
+                ))}
+              </MobileTable>
+            </div>
+          ))}
+        </div>
       </div>
-    </div>
+      <div className="mt-auto flex justify-center pb-6">
+        <Pagination
+          currentPage={page}
+          pagination={devices}
+          onPageChange={setPage}
+        />
+      </div>
+    </>
   );
 }
 
