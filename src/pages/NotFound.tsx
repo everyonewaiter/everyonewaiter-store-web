@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import notFound from "@/assets/images/not-found.svg";
+import notFound from "@/assets/images/not-found.webp";
 import { Home } from "@/components/icons";
 import Button from "@/components/ui/Button/Button";
 
