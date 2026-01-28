@@ -32,12 +32,12 @@ function MenuDetailContent({
   initialCategoryId,
 }: Readonly<MenuDetailContentProps>) {
   const imageRef = useRef<HTMLInputElement>(null);
+  
   const [mode, setMode] = useState<MenuDetailMode>(entry === "create" ? "create" : "detail");
   const [imageFile, setImageFile] = useState<File | null>(null);
+  const [selectedGroup, setSelectedGroup] = useState<MenuOptionGroupType>("MANDATORY");
 
-  const isEditing = mode === "edit";
   const isCreating = mode === "create";
-  const isDetail = mode === "detail";
 
   const form = useForm<MenuSchema>({
     resolver: zodResolver(menuSchema),
@@ -63,8 +63,7 @@ function MenuDetailContent({
       form.reset({
         ...menu,
         price: menu?.price ? menu.price.toLocaleString("ko-KR") : "",
-        requiredOptionGroups:
-        menu?.menuOptionGroups
+        requiredOptionGroups: menu?.menuOptionGroups
             .filter((group) => group.type === "MANDATORY")
             .map((group) => ({
               ...group,
@@ -73,8 +72,7 @@ function MenuDetailContent({
                 price: option.price.toLocaleString("ko-KR"),
               })),
         })) ?? [],
-        optionalOptionGroups:
-          menu?.menuOptionGroups
+        optionalOptionGroups: menu?.menuOptionGroups
             .filter((group) => group.type === "OPTIONAL")
             .map((group) => ({
               ...group,
@@ -88,8 +86,6 @@ function MenuDetailContent({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [menu])
 
-  const [selectedGroup, setSelectedGroup] = useState<MenuOptionGroupType>("MANDATORY");
-
   const { isSubmitting, handleSubmit } = useMenuFormSubmit({
     form,
     menu,
@@ -97,7 +93,7 @@ function MenuDetailContent({
     close,
   });
 
-  const canEdit = (isCreating || isEditing) && !isSubmitting;
+  const canEdit = mode !== "detail" && !isSubmitting;
 
 
   const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -184,7 +180,7 @@ function MenuDetailContent({
 
             {/* 메뉴 정보 폼 */}
             <div className="h-fit  flex w-full flex-col gap-3 rounded-xl border border-gray-600 p-4 md:flex-[0.33] lg:gap-4 lg:rounded-3xl lg:p-6">
-              <MenuDetailForm canEdit={canEdit} isDetail={isDetail} />
+              <MenuDetailForm canEdit={canEdit} isDetail={mode === 'detail'} />
             </div>
 
             {/* 메뉴 옵션 폼 */}
@@ -205,7 +201,7 @@ function MenuDetailContent({
           </div>
         </div>
         <div className="shrink-0 -bottom-5 flex w-full justify-center bg-white pb-5 md:sticky md:z-10 md:pt-5 lg:relative lg:p-0">
-          {isDetail ? (
+          {mode === 'detail' ? (
             <Button
               color="black"
               type="button"
