@@ -141,7 +141,7 @@ function ApplicationModal({
   const renderFile = useCallback(() => {
     if (!file) return null;
 
-    if (typeof file === "string" && file.startsWith("license")) {
+    if (typeof file === "string") {
       return (
         <Image src={file} className="h-full w-full rounded-2xl object-cover" alt="사업자등록증" />
       );
@@ -151,13 +151,17 @@ function ApplicationModal({
       return <PDFPreview file={file} />;
     }
 
-    return (
-      <img
-        src={imageFileUrl!}
-        alt="사업자등록증 미리보기"
-        className="h-full w-full rounded-2xl object-cover"
-      />
-    );
+    if (file instanceof File && imageFileUrl) {
+      return (
+        <img
+          src={imageFileUrl}
+          alt="사업자등록증 미리보기"
+          className="h-full w-full rounded-2xl object-cover"
+        />
+      );
+    }
+
+    return null;
   }, [file, imageFileUrl]);
 
   return (
