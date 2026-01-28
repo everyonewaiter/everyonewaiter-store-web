@@ -66,6 +66,10 @@ function Sidebar({ onLinkClick }: Readonly<SidebarProps>) {
           src={logoTextHorizontal}
           alt="logo text horizontal"
           className="w-39.5 md:w-37 lg:w-55"
+          width="221"
+          height="60"
+          loading="eager"
+          fetchPriority="high"
         />
       </Link>
       <div className="flex min-w-0 flex-col gap-4 px-4 md:gap-2 md:px-3 lg:px-5">
