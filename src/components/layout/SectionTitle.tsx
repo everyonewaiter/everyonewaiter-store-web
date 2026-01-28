@@ -1,14 +1,19 @@
 import { useRef, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useQuery } from '@tanstack/react-query';
+import { useLocation, useNavigate } from "react-router-dom";
+import { accountQueries } from '@/api/account/queries';
 import { User } from "@/components/icons";
 import useOutsideClick from "@/hooks/useOutSideClick";
 
 function SectionTitle() {
+  const navigate = useNavigate();
   const location = useLocation();
   const buttonRef = useRef<HTMLButtonElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const [isOpenUser, setIsOpenUser] = useState(false);
+
+  const { data: account } = useQuery(accountQueries.getMe())
 
   useOutsideClick({
     ref: dropdownRef,
@@ -32,10 +37,10 @@ function SectionTitle() {
 
   if (!getText()) return null;
 
-  const email = "asdf@gmail.com";
-
   const handleLogout = () => {
-    // TODO: 로그아웃 로직
+    localStorage.removeItem("token");
+    localStorage.removeItem("storeId");
+    navigate("/login");
     setIsOpenUser(false);
   };
 
@@ -49,7 +54,7 @@ function SectionTitle() {
           onClick={() => setIsOpenUser((prev) => !prev)}
           aria-label="사용자 메뉴 버튼"
         >
-          <User className="text-gray-400 md:size-6 lg:size-8" />
+          <User className="text-gray-400 size-6 lg:size-8" />
         </button>
         {isOpenUser && (
           <div className="absolute right-0 z-9999 flex flex-col gap-1 rounded-2xl bg-white p-3 shadow-[0px_2px_10px_0px_rgba(0,0,0,0.08)] md:top-9 lg:top-14">
@@ -57,14 +62,14 @@ function SectionTitle() {
               <div className="center h-5.5 w-5.5 rounded-full border border-gray-500 bg-white">
                 <User className="size-4 text-gray-400" />
               </div>
-              <span className="text-[15px] text-gray-100">{email}</span>
+              <span className="text-s lg:text-[15px] text-gray-100">{account?.email}</span>
             </div>
             <button
               type="button"
               className="flex items-center gap-2 rounded-xl p-3"
               onClick={handleLogout}
             >
-              <span className="text-[15px] text-gray-300">로그아웃</span>
+              <span className="text-s lg:text-[15px] text-gray-300">로그아웃</span>
             </button>
           </div>
         )}
