@@ -13,6 +13,7 @@ import FormField from "@/components/form/FormField";
 import { PDFPreview } from "@/components/form/PdfViewer";
 import { FileAttach } from "@/components/icons";
 import Button from "@/components/ui/Button/Button";
+import { MAX_IMAGE_SIZE } from '@/constants/max-image-size';
 import { useFormBlocker } from "@/hooks/useLeavePageBlocker";
 import useOpenDaumPostcode from "@/hooks/useOpenDaumPostcode";
 import { errorResponse } from "@/lib/error-response";
@@ -89,6 +90,12 @@ function GuestCreate() {
 
   const handleFileChange = () => {
     const file = fileInputRef.current?.files?.[0];
+
+    if ((file?.size ?? 0) > MAX_IMAGE_SIZE) {
+      form.setError("file", { message: "이미지 용량은 5MB 이하만 업로드할 수 있어요." });
+      return;
+    }
+
     if (file) {
       form.setValue("file", file, { shouldDirty: true });
     }

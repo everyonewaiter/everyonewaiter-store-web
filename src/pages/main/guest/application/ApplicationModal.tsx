@@ -12,14 +12,13 @@ import Modal from "@/components/overlay/Modal";
 import Button from "@/components/ui/Button/Button";
 import Image from "@/components/ui/Image";
 import Label from "@/components/ui/Label";
+import { MAX_IMAGE_SIZE } from '@/constants/max-image-size';
 import useOpenDaumPostcode from "@/hooks/useOpenDaumPostcode";
 import { errorResponse } from "@/lib/error-response";
 import { formatBusinessNumber } from "@/lib/format";
 import { applicationFormSchema, type ApplicationFormSchema } from "@/schema/create-store.schema";
 import type { StoreApplication } from "@/types/domain/store";
 import type { ModalProps } from "@/types/overlay";
-
-const MAX_IMAGE_SIZE = 5 * 1024 * 1024;
 
 interface ApplicationModalProps extends ModalProps {
   application: StoreApplication;
