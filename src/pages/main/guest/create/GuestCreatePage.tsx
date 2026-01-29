@@ -4,7 +4,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useForm, useWatch } from "react-hook-form";
 import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { STORES_KEY } from '@/api/stores/keys';
+import { STORES_KEY } from "@/api/stores/keys";
 import { storesMutations } from "@/api/stores/mutations";
 import logo from "@/assets/images/logo.svg";
 import Spinner from "@/components/feedback/Spinner";
@@ -13,12 +13,12 @@ import FormField from "@/components/form/FormField";
 import { PDFPreview } from "@/components/form/PdfViewer";
 import { FileAttach } from "@/components/icons";
 import Button from "@/components/ui/Button/Button";
-import { MAX_IMAGE_SIZE } from '@/constants/max-image-size';
+import { MAX_IMAGE_SIZE } from "@/constants/max-image-size";
 import { useFormBlocker } from "@/hooks/useLeavePageBlocker";
 import useOpenDaumPostcode from "@/hooks/useOpenDaumPostcode";
 import { errorResponse } from "@/lib/error-response";
 import { formatBusinessNumber, formatStorePhoneNumber } from "@/lib/format";
-import { queryClient } from '@/lib/query-client';
+import { queryClient } from "@/lib/query-client";
 import cn from "@/lib/utils";
 import { createStoreSchema, type CreateStoreSchema } from "@/schema/create-store.schema";
 
@@ -63,8 +63,8 @@ function GuestCreate() {
 
     createStore(data, {
       onSuccess: () => {
-        toast.success("매장 등록이 완료되었습니다.");
-        queryClient.invalidateQueries({queryKey: STORES_KEY.registrationList(1)});
+        toast.success("매장 등록 신청이 완료되었습니다.");
+        queryClient.invalidateQueries({ queryKey: STORES_KEY.registrationList(1) });
         if (isGuest) {
           navigate("/guest");
         } else {
@@ -234,7 +234,7 @@ function GuestCreate() {
               />
               <button
                 type="button"
-                className="relative flex h-35 w-full flex-col items-center justify-center gap-2 rounded-2xl border border-dashed border-gray-600 bg-gray-700 md:h-40 md:gap-3"
+                className="relative flex aspect-square min-h-0 w-full flex-col items-center justify-center gap-2 rounded-2xl border border-dashed border-gray-600 bg-gray-700 md:gap-3"
                 onClick={() => (isSubmitting ? null : fileInputRef.current?.click())}
               >
                 {(file?.type === "image/jpeg" ||
