@@ -3,11 +3,10 @@ import waiting from "@/assets/json/waiting.json";
 import Modal from "@/components/overlay/Modal";
 import type { ModalProps } from "@/types/overlay";
 
-function ApplicationWaitingModal(props: ModalProps) {
+function ApplicationWaitingModal(props: Readonly<ModalProps>) {
   return (
     <Modal
       title="매장 등록 신청 현황"
-      hasCloseIcon
       open={props.isOpen}
       onOpenChange={(open) => !open && props.close()}
       className="h-fit! lg:rounded-4xl!"

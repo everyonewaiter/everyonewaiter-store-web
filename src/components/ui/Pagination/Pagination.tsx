@@ -62,25 +62,23 @@ export default function Pagination({
   return (
     <PaginationComponents.Pagination className={cn("w-full", className)}>
       <PaginationComponents.PaginationContent>
-        <div className="flex items-center gap-1">
-          <PaginationComponents.PaginationItem>
-            <PaginationComponents.PaginationFastPrev
-              hasPrevPage={hasPrevious}
-              onClick={handleFastBackward}
-              className={cn(!hasPrevious ? "pointer-events-none opacity-50" : "cursor-pointer")}
-              iconClassName={cn(hasPrevious && "text-gray-100!")}
-            />
-          </PaginationComponents.PaginationItem>
+        <PaginationComponents.PaginationItem>
+          <PaginationComponents.PaginationFastPrev
+            hasPrevPage={hasPrevious}
+            onClick={handleFastBackward}
+            className={cn(hasPrevious ? "cursor-pointer" : "pointer-events-none opacity-50")}
+            iconClassName={cn(hasPrevious && "text-gray-100!")}
+          />
+        </PaginationComponents.PaginationItem>
 
-          <PaginationComponents.PaginationItem>
-            <PaginationComponents.PaginationPrevious
-              hasPrevPage={hasPrevious}
-              onClick={handlePrevious}
-              className={cn(!hasPrevious ? "pointer-events-none opacity-50" : "cursor-pointer")}
-              iconClassName={cn(hasPrevious && "text-gray-100!")}
-            />
-          </PaginationComponents.PaginationItem>
-        </div>
+        <PaginationComponents.PaginationItem>
+          <PaginationComponents.PaginationPrevious
+            hasPrevPage={hasPrevious}
+            onClick={handlePrevious}
+            className={cn(hasPrevious ? "cursor-pointer" : "pointer-events-none opacity-50")}
+            iconClassName={cn(hasPrevious && "text-gray-100!")}
+          />
+        </PaginationComponents.PaginationItem>
 
         <PaginationComponents.PaginationItem>
           <PaginationComponents.PaginationLink className="bg-gray-100 text-white md:px-1 md:text-xs md:font-semibold lg:px-2 lg:text-sm lg:font-bold">
@@ -88,25 +86,23 @@ export default function Pagination({
           </PaginationComponents.PaginationLink>
         </PaginationComponents.PaginationItem>
 
-        <div className="flex items-center gap-1">
-          <PaginationComponents.PaginationItem>
-            <PaginationComponents.PaginationNext
-              hasNextPage={hasNext}
-              onClick={handleNext}
-              className={cn(!hasNext ? "pointer-events-none opacity-50" : "cursor-pointer")}
-              iconClassName={cn(hasNext && "text-gray-100!")}
-            />
-          </PaginationComponents.PaginationItem>
+        <PaginationComponents.PaginationItem>
+          <PaginationComponents.PaginationNext
+            hasNextPage={hasNext}
+            onClick={handleNext}
+            className={cn(hasNext ? "cursor-pointer" : "pointer-events-none opacity-50")}
+            iconClassName={cn(hasNext && "text-gray-100!")}
+          />
+        </PaginationComponents.PaginationItem>
 
-          <PaginationComponents.PaginationItem>
-            <PaginationComponents.PaginationFastNext
-              hasNextPage={hasNext}
-              onClick={handleFastForward}
-              className={cn(!hasNext ? "pointer-events-none opacity-50" : "cursor-pointer")}
-              iconClassName={cn(hasNext && "text-gray-100!")}
-            />
-          </PaginationComponents.PaginationItem>
-        </div>
+        <PaginationComponents.PaginationItem>
+          <PaginationComponents.PaginationFastNext
+            hasNextPage={hasNext}
+            onClick={handleFastForward}
+            className={cn(hasNext ? "cursor-pointer" : "pointer-events-none opacity-50")}
+            iconClassName={cn(hasNext && "text-gray-100!")}
+          />
+        </PaginationComponents.PaginationItem>
       </PaginationComponents.PaginationContent>
     </PaginationComponents.Pagination>
   );
