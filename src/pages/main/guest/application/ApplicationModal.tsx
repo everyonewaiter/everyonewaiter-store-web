@@ -12,14 +12,13 @@ import Modal from "@/components/overlay/Modal";
 import Button from "@/components/ui/Button/Button";
 import Image from "@/components/ui/Image";
 import Label from "@/components/ui/Label";
+import { MAX_IMAGE_SIZE } from '@/constants/max-image-size';
 import useOpenDaumPostcode from "@/hooks/useOpenDaumPostcode";
 import { errorResponse } from "@/lib/error-response";
 import { formatBusinessNumber } from "@/lib/format";
 import { applicationFormSchema, type ApplicationFormSchema } from "@/schema/create-store.schema";
 import type { StoreApplication } from "@/types/domain/store";
 import type { ModalProps } from "@/types/overlay";
-
-const MAX_IMAGE_SIZE = 5 * 1024 * 1024;
 
 interface ApplicationModalProps extends ModalProps {
   application: StoreApplication;
@@ -61,9 +60,7 @@ function ApplicationModal({
 
   useEffect(() => {
     return () => {
-      if (imageFileUrl) {
-        URL.revokeObjectURL(imageFileUrl);
-      }
+      if (imageFileUrl) URL.revokeObjectURL(imageFileUrl);
     };
   }, [imageFileUrl]);
 
@@ -93,15 +90,12 @@ function ApplicationModal({
     setIsSubmitting(true);
 
     try {
+      const data = form.getValues()
       const mutation =
-        form.getValues().file === application?.image ? reapplyStore : reapplyStoreWithFile;
+        data.file === application?.image ? reapplyStore : reapplyStoreWithFile;
 
       await mutation({
-        name: form.getValues().name,
-        ceoName: form.getValues().ceoName,
-        address: form.getValues().address,
-        landline: form.getValues().landline,
-        license: form.getValues().license,
+        ...data,
         registrationId: application?.registrationId,
         file: imageFile as File,
       });
@@ -147,7 +141,7 @@ function ApplicationModal({
   const renderFile = useCallback(() => {
     if (!file) return null;
 
-    if (typeof file === "string" && file.startsWith("license")) {
+    if (typeof file === "string") {
       return (
         <Image src={file} className="h-full w-full rounded-2xl object-cover" alt="사업자등록증" />
       );
@@ -157,13 +151,17 @@ function ApplicationModal({
       return <PDFPreview file={file} />;
     }
 
-    return (
-      <img
-        src={imageFileUrl!}
-        alt="사업자등록증 미리보기"
-        className="h-full w-full rounded-2xl object-cover"
-      />
-    );
+    if (file instanceof File && imageFileUrl) {
+      return (
+        <img
+          src={imageFileUrl}
+          alt="사업자등록증 미리보기"
+          className="h-full w-full rounded-2xl object-cover"
+        />
+      );
+    }
+
+    return null;
   }, [file, imageFileUrl]);
 
   return (
@@ -190,6 +188,7 @@ function ApplicationModal({
                     setIsEditing(true);
                   }
                 }}
+                disabled={isSubmitting}
               >
                 {isEditing && isSubmitting && <Spinner />}
                 {!isEditing && "수정하고 재신청하기"}

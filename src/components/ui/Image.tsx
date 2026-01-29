@@ -33,5 +33,6 @@ export default function Image({
     return null;
   }
 
+  // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
   return <img src={currentSrc} loading={loading} onError={handleError} alt={alt} {...props} />;
 }

@@ -1,10 +1,11 @@
 const STORE = "STORE";
+const REGISTRATION = "REGISTRATION";
 
 export const STORES_KEY = {
   store: () => [STORE],
-  stores: () => [STORE, "list"],
-  storeDetail: (storeId: string) => [STORE, storeId],
-  registrations: () => [STORE, "registrations"],
-  registrationList: (page: number) => [STORE, "registrations", page],
-  registrationDetail: (registrationId: string) => [STORE, "registrations", registrationId],
+  storeList: () => [STORE, "list"],
+  storeDetail: (storeId: string) => [STORE, 'detail', storeId],
+  registration: () => [REGISTRATION],
+  registrationList: (page: number) => [REGISTRATION, "list", page],
+  registrationDetail: (registrationId: string) => [REGISTRATION, "detail", registrationId],
 };

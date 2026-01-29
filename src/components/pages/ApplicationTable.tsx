@@ -88,7 +88,7 @@ function ApplicationTable({ type, applicationData }: Readonly<ApplicationTablePr
             </Table.Row>
           </Table.Header>
           <Table.Body>
-            {applicationData.map((application, index) => (
+            {applicationData?.map((application, index) => (
               <Table.Row key={application.registrationId} onClick={() => handleClick(application)}>
                 {columns.map((column, columnIdx) => (
                   <Table.Cell key={column.label} style={{ flex: (column.flex / 1736) * 100 }}>
@@ -101,7 +101,7 @@ function ApplicationTable({ type, applicationData }: Readonly<ApplicationTablePr
         </Table>
       </article>
       <article className="mt-4 flex flex-col gap-4 md:hidden">
-        {applicationData.map((mock, index) => (
+        {applicationData?.map((mock, index) => (
           <MobileTable key={mock.registrationId} onClick={() => handleClick(mock)}>
             {columns.map((column, columnIndex) => (
               <MobileTable.Row key={column.label}>
