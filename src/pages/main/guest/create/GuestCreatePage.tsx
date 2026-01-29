@@ -119,13 +119,13 @@ function GuestCreate() {
       className={cn(
         "relative flex h-full w-full justify-center bg-white",
         isGuest
-          ? "hide-scrollbar h-fit overflow-y-auto pt-5 md:items-start md:overflow-hidden md:bg-gray-700 md:py-8 lg:items-center lg:py-0"
-          : "items-center"
+          ? "hide-scrollbar h-full overflow-y-auto p-5 md:items-start md:overflow-hidden md:bg-gray-700 md:py-8 lg:items-start lg:py-0"
+          : "items-start"
       )}
     >
       <div
         className={cn(
-          "flex w-full flex-col rounded-4xl bg-white px-5 md:h-full md:w-180 md:flex-row md:justify-between md:p-5 lg:h-210 lg:w-222 lg:p-8",
+          "flex w-full flex-col rounded-4xl bg-white p-5 md:w-180 md:flex-row md:justify-between lg:h-full lg:w-222 lg:p-8",
           isGuest ? "gap-8" : ""
         )}
       >
@@ -146,11 +146,11 @@ function GuestCreate() {
         <Form {...form}>
           <form
             className={cn(
-              "flex flex-col gap-6 md:w-87 md:gap-8 lg:w-100",
+              "flex h-full flex-col justify-between gap-6 md:w-87 lg:w-100",
               isGuest && "hide-scrollbar md:overflow-y-auto"
             )}
           >
-            <div className="flex flex-col gap-3 lg:gap-4">
+            <div className="flex h-full flex-col gap-3 lg:gap-4">
               <FormField
                 control={form.control}
                 name="name"
@@ -231,7 +231,7 @@ function GuestCreate() {
               />
               <button
                 type="button"
-                className="relative flex aspect-square min-h-0 w-full flex-col items-center justify-center gap-2 rounded-2xl border border-dashed border-gray-600 bg-gray-700 md:gap-3"
+                className="relative flex aspect-square min-h-0 w-full shrink-0 flex-col items-center justify-center gap-2 rounded-2xl border border-dashed border-gray-600 bg-gray-700 md:aspect-auto md:min-h-46 md:shrink-0 md:gap-3 lg:flex-1"
                 onClick={() => (isSubmitting ? null : fileInputRef.current?.click())}
               >
                 {(file?.type === "image/jpeg" ||
@@ -280,7 +280,7 @@ function GuestCreate() {
                 responsiveButtons={{
                   sm: { buttonSize: "md", className: cn("w-full", isGuest && "mb-5") },
                   md: { buttonSize: "sm", className: "w-full" },
-                  lg: { buttonSize: "lg", className: "w-full" },
+                  lg: { buttonSize: "lg", className: "w-full mb-5" },
                 }}
                 onClick={handleSubmit}
                 disabled={isSubmitting}
