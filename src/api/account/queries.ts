@@ -16,7 +16,6 @@ export const accountQueries = {
         const response = await instance.get(`/accounts/me`);
         return response.data;
       },
-      select: (data) => data,
     }),
   getAccountByPhoneNumber: (phoneNumber: string) =>
     queryOptions<AccountResponse>({
@@ -25,6 +24,5 @@ export const accountQueries = {
         const response = await instance.get(`/accounts/phone-number/${phoneNumber}/me`);
         return response.data;
       },
-      select: (data) => data,
     }),
 };
