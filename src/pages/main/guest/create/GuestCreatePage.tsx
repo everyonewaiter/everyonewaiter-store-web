@@ -4,7 +4,6 @@ import { useMutation } from "@tanstack/react-query";
 import { useForm, useWatch } from "react-hook-form";
 import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { STORES_KEY } from "@/api/stores/keys";
 import { storesMutations } from "@/api/stores/mutations";
 import logo from "@/assets/images/logo.svg";
 import Spinner from "@/components/feedback/Spinner";
@@ -18,7 +17,6 @@ import { useFormBlocker } from "@/hooks/useLeavePageBlocker";
 import useOpenDaumPostcode from "@/hooks/useOpenDaumPostcode";
 import { errorResponse } from "@/lib/error-response";
 import { formatBusinessNumber, formatStorePhoneNumber } from "@/lib/format";
-import { queryClient } from "@/lib/query-client";
 import cn from "@/lib/utils";
 import { createStoreSchema, type CreateStoreSchema } from "@/schema/create-store.schema";
 
@@ -64,7 +62,6 @@ function GuestCreate() {
     createStore(data, {
       onSuccess: () => {
         toast.success("매장 등록 신청이 완료되었습니다.");
-        queryClient.invalidateQueries({ queryKey: STORES_KEY.registrationList(1) });
         if (isGuest) {
           navigate("/guest");
         } else {
