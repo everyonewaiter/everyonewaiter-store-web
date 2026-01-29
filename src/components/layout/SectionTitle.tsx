@@ -1,12 +1,20 @@
 import { useRef, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useQuery } from '@tanstack/react-query';
+import { useLocation, useNavigate } from "react-router-dom";
+import { accountQueries } from '@/api/account/queries';
 import { User } from "@/components/icons";
 import useOutsideClick from "@/hooks/useOutSideClick";
+import { useStoreId } from '@/stores/useStoreId';
 
 function SectionTitle() {
   const location = useLocation();
+  const navigate = useNavigate();
   const buttonRef = useRef<HTMLButtonElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  const { data: account } = useQuery(accountQueries.getMe())
+
+  const { clearStoreId } = useStoreId()
 
   const [isOpenUser, setIsOpenUser] = useState(false);
 
@@ -32,12 +40,13 @@ function SectionTitle() {
 
   if (!getText()) return null;
 
-  const email = "asdf@gmail.com";
-
   const handleLogout = () => {
-    // TODO: 로그아웃 로직
+    clearStoreId()
+    localStorage.removeItem("token");
+    navigate("/login");
     setIsOpenUser(false);
   };
+
 
   return (
     <div className="relative hidden flex-col md:flex md:gap-2 lg:gap-5">
@@ -47,23 +56,24 @@ function SectionTitle() {
           ref={buttonRef}
           className="center rounded-xl border border-gray-400 md:h-8 md:w-8 lg:h-12 lg:w-12 lg:rounded-2xl"
           onClick={() => setIsOpenUser((prev) => !prev)}
+          aria-label="사용자 정보 팝업"
         >
           <User className="text-gray-400 md:size-6 lg:size-8" />
         </button>
         {isOpenUser && (
           <div className="absolute right-0 z-9999 flex flex-col gap-1 rounded-2xl bg-white p-3 shadow-[0px_2px_10px_0px_rgba(0,0,0,0.08)] md:top-9 lg:top-14">
-            <div className="flex items-center gap-2 rounded-xl bg-gray-700 p-3">
+            <div className="flex items-center gap-2 rounded-lg lg:rounded-xl bg-gray-700 p-2 lg:p-3">
               <div className="center h-5.5 w-5.5 rounded-full border border-gray-500 bg-white">
                 <User className="size-4 text-gray-400" />
               </div>
-              <span className="text-[15px] text-gray-100">{email}</span>
+              <span className="text-s lg:text-[15px] text-gray-100">{account?.email}</span>
             </div>
             <button
               type="button"
               className="flex items-center gap-2 rounded-xl p-3"
               onClick={handleLogout}
             >
-              <span className="text-[15px] text-gray-300">로그아웃</span>
+              <span className="text-s lg:text-[15px] text-gray-300">로그아웃</span>
             </button>
           </div>
         )}

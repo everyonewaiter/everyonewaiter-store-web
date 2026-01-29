@@ -1,4 +1,6 @@
 import { Outlet } from "react-router-dom";
+import loginBgLg from "@/assets/images/login-bg-lg@2x.webp";
+import loginBgMd from "@/assets/images/login-bg-md@2x.webp";
 
 function PublicPageLayout() {
   return (
@@ -9,10 +11,10 @@ function PublicPageLayout() {
       <div className="top-0 hidden h-screen md:sticky md:block md:flex-[0.6] lg:relative">
         <div className="relative h-full md:p-4 lg:p-6">
           <picture>
-            <source media="(min-width: 1920px)" srcSet="/src/assets/images/login-bg-lg@2x.webp" />
-            <source media="(min-width: 960px)" srcSet="/src/assets/images/login-bg-md@2x.webp" />
+            <source media="(min-width: 1920px)" srcSet={loginBgLg} />
+            <source media="(min-width: 960px)" srcSet={loginBgMd} />
             <img
-              src="/src/assets/images/login-bg-md@2x.webp"
+              src={loginBgMd}
               alt="login background"
               className="h-full w-full object-cover md:rounded-3xl"
               fetchPriority="high"
