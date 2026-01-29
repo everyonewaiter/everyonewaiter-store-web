@@ -60,7 +60,7 @@ function GuestCreate() {
 
     createStore(data, {
       onSuccess: () => {
-        toast.success("매장 등록이 완료되었습니다.");
+        toast.success("매장 등록 신청이 완료되었습니다.");
         if (isGuest) {
           navigate("/guest");
         } else {
@@ -222,7 +222,7 @@ function GuestCreate() {
               />
               <button
                 type="button"
-                className="relative flex h-35 w-full flex-col items-center justify-center gap-2 rounded-2xl border border-dashed border-gray-600 bg-gray-700 md:h-40 md:gap-3"
+                className="relative flex aspect-square min-h-0 w-full flex-col items-center justify-center gap-2 rounded-2xl border border-dashed border-gray-600 bg-gray-700 md:gap-3"
                 onClick={() => (isSubmitting ? null : fileInputRef.current?.click())}
               >
                 {(file?.type === "image/jpeg" ||
