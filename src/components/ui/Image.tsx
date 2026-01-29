@@ -1,10 +1,4 @@
-import {
-  type ImgHTMLAttributes,
-  type ReactEventHandler,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { type ImgHTMLAttributes, type ReactEventHandler, useEffect, useRef, useState } from "react";
 import cn from "@/lib/utils";
 
 interface ImageProps extends ImgHTMLAttributes<HTMLImageElement> {
@@ -49,8 +43,7 @@ export default function Image({
     return () => observer.disconnect();
   }, []);
 
-  const cdnSrc =
-    src && src.trim() !== "" ? `${import.meta.env.VITE_PUBLIC_CDN}/${src}` : "";
+  const cdnSrc = src && src.trim() !== "" ? `${import.meta.env.VITE_PUBLIC_CDN}/${src}` : "";
 
   const currentSrc = () => {
     if (!visible) return "";
@@ -77,16 +70,14 @@ export default function Image({
   };
 
   return (
-    <div
-      ref={wrapperRef}
-      className={cn("h-full w-full relative overflow-hidden", className)}
-    >
+    <div ref={wrapperRef} className={cn("relative h-full w-full overflow-hidden", className)}>
       {/* Skeleton */}
       {!loaded && visible && hasBlur && (
-        <div className="absolute inset-0 w-full h-full animate-pulse bg-gray-700" />
+        <div className="absolute inset-0 h-full w-full animate-pulse bg-gray-700" />
       )}
 
       {visible && (
+        // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
         <img
           src={currentSrc()}
           loading={loading}
@@ -97,7 +88,7 @@ export default function Image({
           className={cn(
             "h-full w-full object-cover transition-all duration-600",
             blurClassName(),
-            imageClassName,
+            imageClassName
           )}
           {...props}
         />

@@ -1,15 +1,13 @@
-import type { ElementType } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { useMemo, useState, type ElementType } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { storesQueries } from "@/api/stores/queries";
 import logoTextHorizontal from "@/assets/images/logo-text-horizontal.svg";
+import { Skeleton } from "@/components/feedback/Skeleton";
 import { Category, Home, Mobile, Settings, Shop } from "@/components/icons";
 import Dropdown from "@/components/ui/Dropdown";
 import cn from "@/lib/utils";
-
-const STORES_MOCK = [
-  { id: "1", name: "매장 1" },
-  { id: "2", name: "매장 2" },
-  { id: "3", name: "매장 3" },
-];
+import { useStoreId } from "@/stores/useStoreId";
 
 const sidebarItems = [
   {
@@ -44,45 +42,77 @@ function IconComp({ Icon, className }: Readonly<{ Icon: ElementType; className: 
 }
 
 interface SidebarProps {
-  onLinkClick?: () => void;
+  closeMobile?: () => void;
 }
 
-function Sidebar({ onLinkClick }: Readonly<SidebarProps>) {
+function Sidebar({ closeMobile }: Readonly<SidebarProps>) {
+  const navigate = useNavigate();
   const { pathname } = useLocation();
-  const selectedStore = STORES_MOCK[0];
+  const { data: stores, isLoading } = useQuery(storesQueries.getStores());
+  const { setStoreId } = useStoreId();
+  const [selectedStoreId, setSelectedStoreId] = useState<string | null>(null);
 
-  const handleLinkClick = () => {
-    onLinkClick?.();
+  const selectedStore = useMemo(() => {
+    if (selectedStoreId && stores?.stores) {
+      const found = stores.stores.find((store) => store.storeId === selectedStoreId);
+      if (found) return found;
+    }
+    return stores?.stores?.[0] ?? null;
+  }, [stores, selectedStoreId]);
+
+  const handleCloseMobile = () => {
+    if (closeMobile) {
+      closeMobile();
+    } else {
+      navigate("/");
+    }
   };
 
   return (
     <>
-      <Link
-        to="/"
-        onClick={handleLinkClick}
+      <button
+        onClick={handleCloseMobile}
         className="flex items-center px-4 pt-5 pb-2.5 md:pt-4 lg:px-6 lg:py-8 lg:pb-5"
       >
         <img
           src={logoTextHorizontal}
           alt="logo text horizontal"
+          width={220}
+          height={40}
           className="w-39.5 md:w-37 lg:w-55"
-          width="221"
-          height="60"
           loading="eager"
           fetchPriority="high"
         />
-      </Link>
+      </button>
       <div className="flex min-w-0 flex-col gap-4 px-4 md:gap-2 md:px-3 lg:px-5">
         <div className="min-w-0">
-          <Dropdown
-            // TODO: 매장 api 연결 후 조건 수정
-            dropdownItems={STORES_MOCK.filter((store) => store.id !== selectedStore.id)}
-            defaultText={STORES_MOCK[0].name}
-            triggerClassName={
-              "bg-primary border-primary text-white text-[15px] font-semibold lg:text-lg lg:font-bold pl-4 pr-3 lg:pl-5 pr-4 h-12 lg:h-14 w-full min-w-0 overflow-hidden text-ellipsis whitespace-nowrap"
-            }
-            iconClassName="text-white shrink-0"
-          />
+          {isLoading || !selectedStore ? (
+            <Skeleton>
+              <Skeleton.Input />
+            </Skeleton>
+          ) : (
+            <Dropdown
+              dropdownItems={
+                stores?.stores
+                  ? stores.stores.map((store) => ({
+                      id: store.storeId,
+                      name: store.name,
+                    }))
+                  : []
+              }
+              value={selectedStore.storeId}
+              onChange={(item) => {
+                setSelectedStoreId(item.id);
+                setStoreId(item.id);
+                navigate("/");
+              }}
+              defaultText={selectedStore.name}
+              triggerClassName={
+                "bg-primary border-primary text-white text-sm font-semibold lg:text-lg lg:font-bold pl-4 pr-3 lg:pl-5 pr-4 h-12 lg:h-14 w-full min-w-0 overflow-hidden text-ellipsis whitespace-nowrap"
+              }
+              iconClassName="text-white shrink-0"
+            />
+          )}
         </div>
         <nav>
           {sidebarItems.map((item, index) => {
@@ -92,7 +122,7 @@ function Sidebar({ onLinkClick }: Readonly<SidebarProps>) {
             return (
               <Link
                 to={item.path}
-                onClick={handleLinkClick}
+                onClick={handleCloseMobile}
                 className="flex h-10.5 lg:h-14"
                 key={item.label}
               >

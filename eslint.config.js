@@ -86,8 +86,23 @@ export default [
       ...reactPlugin.configs.recommended.rules,
       ...reactHooksPlugin.configs.recommended.rules,
 
-      // jsx-a11y recommended
-      ...jsxA11yPlugin.configs.recommended.rules,
+      // recommended 대신 strict 사용
+      ...jsxA11yPlugin.configs.strict.rules,
+
+      // 또는 개별 규칙 더 강화
+      "jsx-a11y/alt-text": "error",
+      "jsx-a11y/aria-props": "error",
+      "jsx-a11y/aria-proptypes": "error",
+      "jsx-a11y/aria-unsupported-elements": "error",
+      "jsx-a11y/role-has-required-aria-props": "error",
+      "jsx-a11y/role-supports-aria-props": "error",
+      "jsx-a11y/anchor-is-valid": "error",
+      "jsx-a11y/click-events-have-key-events": "error",
+      "jsx-a11y/no-static-element-interactions": "error",
+      "jsx-a11y/mouse-events-have-key-events": "error",
+      "jsx-a11y/no-noninteractive-element-interactions": "error",
+      "jsx-a11y/interactive-supports-focus": "error",
+      "jsx-a11y/label-has-associated-control": "error",
 
       // React
       "react/react-in-jsx-scope": "off",
@@ -150,11 +165,6 @@ export default [
       "import/no-cycle": "off",
       "import/no-extraneous-dependencies": "off",
       "import/prefer-default-export": "off",
-
-      // a11y
-      "jsx-a11y/click-events-have-key-events": "off",
-      "jsx-a11y/no-noninteractive-element-interactions": "off",
-      "jsx-a11y/anchor-has-content": "off",
 
       "arrow-body-style": "off",
     },
