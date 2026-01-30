@@ -14,10 +14,11 @@ import { formatBusinessNumber, formatStorePhoneNumber } from "@/lib/format";
 import cn from "@/lib/utils";
 import InfoOriginBox from "@/pages/main/owner/info/InfoOriginBox";
 import type { StoreInfoSchema } from "@/schema/store-info.schema";
+import { useStoreId } from "@/stores/useStoreId";
 
 function MainInfoPage() {
-  const storeId = localStorage.getItem("storeId");
-  const { data: storeDetail } = useQuery(storesQueries.getStoreDetail(storeId!));
+  const { storeId } = useStoreId();
+  const { data: storeDetail, isLoading } = useQuery(storesQueries.getStoreDetail(storeId!));
   const { mutate: updateStore } = useMutation(storesMutations.updateStore());
 
   const form = useForm<StoreInfoSchema>({
@@ -35,10 +36,10 @@ function MainInfoPage() {
   useEffect(() => {
     if (storeDetail) {
       form.reset({
-        name: storeDetail.name,
-        license: storeDetail.license,
+        name: storeDetail.name ?? "",
+        license: storeDetail.license ?? "",
         address: storeDetail.address,
-        landline: storeDetail.landline,
+        landline: storeDetail.landline ?? "",
         origins: storeDetail.setting.countryOfOrigins.map((origin) => ({
           id: crypto.randomUUID(),
           item: origin.item,
@@ -108,6 +109,8 @@ function MainInfoPage() {
       }
     );
   };
+
+  if (isLoading) return <Spinner />;
 
   return (
     <div
@@ -188,7 +191,7 @@ function MainInfoPage() {
                 md: { buttonSize: "sm", className: "!h-8.5 flex-1" },
                 sm: { buttonSize: "sm", className: "!h-8.5 flex-1" },
               }}
-              onClick={() => isEditing ? handleSave() : setIsEditing(true)}
+              onClick={() => (isEditing ? handleSave() : setIsEditing(true))}
               disabled={isSubmitting}
             >
               {isSubmitting ? <Spinner /> : "저장하기"}
@@ -204,7 +207,7 @@ function MainInfoPage() {
               md: { buttonSize: "sm", className: "!h-8.5" },
               sm: { buttonSize: "sm", className: "!h-8.5" },
             }}
-              onClick={() => isEditing ? handleSave() : setIsEditing(true)}
+            onClick={() => (isEditing ? handleSave() : setIsEditing(true))}
           >
             <EditContained className="size-5 lg:size-6" />
             수정하기
