@@ -1,6 +1,6 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery } from "@tanstack/react-query";
 import { useFormContext } from "react-hook-form";
-import { categoryQueries } from '@/api/categories/queries';
+import { categoryQueries } from "@/api/categories/queries";
 import { FormErrorMessage } from "@/components/form/Form";
 import FormField from "@/components/form/FormField";
 import Button from "@/components/ui/Button/Button";
@@ -11,6 +11,7 @@ import Switch from "@/components/ui/Switch";
 import { formatPrice } from "@/lib/format";
 import cn from "@/lib/utils";
 import type { MenuSchema } from "@/schema/menu.schema";
+import { useStoreId } from "@/stores/useStoreId";
 import type { MenuLabel, MenuState } from "@/types/domain/menu";
 
 const STATE_TRNASLATE = {
@@ -32,8 +33,8 @@ interface MenuDetailFormProps {
 }
 
 function MenuDetailForm({ canEdit, isDetail }: Readonly<MenuDetailFormProps>) {
-  const storeId = localStorage.getItem('storeId') as string;
-  const { data: categories } = useQuery(categoryQueries.getCategories({ storeId }))
+  const { storeId } = useStoreId();
+  const { data: categories } = useQuery(categoryQueries.getCategories({ storeId: storeId! }));
 
   const form = useFormContext<MenuSchema>();
   const currentLabel = form.watch("label");
@@ -57,10 +58,12 @@ function MenuDetailForm({ canEdit, isDetail }: Readonly<MenuDetailFormProps>) {
       <div className="flex flex-col gap-2">
         <Label>카테고리</Label>
         <Dropdown
-          dropdownItems={categories?.map((category) => ({
-            id: category.categoryId,
-            name: category.name,
-          })) ?? []}
+          dropdownItems={
+            categories?.map((category) => ({
+              id: category.categoryId,
+              name: category.name,
+            })) ?? []
+          }
           value={currentCategoryId}
           defaultText={
             categories?.find((category) => category.categoryId === currentCategoryId)?.name ??

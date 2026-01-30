@@ -2,56 +2,82 @@ import { rectSortingStrategy } from "@dnd-kit/sortable";
 import { overlay } from "overlay-kit";
 import useMediaQuery from "react-responsive";
 import { useNavigate } from "react-router-dom";
-import { menuQueries } from '@/api/menus/queries';
+import { menuQueries } from "@/api/menus/queries";
 import { Plus, Settings, Trash, UpsideDown } from "@/components/icons";
 import MobileTitle from "@/components/layout/MobileTitle";
 import Button from "@/components/ui/Button/Button";
 import { DragList } from "@/components/ui/Drag/DragList";
-import useCheckMenu from '@/hooks/menu/useCheckMenu';
-import useMenu from '@/hooks/menu/useMenu';
-import useMenuMove from '@/hooks/menu/useMenuMove';
-import { queryClient } from '@/lib/query-client';
-import CategoryEmptyState from '@/pages/main/owner/menus/CategoryEmptyState';
+import useCheckMenu from "@/hooks/menu/useCheckMenu";
+import useMenu from "@/hooks/menu/useMenu";
+import useMenuMove from "@/hooks/menu/useMenuMove";
+import { queryClient } from "@/lib/query-client";
+import CategoryEmptyState from "@/pages/main/owner/menus/CategoryEmptyState";
 import CategoryModal from "@/pages/main/owner/menus/CategoryModal";
 import MenuCard from "@/pages/main/owner/menus/MenuCard";
 import MenuDeleteAlert from "@/pages/main/owner/menus/MenuDeleteAlert";
 import MenuDetailModal from "@/pages/main/owner/menus/MenuDetailModal";
-import type { Menu } from '@/types/domain/menu';
+import { useStoreId } from "@/stores/useStoreId";
+import type { Menu } from "@/types/domain/menu";
 
 function MainMenuPage() {
   const navigate = useNavigate();
   const isMobile = useMediaQuery({ maxWidth: 959 });
+  const { storeId } = useStoreId();
 
-  const { selectedCategory, setSelectedCategory, getCategories, menus, setMenus } = useMenu()
-  const { isChangedToMenuOrder, isSubmittingOrderChange, changeToMenuOrder, saveMoves, resetMoves, addToChangeList } = useMenuMove()
-  const { checkedMenus, toggleCheckMenu, resetCheckedMenus } = useCheckMenu()
-  
+  const { selectedCategory, setSelectedCategory, getCategories, menus, setMenus } = useMenu();
+  const {
+    isChangedToMenuOrder,
+    isSubmittingOrderChange,
+    changeToMenuOrder,
+    saveMoves,
+    resetMoves,
+    addToChangeList,
+  } = useMenuMove();
+  const { checkedMenus, toggleCheckMenu, resetCheckedMenus } = useCheckMenu();
+
   /**
    * 카테고리 모달 열기 기능
    */
   const handleOpenCategoryModal = () => {
-    overlay.open((overlayProps) => <CategoryModal {...overlayProps} categories={getCategories.data ?? []} />);
+    overlay.open((overlayProps) => (
+      <CategoryModal {...overlayProps} categories={getCategories.data ?? []} />
+    ));
   };
 
   /**
    * 메뉴 추가 모달 열기 기능
    */
   const handleOpenCreateMenuModal = () => {
-    overlay.open((overlayProps) => <MenuDetailModal {...overlayProps} entry="create" initialCategoryId={selectedCategory === 'all' ? '' : selectedCategory} />);
+    overlay.open((overlayProps) => (
+      <MenuDetailModal
+        {...overlayProps}
+        entry="create"
+        initialCategoryId={selectedCategory === "all" ? "" : selectedCategory}
+      />
+    ));
   };
 
   /**
    * 메뉴 상세 모달 열기 기능
    */
   const handleOpenMenuDetailModal = (menu: Menu) => {
-    overlay.open((overlayProps) => <MenuDetailModal initialCategoryId={menu.categoryId} {...overlayProps} entry="detail" menuId={menu.menuId} />);
+    overlay.open((overlayProps) => (
+      <MenuDetailModal
+        initialCategoryId={menu.categoryId}
+        {...overlayProps}
+        entry="detail"
+        menuId={menu.menuId}
+      />
+    ));
   };
 
   /**
    * 메뉴 삭제 알림 모달 열기 기능
    */
   const handleOpenMenuDeleteAlert = () => {
-    overlay.open((overlayProps) => <MenuDeleteAlert {...overlayProps} deleteItems={checkedMenus} />);
+    overlay.open((overlayProps) => (
+      <MenuDeleteAlert {...overlayProps} deleteItems={checkedMenus} />
+    ));
   };
 
   /**
@@ -61,16 +87,15 @@ function MainMenuPage() {
   const handlePrefetch = (categoryId: string) => {
     if (isChangedToMenuOrder) return;
     if (categoryId === selectedCategory) return;
-    const storeId = localStorage.getItem('storeId') as string;
-    queryClient.prefetchQuery(menuQueries.getMenus({ storeId, categoryId }))
-  }
+    queryClient.prefetchQuery(menuQueries.getMenus({ storeId: storeId!, categoryId }));
+  };
 
   /**
    * 현재 카테고리 변경 기능
    */
   const handleCategoryChange = (categoryId: string) => {
     setSelectedCategory(categoryId);
-    resetCheckedMenus()
+    resetCheckedMenus();
   };
 
   const categoryLgClassName = (isSelected: boolean) => {
@@ -107,7 +132,8 @@ function MainMenuPage() {
               },
               sm: {
                 buttonSize: "custom",
-                className: "rounded-xl shrink-0 size-10 bg-gray-700 items-center justify-center p-0",
+                className:
+                  "rounded-xl shrink-0 size-10 bg-gray-700 items-center justify-center p-0",
               },
             }}
             onClick={() => !isChangedToMenuOrder && handleOpenCategoryModal()}
@@ -116,7 +142,7 @@ function MainMenuPage() {
           >
             <Settings className="size-5 text-gray-300 lg:size-6" />
           </Button>
-          {[...getCategories.data ?? []].map((category) => {
+          {[...(getCategories.data ?? [])].map((category) => {
             const isSelected = selectedCategory === category.categoryId;
             return (
               <Button
@@ -202,7 +228,7 @@ function MainMenuPage() {
         <DragList
           items={menus}
           onReorder={(items, sourceId, targetId, where) => {
-            setMenus(items)
+            setMenus(items);
             addToChangeList({ sourceId: String(sourceId), targetId: String(targetId), where });
           }}
           canDrag={isChangedToMenuOrder}

@@ -1,27 +1,28 @@
-import { useEffect, useState } from 'react';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useEffect, useState } from "react";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useForm, useWatch } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { toast } from 'sonner';
-import { CATEGORY_KEY } from '@/api/categories/keys';
-import { categoryMutations } from '@/api/categories/mutations';
-import { categoryQueries } from '@/api/categories/queries';
-import Spinner from '@/components/feedback/Spinner';
+import { toast } from "sonner";
+import { CATEGORY_KEY } from "@/api/categories/keys";
+import { categoryMutations } from "@/api/categories/mutations";
+import { categoryQueries } from "@/api/categories/queries";
+import Spinner from "@/components/feedback/Spinner";
 import { Form } from "@/components/form/Form";
 import FormField from "@/components/form/FormField";
 import { Plus } from "@/components/icons";
 import MobileTitle from "@/components/layout/MobileTitle";
 import Button from "@/components/ui/Button/Button";
-import { errorResponse } from '@/lib/error-response';
-import { queryClient } from '@/lib/query-client';
+import { errorResponse } from "@/lib/error-response";
+import { queryClient } from "@/lib/query-client";
 import cn from "@/lib/utils";
+import { useStoreId } from "@/stores/useStoreId";
 
 function MainMenuCategoryPage() {
   const navigate = useNavigate();
-  
-  const storeId = localStorage.getItem('storeId') as string;
-  const { data } = useQuery(categoryQueries.getCategories({ storeId }))
-  const { mutateAsync: createCategory } = useMutation(categoryMutations.createCategory())
+
+  const { storeId } = useStoreId();
+  const { data } = useQuery(categoryQueries.getCategories({ storeId: storeId! }));
+  const { mutateAsync: createCategory } = useMutation(categoryMutations.createCategory());
 
   const form = useForm({
     mode: "onSubmit",
@@ -45,7 +46,7 @@ function MainMenuCategoryPage() {
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data])
+  }, [data]);
 
   const handleAddCategory = () => {
     if (categories.at(-1)?.name === "") return;
@@ -55,11 +56,11 @@ function MainMenuCategoryPage() {
   const handleSubmit = form.handleSubmit(async () => {
     setIsSubmitting(true);
     try {
-      categories.forEach(async categoryInput => {
-        await createCategory({ storeId, data: { name: categoryInput.name } })
-      })
+      categories.forEach(async (categoryInput) => {
+        await createCategory({ storeId: storeId!, data: { name: categoryInput.name } });
+      });
       toast.success("카테고리 저장이 완료되었습니다.");
-      queryClient.invalidateQueries({ queryKey: CATEGORY_KEY.category() })
+      queryClient.invalidateQueries({ queryKey: CATEGORY_KEY.category() });
       navigate("/menus", { replace: true });
     } catch (error) {
       setIsSubmitting(false);

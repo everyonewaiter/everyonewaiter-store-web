@@ -1,19 +1,20 @@
 import { useEffect, useState } from "react";
-import { useMutation } from '@tanstack/react-query';
+import { useMutation } from "@tanstack/react-query";
 import { useFieldArray, useForm } from "react-hook-form";
-import { toast } from 'sonner';
-import { CATEGORY_KEY } from '@/api/categories/keys';
-import { categoryMutations } from '@/api/categories/mutations';
+import { toast } from "sonner";
+import { CATEGORY_KEY } from "@/api/categories/keys";
+import { categoryMutations } from "@/api/categories/mutations";
 import { Form } from "@/components/form/Form";
 import FormField from "@/components/form/FormField";
 import { DragDrop, Plus, Trash, UpsideDown } from "@/components/icons";
 import Modal from "@/components/overlay/Modal";
 import Button from "@/components/ui/Button/Button";
 import { DragList } from "@/components/ui/Drag/DragList";
-import { errorResponse } from '@/lib/error-response';
-import { queryClient } from '@/lib/query-client';
+import { errorResponse } from "@/lib/error-response";
+import { queryClient } from "@/lib/query-client";
 import cn from "@/lib/utils";
-import type { MoveRequest } from '@/types/api';
+import { useStoreId } from "@/stores/useStoreId";
+import type { MoveRequest } from "@/types/api";
 import type { Category } from "@/types/domain/menu";
 import type { ModalProps } from "@/types/overlay";
 
@@ -22,17 +23,17 @@ interface CategoryModalProps extends ModalProps {
 }
 
 function CategoryModal({ isOpen, close, categories }: Readonly<CategoryModalProps>) {
-  const storeId = localStorage.getItem('storeId') as string;
-  
-  const form = useForm({ defaultValues: { categories }});
+  const { storeId } = useStoreId();
+
+  const form = useForm({ defaultValues: { categories } });
 
   const { fields, append, remove } = useFieldArray({
     control: form.control,
     name: "categories",
   });
 
-  const { mutateAsync: moveCategories } = useMutation(categoryMutations.moveCategories())
-  const { mutateAsync: createCategory } = useMutation(categoryMutations.createCategory())
+  const { mutateAsync: moveCategories } = useMutation(categoryMutations.moveCategories());
+  const { mutateAsync: createCategory } = useMutation(categoryMutations.createCategory());
 
   useEffect(() => {
     form.reset({ categories });
@@ -47,23 +48,23 @@ function CategoryModal({ isOpen, close, categories }: Readonly<CategoryModalProp
    * 카테고리 저장 기능
    */
   const handleSave = async () => {
-  try {
-    const formCategories = form.getValues("categories");
-    const newCategories = formCategories.filter(
-      (fc) => !categories.some((c) => c.categoryId === fc.categoryId)
-    );
-    
-    for (const category of newCategories) {
-      await createCategory({ storeId, data: { name: category.name } });
+    try {
+      const formCategories = form.getValues("categories");
+      const newCategories = formCategories.filter(
+        (fc) => !categories.some((c) => c.categoryId === fc.categoryId)
+      );
+
+      for (const category of newCategories) {
+        await createCategory({ storeId: storeId!, data: { name: category.name } });
+      }
+
+      toast.success("카테고리 저장이 완료되었습니다.");
+      queryClient.invalidateQueries({ queryKey: CATEGORY_KEY.category() });
+      close();
+    } catch (error) {
+      toast.error(errorResponse(error).data.message);
     }
-    
-    toast.success("카테고리 저장이 완료되었습니다.");
-    queryClient.invalidateQueries({ queryKey: CATEGORY_KEY.category() });
-    close();
-  } catch (error) {
-    toast.error(errorResponse(error).data.message);
-  }
-};
+  };
 
   /**
    * 카테고리 순서 저장 기능
@@ -71,7 +72,7 @@ function CategoryModal({ isOpen, close, categories }: Readonly<CategoryModalProp
   const handleSaveChanges = async () => {
     try {
       for (const { sourceId, targetId, where } of changeOrdersList) {
-        await moveCategories({ storeId, sourceId, targetId, where });
+        await moveCategories({ storeId: storeId!, sourceId, targetId, where });
       }
 
       setMode("CREATE");
@@ -170,7 +171,7 @@ function CategoryModal({ isOpen, close, categories }: Readonly<CategoryModalProp
                         mode === "CREATE" ? "border-status-error" : "border-gray-600"
                       )}
                       onClick={() => {
-                        if (mode === "CREATE") remove(index)
+                        if (mode === "CREATE") remove(index);
                       }}
                     >
                       {mode === "CREATE" ? (
