@@ -11,9 +11,6 @@ export const storesMutations = {
         formData.append("name", data.name);
         formData.append("ceoName", data.ceoName);
         formData.append("address", data.address);
-        if (data.detailAddress) {
-          formData.append("detailAddress", data.detailAddress);
-        }
         formData.append("landline", data.landline);
         formData.append("license", data.license);
         formData.append("file", data.file!);
@@ -52,9 +49,6 @@ export const storesMutations = {
         formData.append("name", data.name);
         formData.append("ceoName", data.ceoName);
         formData.append("address", data.address);
-        if (data.detailAddress) {
-          formData.append("detailAddress", data.detailAddress);
-        }
         formData.append("landline", data.landline);
         formData.append("license", data.license);
         formData.append("file", data.file!);
