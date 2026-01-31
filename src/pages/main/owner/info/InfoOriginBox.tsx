@@ -19,9 +19,10 @@ function InfoOriginBox({ isEditing }: Readonly<InfoOriginBoxProps>) {
   });
 
   return (
-    <>
+    <div className="shrink-0">
       {fields.length > 0 ? (
         <Table
+          className="block"
           containerClassName={cn(
             "rounded-xl border border-gray-600 overflow-hidden",
             form.formState.errors.origins ? "border-primary" : ""
@@ -65,6 +66,7 @@ function InfoOriginBox({ isEditing }: Readonly<InfoOriginBoxProps>) {
                     <Input
                       {...form.register(`origins.${index}.item`)}
                       className="h-full! rounded-none! border-none! text-center"
+                      placeholder="품목을 입력해주세요."
                     />
                   ) : (
                     field.item
@@ -80,6 +82,7 @@ function InfoOriginBox({ isEditing }: Readonly<InfoOriginBoxProps>) {
                     <Input
                       {...form.register(`origins.${index}.origin`)}
                       className="h-full! rounded-none! border-none! text-center"
+                      placeholder="원산지를 입력해주세요."
                       onKeyDown={(e) => {
                         if (
                           e.key === "Enter" &&
@@ -115,7 +118,7 @@ function InfoOriginBox({ isEditing }: Readonly<InfoOriginBoxProps>) {
         </div>
       )}
       <FormErrorMessage>{form.formState.errors.origins?.message}</FormErrorMessage>
-    </>
+    </div>
   );
 }
 
