@@ -77,12 +77,12 @@ function InfoBottomButtonGroup({
           form.clearErrors("origins");
           form.setValue("origins", filteredOrigins);
           setIsEditing(false);
-          setIsSubmitting(false);
         },
         onError: (error) => {
           const { data } = errorResponse(error);
           toast.error(data?.message);
         },
+        onSettled: () => setIsSubmitting(false),
       }
     );
   };
