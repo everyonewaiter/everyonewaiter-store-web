@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useForm, useWatch } from "react-hook-form";
 import { storesQueries } from "@/api/stores/queries";
@@ -16,7 +16,6 @@ function MainInfoPage() {
   const { storeId } = useStoreId();
   const { data: storeDetail, isLoading } = useQuery(storesQueries.getStoreDetail(storeId!));
 
-  const [isCancelling, setIsCancelling] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
 
   const form = useForm<StoreInfoSchema>({
@@ -31,7 +30,7 @@ function MainInfoPage() {
     },
   });
 
-  useEffect(() => {
+  const resetForm = useCallback(() => {
     if (storeDetail) {
       form.reset({
         name: storeDetail.name ?? "",
@@ -45,8 +44,11 @@ function MainInfoPage() {
         })),
       });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [storeDetail, isCancelling]);
+  }, [storeDetail, form]);
+
+  useEffect(() => {
+    resetForm();
+  }, [resetForm]);
 
   const origins = useWatch({ control: form.control, name: "origins" });
 
@@ -117,7 +119,7 @@ function MainInfoPage() {
                   setIsEditing={setIsEditing}
                   storeDetail={storeDetail}
                   onCancel={() => {
-                    setIsCancelling(true);
+                    resetForm();
                     setIsEditing(false);
                   }}
                 />
