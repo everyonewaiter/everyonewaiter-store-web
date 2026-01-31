@@ -47,7 +47,7 @@ function InfoBottomButtonGroup({
       const hasItem = origin.item.trim().length > 0;
       const hasOrigin = origin.origin.trim().length > 0;
 
-      if ((hasItem && !hasOrigin) || (!hasItem && hasOrigin)) {
+      if (!hasItem || !hasOrigin) {
         form.setError("origins", {
           message: "품목과 원산지를 모두 입력해주세요.",
         });
@@ -55,27 +55,19 @@ function InfoBottomButtonGroup({
       }
     }
 
-    const filteredOrigins = origins
-      .filter((origin) => origin.item.trim().length > 0 && origin.origin.trim().length > 0)
-      .map((origin) => ({
-        ...origin,
-        item: origin.item.trim(),
-        origin: origin.origin.trim(),
-      }));
-
     updateStore(
       {
         storeId: storeId!,
         landline: landline || "",
         setting: {
           ...storeDetail?.setting,
-          countryOfOrigins: filteredOrigins,
+          countryOfOrigins: origins,
         },
       },
       {
         onSuccess: () => {
           form.clearErrors("origins");
-          form.setValue("origins", filteredOrigins);
+          form.setValue("origins", origins);
           setIsEditing(false);
         },
         onError: (error) => {
