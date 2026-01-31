@@ -13,7 +13,7 @@ interface InfoOriginBoxProps {
 function InfoOriginBox({ isEditing }: Readonly<InfoOriginBoxProps>) {
   const form = useFormContext<StoreInfoSchema>();
 
-  const { fields, remove } = useFieldArray({
+  const { fields, append, remove } = useFieldArray({
     control: form.control,
     name: "origins",
   });
@@ -80,6 +80,16 @@ function InfoOriginBox({ isEditing }: Readonly<InfoOriginBoxProps>) {
                     <Input
                       {...form.register(`origins.${index}.origin`)}
                       className="h-full! rounded-none! border-none! text-center"
+                      onKeyDown={(e) => {
+                        if (
+                          e.key === "Enter" &&
+                          !e.nativeEvent.isComposing &&
+                          fields.at(-1)?.item === ""
+                        ) {
+                          e.preventDefault();
+                          append({ id: crypto.randomUUID(), item: "", origin: "" });
+                        }
+                      }}
                     />
                   ) : (
                     field.origin
