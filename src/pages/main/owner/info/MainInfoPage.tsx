@@ -37,7 +37,7 @@ function MainInfoPage() {
         name: storeDetail.name ?? "",
         license: storeDetail.license ?? "",
         address: storeDetail.address,
-        landline: storeDetail.landline ?? "",
+        landline: formatStorePhoneNumber(storeDetail.landline ?? ""),
         origins: storeDetail.setting.countryOfOrigins.map((origin) => ({
           id: crypto.randomUUID(),
           item: origin.item,
@@ -53,11 +53,11 @@ function MainInfoPage() {
   return (
     <div
       className={cn(
-        "flex h-full w-full justify-center px-5 pt-6 md:px-0 md:pt-10",
+        "flex h-full w-full justify-center px-5 py-6 md:px-0 md:py-10",
         origins.length > 4 ? "items-start" : "items-start md:items-start lg:items-center lg:pb-6"
       )}
     >
-      <div className="flex w-full flex-col gap-6 md:w-95 lg:w-120 lg:gap-8">
+      <div className="flex h-full w-full flex-col gap-6 md:w-95 lg:w-120 lg:gap-8">
         {isLoading || !storeDetail?.accountId ? (
           <>
             <div className="flex flex-col gap-2 lg:gap-3">
@@ -77,48 +77,51 @@ function MainInfoPage() {
               <p className="text-xs font-normal whitespace-pre-line text-gray-300 lg:text-sm">{`등록된 매장 정보를 확인할 수 있습니다.\n변경된 정보가 있다면 언제든지 수정해 주세요.`}</p>
             </div>
             <Form {...form}>
-              <form className="mt-2 flex flex-col gap-3 md:mt-0 lg:gap-4">
-                {isLoading ? (
-                  <>
-                    <Skeleton.FieldGroup total={4} />
-                    <Skeleton className="h-24 rounded-xl" />
-                  </>
-                ) : (
-                  <>
-                    <FormField control={form.control} name="name" label="상호명" disabled />
-                    <FormField
-                      control={form.control}
-                      name="license"
-                      label="사업자번호"
-                      disabled
-                      inputProps={{
-                        onChange: (e) => form.setValue("license", formatBusinessNumber(e)),
-                      }}
-                    />
-                    <FormField control={form.control} name="address" label="주소" disabled />
-                    <FormField
-                      control={form.control}
-                      name="landline"
-                      label="매장 전화번호"
-                      disabled={!isEditing}
-                      inputProps={{
-                        onChange: (e) => form.setValue("landline", formatStorePhoneNumber(e)),
-                        maxLength: 13,
-                      }}
-                    />
-                    <InfoOriginBox isEditing={isEditing} />
-                  </>
-                )}
-              </form>
-              <InfoBottomButtonGroup
-                isEditing={isEditing}
-                setIsEditing={setIsEditing}
-                storeDetail={storeDetail}
-                onCancel={() => {
-                  setIsCancelling(true);
-                  setIsEditing(false);
-                }}
-              />
+              <div className="mt-2 flex flex-col gap-6 md:mt-0 lg:gap-8">
+                <form className="flex flex-col gap-3 lg:gap-4">
+                  {isLoading ? (
+                    <>
+                      <Skeleton.FieldGroup total={4} />
+                      <Skeleton className="h-24 rounded-xl" />
+                    </>
+                  ) : (
+                    <>
+                      <FormField control={form.control} name="name" label="상호명" disabled />
+                      <FormField
+                        control={form.control}
+                        name="license"
+                        label="사업자번호"
+                        disabled
+                        inputProps={{
+                          onChange: (e) => form.setValue("license", formatBusinessNumber(e)),
+                        }}
+                      />
+                      <FormField control={form.control} name="address" label="주소" disabled />
+                      <FormField
+                        control={form.control}
+                        name="landline"
+                        label="매장 전화번호"
+                        disabled={!isEditing}
+                        inputProps={{
+                          onChange: (e) =>
+                            form.setValue("landline", formatStorePhoneNumber(e.target.value)),
+                          maxLength: 13,
+                        }}
+                      />
+                      <InfoOriginBox isEditing={isEditing} />
+                    </>
+                  )}
+                </form>
+                <InfoBottomButtonGroup
+                  isEditing={isEditing}
+                  setIsEditing={setIsEditing}
+                  storeDetail={storeDetail}
+                  onCancel={() => {
+                    setIsCancelling(true);
+                    setIsEditing(false);
+                  }}
+                />
+              </div>
             </Form>
           </>
         )}
