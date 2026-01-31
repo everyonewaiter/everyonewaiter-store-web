@@ -43,7 +43,6 @@ function InfoBottomButtonGroup({
   const handleSave = () => {
     if (!storeDetail) return;
 
-    setIsSubmitting(true);
     const origins = form.getValues("origins");
 
     for (const origin of origins) {
@@ -57,6 +56,8 @@ function InfoBottomButtonGroup({
         return;
       }
     }
+
+    setIsSubmitting(true);
 
     updateStore(
       {
