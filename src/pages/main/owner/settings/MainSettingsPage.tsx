@@ -109,7 +109,10 @@ function MainSettingsPage() {
     handleUpdateStore({
       key: "printerLocation",
       value: location,
-      successHandler: () => form.setValue("printerLocation", location),
+      successHandler: () => {
+        form.setValue("printerLocation", location);
+        toast.success("매장 위치가 변경되었습니다.");
+      },
     });
   };
 
@@ -121,6 +124,7 @@ function MainSettingsPage() {
     handleUpdateStore({
       key: "ksnetDeviceNo",
       value: deviceNo,
+      successHandler: () => toast.success("기기 번호가 변경되었습니다."),
       settledHandler: () => setIsSubmitting({ ...isSubmitting, ksnetDeviceNo: false }),
     });
   };
@@ -133,6 +137,7 @@ function MainSettingsPage() {
     handleUpdateStore({
       key: "extraTableCount",
       value: extraTableCount,
+      successHandler: () => toast.success("추가 테이블 수가 변경되었습니다."),
       settledHandler: () => setIsSubmitting({ ...isSubmitting, extraTableCount: false }),
     });
   };
