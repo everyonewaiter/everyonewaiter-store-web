@@ -15,12 +15,14 @@ interface InfoBottomButtonGroupProps {
   isEditing: boolean;
   setIsEditing: (isEditing: boolean) => void;
   storeDetail: StoreDetail;
+  onCancel: () => void;
 }
 
 function InfoBottomButtonGroup({
   isEditing,
   setIsEditing,
   storeDetail,
+  onCancel,
 }: Readonly<InfoBottomButtonGroupProps>) {
   const { storeId } = useStoreId();
 
@@ -110,7 +112,7 @@ function InfoBottomButtonGroup({
               md: { buttonSize: "sm", className: "!h-8.5" },
               sm: { buttonSize: "sm", className: "!h-8.5" },
             }}
-            onClick={() => setIsEditing(false)}
+            onClick={onCancel}
             disabled={isSubmitting}
           >
             취소하기

@@ -16,6 +16,9 @@ function MainInfoPage() {
   const { storeId } = useStoreId();
   const { data: storeDetail, isLoading } = useQuery(storesQueries.getStoreDetail(storeId!));
 
+  const [isCancelling, setIsCancelling] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+
   const form = useForm<StoreInfoSchema>({
     mode: "onSubmit",
     reValidateMode: "onChange",
@@ -42,9 +45,8 @@ function MainInfoPage() {
         })),
       });
     }
-  }, [storeDetail, form]);
-
-  const [isEditing, setIsEditing] = useState(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [storeDetail, isCancelling]);
 
   const origins = useWatch({ control: form.control, name: "origins" });
 
@@ -112,6 +114,10 @@ function MainInfoPage() {
                 isEditing={isEditing}
                 setIsEditing={setIsEditing}
                 storeDetail={storeDetail}
+                onCancel={() => {
+                  setIsCancelling(true);
+                  setIsEditing(false);
+                }}
               />
             </Form>
           </>
