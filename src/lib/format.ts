@@ -36,8 +36,8 @@ export const formatPhoneNumber = (e: ChangeEvent<HTMLInputElement>) => {
   }
 };
 
-export const formatStorePhoneNumber = (e: ChangeEvent<HTMLInputElement>) => {
-  const numbers = e.target.value.replaceAll(/\D/g, "");
+export const formatStorePhoneNumber = (value: string) => {
+  const numbers = value.replaceAll(/\D/g, "");
   const len = numbers.length;
 
   if (len === 0) {

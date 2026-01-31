@@ -7,6 +7,7 @@ import Spinner from "@/components/feedback/Spinner";
 import { EditContained, Plus } from "@/components/icons";
 import Button from "@/components/ui/Button/Button";
 import { errorResponse } from "@/lib/error-response";
+import { formatStorePhoneNumber } from "@/lib/format";
 import type { StoreInfoSchema } from "@/schema/store-info.schema";
 import { useStoreId } from "@/stores/useStoreId";
 import type { StoreDetail } from "@/types/domain/store";
@@ -60,7 +61,7 @@ function InfoBottomButtonGroup({
     updateStore(
       {
         storeId: storeId!,
-        landline: landline || "",
+        landline: formatStorePhoneNumber(landline || ""),
         setting: {
           ...storeDetail?.setting,
           countryOfOrigins: origins,
