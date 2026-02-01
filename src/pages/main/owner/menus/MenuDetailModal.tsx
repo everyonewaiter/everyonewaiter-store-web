@@ -3,6 +3,7 @@ import { menuQueries } from "@/api/menus/queries";
 import { Dialog } from "@/components/overlay/Dialog";
 import MenuDetailContent from "@/pages/main/owner/menus/MenuDetailContent";
 import { useStoreId } from "@/stores/useStoreId";
+import type { MenuDetail } from "@/types/domain/menu";
 import type { ModalProps } from "@/types/overlay";
 
 interface MenuDetailModalProps extends ModalProps {
@@ -35,7 +36,7 @@ function MenuDetailModal({
       >
         <Dialog.Title className="sr-only">메뉴 정보</Dialog.Title>
         <MenuDetailContent
-          menu={menu!}
+          menu={menu as MenuDetail}
           entry={entry}
           initialCategoryId={initialCategoryId}
           {...props}
