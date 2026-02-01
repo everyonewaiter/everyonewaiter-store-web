@@ -38,7 +38,7 @@ function MenuDetailOptions({
 
   const { fields, append, remove } = useFieldArray({
     control: form.control,
-    name: optionGroupsName as "requiredOptionGroups" | "optionalOptionGroups",
+    name: optionGroupsName,
   });
 
   const [showInfo, setShowInfo] = useState(false);
@@ -104,21 +104,14 @@ function MenuDetailOptions({
     }
   };
 
-  const handleReorder = (
-    items: typeof fields
-    // sourceId: string,
-    // targetId: string,
-    // where: "PREV" | "NEXT"
-  ) => {
-    const currentValues = form.getValues(
-      optionGroupsName as "requiredOptionGroups" | "optionalOptionGroups"
-    );
+  const handleReorder = (items: typeof fields) => {
+    const currentValues = form.getValues(optionGroupsName);
     const reorderedData = items.map((field) => {
       const originalIndex = fields.findIndex((f) => f.id === field.id);
       return currentValues[originalIndex];
     });
     form.setValue(
-      optionGroupsName as "requiredOptionGroups" | "optionalOptionGroups",
+      optionGroupsName,
       reorderedData as MenuSchema["requiredOptionGroups"] | MenuSchema["optionalOptionGroups"]
     );
   };
