@@ -210,7 +210,7 @@ function GuestCreate() {
                 inputProps={{
                   placeholder: "매장 전화번호를 입력해주세요.",
                   onChange: (e) => {
-                    const formatted = formatStorePhoneNumber(e);
+                    const formatted = formatStorePhoneNumber(e.target.value);
                     form.setValue("landline", formatted, { shouldDirty: true });
                   },
                   readOnly: isSubmitting,

@@ -1,140 +1,132 @@
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { useForm, useWatch } from "react-hook-form";
+import { storesQueries } from "@/api/stores/queries";
+import { Skeleton } from "@/components/feedback/Skeleton";
 import { Form } from "@/components/form/Form";
 import FormField from "@/components/form/FormField";
-import { EditContained, Plus } from "@/components/icons";
-import Button from "@/components/ui/Button/Button";
-import { formatBusinessNumber } from "@/lib/format";
+import { formatBusinessNumber, formatStorePhoneNumber } from "@/lib/format";
 import cn from "@/lib/utils";
+import InfoBottomButtonGroup from "@/pages/main/owner/info/InfoBottomButtonGroup";
 import InfoOriginBox from "@/pages/main/owner/info/InfoOriginBox";
-import { STORE_DETAIL_MOCK } from "@/pages/main/owner/info/mock";
 import type { StoreInfoSchema } from "@/schema/store-info.schema";
+import { useStoreId } from "@/stores/useStoreId";
 
 function MainInfoPage() {
-  const data = STORE_DETAIL_MOCK;
+  const { storeId } = useStoreId();
+  const { data: storeDetail, isLoading } = useQuery(storesQueries.getStoreDetail(storeId!));
+
+  const [isEditing, setIsEditing] = useState(false);
 
   const form = useForm<StoreInfoSchema>({
     mode: "onSubmit",
     reValidateMode: "onChange",
     defaultValues: {
-      name: data.name,
-      license: `${data.license.slice(0, 3)}-${data.license.slice(3, 5)}-${data.license.slice(5)}`,
-      address: data.address,
-      origins: data.setting.countryOfOrigins.map((origin) => ({
-        id: crypto.randomUUID(),
-        item: origin.item,
-        origin: origin.origin,
-      })),
+      name: "",
+      license: "",
+      address: "",
+      landline: "",
+      origins: [],
     },
   });
 
-  const [isEditing, setIsEditing] = useState(false);
+  const resetForm = useCallback(() => {
+    if (storeDetail) {
+      form.reset({
+        name: storeDetail.name ?? "",
+        license: storeDetail.license ?? "",
+        address: storeDetail.address,
+        landline: formatStorePhoneNumber(storeDetail.landline ?? ""),
+        origins: storeDetail.setting.countryOfOrigins.map((origin) => ({
+          id: crypto.randomUUID(),
+          item: origin.item,
+          origin: origin.origin,
+        })),
+      });
+    }
+  }, [storeDetail, form]);
+
+  useEffect(() => {
+    resetForm();
+  }, [resetForm]);
 
   const origins = useWatch({ control: form.control, name: "origins" });
-
-  const addOrigin = () => {
-    if (origins.at(-1)?.item === "") return;
-    form.setValue("origins", [...origins, { id: crypto.randomUUID(), item: "", origin: "" }]);
-  };
-
-  const handleDelete = (id: string) => {
-    form.setValue(
-      "origins",
-      origins.filter((origin) => origin.id !== id)
-    );
-  };
-
-  const handleSave = () => {
-    if (isEditing) {
-      const origins = form.getValues("origins");
-
-      for (const origin of origins) {
-        const hasItem = origin.item.trim().length > 0;
-        const hasOrigin = origin.origin.trim().length > 0;
-
-        if ((hasItem && !hasOrigin) || (!hasItem && hasOrigin)) {
-          form.setError("origins", {
-            message: "품목과 원산지를 모두 입력해주세요.",
-          });
-          return;
-        }
-      }
-
-      const filteredOrigins = origins
-        .filter((origin) => origin.item.trim().length > 0 && origin.origin.trim().length > 0)
-        .map((origin) => ({
-          ...origin,
-          item: origin.item.trim(),
-          origin: origin.origin.trim(),
-        }));
-
-      // TODO: 저장 로직
-      form.clearErrors("origins");
-      form.setValue("origins", filteredOrigins);
-      setIsEditing(false);
-    } else {
-      setIsEditing(true);
-    }
-  };
 
   return (
     <div
       className={cn(
-        "flex h-full w-full justify-center px-5 pt-6 md:px-0 md:pt-10",
+        "flex h-full w-full justify-center px-5 py-6 md:px-0 md:py-10",
         origins.length > 4 ? "items-start" : "items-start md:items-start lg:items-center lg:pb-6"
       )}
     >
-      <div className="flex w-full flex-col gap-6 md:w-95 lg:w-120 lg:gap-8">
-        <div className="flex flex-col gap-2 lg:gap-3">
-          <h2 className="text-gray-0 text-lg font-semibold lg:text-2xl">매장 정보</h2>
-          <p className="text-xs font-normal whitespace-pre-line text-gray-300 lg:text-sm">{`등록된 매장 정보를 확인할 수 있습니다.\n변경된 정보가 있다면 언제든지 수정해 주세요.`}</p>
-        </div>
-        <Form {...form}>
-          <form className="mt-2 flex flex-col gap-3 md:mt-0 lg:gap-4">
-            <FormField control={form.control} name="name" label="상호명" disabled />
-            <FormField
-              control={form.control}
-              name="license"
-              label="사업자번호"
-              disabled
-              inputProps={{ onChange: (e) => form.setValue("license", formatBusinessNumber(e)) }}
-            />
-            <FormField control={form.control} name="address" label="주소" disabled />
-            <InfoOriginBox isEditing={isEditing} onDelete={handleDelete} />
-          </form>
-        </Form>
-        {isEditing && (
-          <Button
-            color="black"
-            variant="ghost"
-            responsive
-            responsiveButtons={{
-              lg: {
-                buttonSize: "md",
-                className: "!h-10 border-2 border-dashed border-gray-300 rounded-xl",
-              },
-              md: { buttonSize: "sm", className: "border-dashed" },
-              sm: { buttonSize: "sm", className: "border-dashed" },
-            }}
-            onClick={addOrigin}
-          >
-            <Plus className="size-7 text-gray-300" />
-          </Button>
+      <div className="flex h-full w-full flex-col gap-6 md:w-95 lg:w-120 lg:gap-8">
+        {isLoading || !storeDetail?.accountId ? (
+          <>
+            <div className="flex flex-col gap-2 lg:gap-3">
+              <Skeleton className="h-5 w-20 rounded-full" />
+              <Skeleton className="h-12 w-full rounded-lg" />
+            </div>
+            <div className="mt-2 flex flex-col gap-3 md:mt-0 lg:gap-4">
+              <Skeleton.FieldGroup total={4} />
+              <Skeleton className="h-22 rounded-xl" />
+              <Skeleton className="h-8.5" />
+            </div>
+          </>
+        ) : (
+          <>
+            <div className="flex flex-col gap-2 lg:gap-3">
+              <h2 className="text-gray-0 text-lg font-semibold lg:text-2xl">매장 정보</h2>
+              <p className="text-xs font-normal whitespace-pre-line text-gray-300 lg:text-sm">{`등록된 매장 정보를 확인할 수 있습니다.\n변경된 정보가 있다면 언제든지 수정해 주세요.`}</p>
+            </div>
+            <Form {...form}>
+              <div className="mt-2 flex flex-col gap-6 md:mt-0 lg:gap-8">
+                <form className="flex flex-col gap-3 lg:gap-4">
+                  {isLoading ? (
+                    <>
+                      <Skeleton.FieldGroup total={4} />
+                      <Skeleton className="h-24 rounded-xl" />
+                    </>
+                  ) : (
+                    <>
+                      <FormField control={form.control} name="name" label="상호명" disabled />
+                      <FormField
+                        control={form.control}
+                        name="license"
+                        label="사업자번호"
+                        disabled
+                        inputProps={{
+                          onChange: (e) => form.setValue("license", formatBusinessNumber(e)),
+                        }}
+                      />
+                      <FormField control={form.control} name="address" label="주소" disabled />
+                      <FormField
+                        control={form.control}
+                        name="landline"
+                        label="매장 전화번호"
+                        disabled={!isEditing}
+                        inputProps={{
+                          onChange: (e) =>
+                            form.setValue("landline", formatStorePhoneNumber(e.target.value)),
+                          maxLength: 13,
+                        }}
+                      />
+                      <InfoOriginBox isEditing={isEditing} />
+                    </>
+                  )}
+                </form>
+                <InfoBottomButtonGroup
+                  isEditing={isEditing}
+                  setIsEditing={setIsEditing}
+                  storeDetail={storeDetail}
+                  onCancel={() => {
+                    resetForm();
+                    setIsEditing(false);
+                  }}
+                />
+              </div>
+            </Form>
+          </>
         )}
-        <Button
-          color="black"
-          variant={isEditing ? "default" : "outline"}
-          responsive
-          responsiveButtons={{
-            lg: { buttonSize: "lg", className: "text-lg !text-medium" },
-            md: { buttonSize: "sm", className: "!h-8.5" },
-            sm: { buttonSize: "sm", className: "!h-8.5" },
-          }}
-          onClick={handleSave}
-        >
-          {!isEditing && <EditContained className="size-5 lg:size-6" />}
-          {isEditing ? "저장하기" : "수정하기"}
-        </Button>
       </div>
     </div>
   );
