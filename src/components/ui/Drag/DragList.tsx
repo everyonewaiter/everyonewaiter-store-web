@@ -63,7 +63,9 @@ export function DragList<T>({
   modifiers,
 }: Readonly<DraggableListProps<T>>) {
   const sensors = useSensors(
-    useSensor(PointerSensor),
+    useSensor(PointerSensor, {
+      activationConstraint: { delay: canDrag ? 0 : 999999, tolerance: 5 },
+    }),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
     })
@@ -94,7 +96,7 @@ export function DragList<T>({
 
   return (
     <DndContext
-      sensors={canDrag ? sensors : []}
+      sensors={sensors}
       collisionDetection={closestCenter}
       onDragEnd={handleDragEnd}
       modifiers={modifiers ?? defaultModifiers}
