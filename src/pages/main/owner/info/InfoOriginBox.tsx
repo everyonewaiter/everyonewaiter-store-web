@@ -1,4 +1,4 @@
-import { useFormContext, useWatch } from "react-hook-form";
+import { useFieldArray, useFormContext } from "react-hook-form";
 import { FormErrorMessage } from "@/components/form/Form";
 import { Trash } from "@/components/icons";
 import Input from "@/components/ui/Input";
@@ -8,18 +8,21 @@ import type { StoreInfoSchema } from "@/schema/store-info.schema";
 
 interface InfoOriginBoxProps {
   isEditing: boolean;
-  onDelete: (id: string) => void;
 }
 
-function InfoOriginBox({ isEditing, onDelete }: Readonly<InfoOriginBoxProps>) {
+function InfoOriginBox({ isEditing }: Readonly<InfoOriginBoxProps>) {
   const form = useFormContext<StoreInfoSchema>();
 
-  const origins = useWatch({ control: form.control, name: "origins" });
+  const { fields, append, remove } = useFieldArray({
+    control: form.control,
+    name: "origins",
+  });
 
   return (
-    <>
-      {origins.length > 0 ? (
+    <div className="shrink-0">
+      {fields.length > 0 ? (
         <Table
+          className="block"
           containerClassName={cn(
             "rounded-xl border border-gray-600 overflow-hidden",
             form.formState.errors.origins ? "border-primary" : ""
@@ -51,8 +54,8 @@ function InfoOriginBox({ isEditing, onDelete }: Readonly<InfoOriginBoxProps>) {
             </Table.Row>
           </Table.Header>
           <Table.Body>
-            {origins.map((origin, index) => (
-              <Table.Row key={origin.id} className="flex h-10 lg:h-13!">
+            {fields.map((field, index) => (
+              <Table.Row key={field.id} className="flex h-10 lg:h-13!">
                 <Table.Cell
                   className={cn(
                     "text-s font-normal lg:text-base",
@@ -61,12 +64,12 @@ function InfoOriginBox({ isEditing, onDelete }: Readonly<InfoOriginBoxProps>) {
                 >
                   {isEditing ? (
                     <Input
-                      value={origin.item}
-                      onChange={(e) => form.setValue(`origins.${index}.item`, e.target.value)}
+                      {...form.register(`origins.${index}.item`)}
                       className="h-full! rounded-none! border-none! text-center"
+                      placeholder="품목을 입력해주세요."
                     />
                   ) : (
-                    origin.item
+                    field.item
                   )}
                 </Table.Cell>
                 <Table.Cell
@@ -77,16 +80,26 @@ function InfoOriginBox({ isEditing, onDelete }: Readonly<InfoOriginBoxProps>) {
                 >
                   {isEditing ? (
                     <Input
-                      value={origin.origin}
-                      onChange={(e) => form.setValue(`origins.${index}.origin`, e.target.value)}
+                      {...form.register(`origins.${index}.origin`)}
                       className="h-full! rounded-none! border-none! text-center"
+                      placeholder="원산지를 입력해주세요."
+                      onKeyDown={(e) => {
+                        if (
+                          e.key === "Enter" &&
+                          !e.nativeEvent.isComposing &&
+                          fields.at(-1)?.item === ""
+                        ) {
+                          e.preventDefault();
+                          append({ id: crypto.randomUUID(), item: "", origin: "" });
+                        }
+                      }}
                     />
                   ) : (
-                    origin.origin
+                    field.origin
                   )}
                 </Table.Cell>
                 {isEditing && (
-                  <Table.Cell className="flex-[0.2]" onClick={() => onDelete(origin.id)}>
+                  <Table.Cell className="flex-[0.2]" onClick={() => remove(index)}>
                     <Trash className="text-primary size-4.5" />
                   </Table.Cell>
                 )}
@@ -105,7 +118,7 @@ function InfoOriginBox({ isEditing, onDelete }: Readonly<InfoOriginBoxProps>) {
         </div>
       )}
       <FormErrorMessage>{form.formState.errors.origins?.message}</FormErrorMessage>
-    </>
+    </div>
   );
 }
 

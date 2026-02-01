@@ -10,7 +10,7 @@ export const storesMutations = {
         const formData = new FormData();
         formData.append("name", data.name);
         formData.append("ceoName", data.ceoName);
-        formData.append("address", `${data.address} ${data.detailAddress}`);
+        formData.append("address", data.address);
         formData.append("landline", data.landline);
         formData.append("license", data.license);
         formData.append("file", data.file!);
@@ -32,7 +32,7 @@ export const storesMutations = {
         const response = await instance.put(`/stores/registrations/${registrationId}`, {
           name: data.name,
           ceoName: data.ceoName,
-          address: `${data.address} ${data.detailAddress}`,
+          address: data.detailAddress ? `${data.address} ${data.detailAddress}` : data.address,
           landline: data.landline,
           license: data.license,
         });
@@ -48,7 +48,7 @@ export const storesMutations = {
         const formData = new FormData();
         formData.append("name", data.name);
         formData.append("ceoName", data.ceoName);
-        formData.append("address", `${data.address} ${data.detailAddress}`);
+        formData.append("address", data.address);
         formData.append("landline", data.landline);
         formData.append("license", data.license);
         formData.append("file", data.file!);
