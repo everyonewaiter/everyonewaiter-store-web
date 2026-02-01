@@ -3,6 +3,7 @@ import { overlay } from "overlay-kit";
 import useMediaQuery from "react-responsive";
 import { useNavigate } from "react-router-dom";
 import { menuQueries } from "@/api/menus/queries";
+import Spinner from "@/components/feedback/Spinner";
 import { Plus, Settings, Trash, UpsideDown } from "@/components/icons";
 import MobileTitle from "@/components/layout/MobileTitle";
 import Button from "@/components/ui/Button/Button";
@@ -175,7 +176,7 @@ function MainMenuPage() {
         </div>
         {isChangedToMenuOrder ? (
           <div className="flex items-center justify-end gap-2">
-            <div className="text-primary center h-9 rounded-lg bg-[#F220200A] px-4 text-xs font-normal md:text-sm">
+            <div className="text-primary hidden h-9 rounded-lg bg-[#F220200A] px-4 text-xs font-normal">
               메뉴의 순서 변경은 메뉴를 꾹 누르신 후, 원하시는 자리로 메뉴를 이동해주세요
             </div>
             <Button
@@ -184,7 +185,7 @@ function MainMenuPage() {
               disabled={isSubmittingOrderChange}
               onClick={saveMoves}
             >
-              {isSubmittingOrderChange ? "저장중..." : "저장"}
+              {isSubmittingOrderChange ? <Spinner /> : "순서 변경 저장"}
             </Button>
             <Button color="grey" className="button-sm" onClick={resetMoves}>
               취소
