@@ -215,7 +215,7 @@ function MainMenuPage() {
             className="center flex aspect-152/210 flex-col gap-1 rounded-xl border border-dashed border-gray-400 bg-gray-700 md:aspect-159/220 lg:aspect-329/440 lg:gap-2 lg:rounded-3xl"
             onClick={() => {
               if (isMobile === true || isMobile === undefined) {
-                navigate(`/menus/create`, { state: { menuId: "create", entry: "create" } });
+                navigate(`/menus/create`, { state: { categoryId: selectedCategory } });
               } else {
                 handleOpenCreateMenuModal();
               }
@@ -243,9 +243,7 @@ function MainMenuPage() {
               onCheckedChange={() => toggleCheckMenu(menu)}
               onClick={() => {
                 if (isMobile === true || isMobile === undefined) {
-                  navigate(`/menus/${menu.menuId}`, {
-                    state: { menuId: menu.menuId, entry: "detail" },
-                  });
+                  navigate(`/menus/${menu.menuId}/${menu.categoryId}`);
                 } else {
                   handleOpenMenuDetailModal(menu);
                 }

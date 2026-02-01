@@ -2,13 +2,13 @@ import { useEffect, useRef, useState, type ChangeEvent } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import logo from "@/assets/images/logo.svg";
-import Spinner from '@/components/feedback/Spinner';
+import Spinner from "@/components/feedback/Spinner";
 import { Form, FormErrorMessage } from "@/components/form/Form";
 import { Close } from "@/components/icons";
 import { Dialog } from "@/components/overlay/Dialog";
 import Button from "@/components/ui/Button/Button";
 import Image from "@/components/ui/Image";
-import useMenuFormSubmit from '@/hooks/menu/useMenuFormSubmit';
+import useMenuFormSubmit from "@/hooks/menu/useMenuFormSubmit";
 import cn from "@/lib/utils";
 import MenuDetailForm from "@/pages/main/owner/menus/MenuDetailForm";
 import MenuDetailOptions from "@/pages/main/owner/menus/MenuDetailOptions";
@@ -20,8 +20,7 @@ type MenuDetailMode = "create" | "detail" | "edit";
 
 interface MenuDetailContentProps extends ModalProps {
   entry: "create" | "detail";
-  menu: MenuDetail;
-  close: () => void;
+  menu?: MenuDetail;
   initialCategoryId?: string;
 }
 
@@ -32,7 +31,9 @@ function MenuDetailContent({
   initialCategoryId,
 }: Readonly<MenuDetailContentProps>) {
   const imageRef = useRef<HTMLInputElement>(null);
-  
+
+  console.log(initialCategoryId);
+
   const [mode, setMode] = useState<MenuDetailMode>(entry === "create" ? "create" : "detail");
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [selectedGroup, setSelectedGroup] = useState<MenuOptionGroupType>("MANDATORY");
@@ -63,7 +64,8 @@ function MenuDetailContent({
       form.reset({
         ...menu,
         price: menu?.price ? menu.price.toLocaleString("ko-KR") : "",
-        requiredOptionGroups: menu?.menuOptionGroups
+        requiredOptionGroups:
+          menu?.menuOptionGroups
             .filter((group) => group.type === "MANDATORY")
             .map((group) => ({
               ...group,
@@ -71,8 +73,9 @@ function MenuDetailContent({
                 name: option.name,
                 price: option.price.toLocaleString("ko-KR"),
               })),
-        })) ?? [],
-        optionalOptionGroups: menu?.menuOptionGroups
+            })) ?? [],
+        optionalOptionGroups:
+          menu?.menuOptionGroups
             .filter((group) => group.type === "OPTIONAL")
             .map((group) => ({
               ...group,
@@ -80,27 +83,26 @@ function MenuDetailContent({
                 name: option.name,
                 price: option.price.toLocaleString("ko-KR"),
               })),
-          })) ?? [],
-      })
+            })) ?? [],
+      });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [menu])
+  }, [menu]);
 
   const { isSubmitting, handleSubmit } = useMenuFormSubmit({
     form,
-    menu,
+    menu: menu as MenuDetail,
     isCreating,
     close,
   });
 
   const canEdit = mode !== "detail" && !isSubmitting;
 
-
   const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {            
+    if (file) {
       const previewUrl = URL.createObjectURL(file);
-      form.setValue('image', previewUrl);
+      form.setValue("image", previewUrl);
       setImageFile(file);
     }
   };
@@ -126,18 +128,18 @@ function MenuDetailContent({
           </div>
         </div>
 
-        <div className="hide-scrollbar flex min-h-0 flex-1 flex-col gap-5 md:overflow-y-auto lg:flex-none lg:overflow-y-hidden lg:gap-8">
+        <div className="hide-scrollbar flex min-h-0 flex-1 flex-col gap-5 md:overflow-y-auto lg:flex-none lg:gap-8 lg:overflow-y-hidden">
           <div className="flex w-full flex-col gap-4 md:flex-1 md:flex-row md:justify-between md:gap-2 lg:h-162 lg:gap-4.5">
             <div className="flex flex-col gap-1 md:flex-[0.29] lg:gap-2">
               {menu?.image && !isCreating && (
                 <Image
                   src={menu?.image ?? ""}
                   alt={menu?.name ?? ""}
-                  className="h-auto aspect-320/373 rounded-xl md:aspect-240/280 lg:aspect-364/478 lg:rounded-3xl object-cover"
+                  className="aspect-320/373 h-auto rounded-xl object-cover md:aspect-240/280 lg:aspect-364/478 lg:rounded-3xl"
                   hasBlur
                 />
               )}
-              {(!menu?.image && !form.watch('image') && isCreating) && (
+              {!menu?.image && !form.watch("image") && isCreating && (
                 <div
                   className={cn(
                     "center aspect-320/373 rounded-xl border bg-gray-700 md:aspect-240/280 lg:aspect-364/478 lg:rounded-3xl",
@@ -148,7 +150,11 @@ function MenuDetailContent({
                 </div>
               )}
               {imageFile && (
-                <img src={form.watch('image')} alt="메뉴 이미지 미리보기" className="aspect-320/373 rounded-xl object-cover md:aspect-240/280 lg:aspect-364/478 lg:rounded-3xl" />
+                <img
+                  src={form.watch("image")}
+                  alt="메뉴 이미지 미리보기"
+                  className="aspect-320/373 rounded-xl object-cover md:aspect-240/280 lg:aspect-364/478 lg:rounded-3xl"
+                />
               )}
               {isCreating && (
                 <Button
@@ -172,15 +178,21 @@ function MenuDetailContent({
                   이미지 등록
                 </Button>
               )}
-              <input type="file" accept="image/png, image/jpg, image/jpeg" hidden onChange={handleImageChange} ref={imageRef} />
+              <input
+                type="file"
+                accept="image/png, image/jpg, image/jpeg"
+                hidden
+                onChange={handleImageChange}
+                ref={imageRef}
+              />
               {form.formState.errors.image && (
                 <FormErrorMessage>{form.formState.errors.image.message}</FormErrorMessage>
               )}
             </div>
 
             {/* 메뉴 정보 폼 */}
-            <div className="h-fit  flex w-full flex-col gap-3 rounded-xl border border-gray-600 p-4 md:flex-[0.33] lg:gap-4 lg:rounded-3xl lg:p-6">
-              <MenuDetailForm canEdit={canEdit} isDetail={mode === 'detail'} />
+            <div className="flex h-fit w-full flex-col gap-3 rounded-xl border border-gray-600 p-4 md:flex-[0.33] lg:gap-4 lg:rounded-3xl lg:p-6">
+              <MenuDetailForm canEdit={canEdit} isDetail={mode === "detail"} />
             </div>
 
             {/* 메뉴 옵션 폼 */}
@@ -200,8 +212,8 @@ function MenuDetailContent({
             </div>
           </div>
         </div>
-        <div className="shrink-0 -bottom-5 flex w-full justify-center bg-white pb-5 md:sticky md:z-10 md:pt-5 lg:relative lg:p-0">
-          {mode === 'detail' ? (
+        <div className="-bottom-5 flex w-full shrink-0 justify-center bg-white pb-5 md:sticky md:z-10 md:pt-5 lg:relative lg:p-0">
+          {mode === "detail" ? (
             <Button
               color="black"
               type="button"
