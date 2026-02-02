@@ -176,7 +176,7 @@ function MainMenuPage() {
         </div>
         {isChangedToMenuOrder ? (
           <div className="flex items-center justify-end gap-2">
-            <div className="text-primary hidden h-9 rounded-lg bg-[#F220200A] px-4 text-xs font-normal">
+            <div className="text-primary center hidden h-9 rounded-lg bg-[#F220200A] px-4 text-xs font-normal md:block">
               메뉴의 순서 변경은 메뉴를 꾹 누르신 후, 원하시는 자리로 메뉴를 이동해주세요
             </div>
             <Button
@@ -210,52 +210,53 @@ function MainMenuPage() {
           </div>
         )}
       </div>
-      <div className="grid grid-cols-2 gap-x-4 gap-y-4 py-4 md:grid-cols-4 md:gap-x-3.5 lg:gap-x-6.5 lg:gap-y-10">
-        {!isChangedToMenuOrder && !getCategories.isLoading && (
-          <button
-            className="center flex aspect-152/210 flex-col gap-1 rounded-xl border border-dashed border-gray-400 bg-gray-700 md:aspect-159/220 lg:aspect-329/440 lg:gap-2 lg:rounded-3xl"
-            onClick={() => {
-              if (isMobile === true || isMobile === undefined) {
-                navigate(`/menus/create`, { state: { categoryId: selectedCategory } });
-              } else {
-                handleOpenCreateMenuModal();
-              }
-            }}
-          >
-            <Plus className="size-8 text-gray-100 lg:size-10" />
-            <span className="text-gray-0 text-base font-medium lg:text-lg">메뉴 추가</span>
-          </button>
-        )}
-        <DragList
-          className="contents"
-          items={menus}
-          onReorder={(items, sourceId, targetId, where) => {
-            setMenus(items);
-            addToChangeList({ sourceId: String(sourceId), targetId: String(targetId), where });
-          }}
-          canDrag={isChangedToMenuOrder}
-          keyExtractor={(item) => item.menuId}
-          strategy={rectSortingStrategy}
-          renderItem={(menu, index) => (
-            <MenuCard
-              className={isChangedToMenuOrder ? "pointer-events-none" : ""}
-              key={menu.menuId}
-              menu={menu}
-              isChecked={checkedMenus.includes(menu)}
-              onCheckedChange={() => toggleCheckMenu(menu)}
+      <DragList
+        className="grid grid-cols-2 gap-x-4 gap-y-4 py-4 md:grid-cols-4 md:gap-x-3.5 lg:gap-x-6.5 lg:gap-y-10"
+        prepend={
+          !isChangedToMenuOrder && !getCategories.isLoading ? (
+            <button
+              type="button"
+              className="center flex aspect-152/210 flex-col gap-1 rounded-xl border border-dashed border-gray-400 bg-gray-700 md:aspect-159/220 lg:aspect-329/440 lg:gap-2 lg:rounded-3xl"
               onClick={() => {
                 if (isMobile === true || isMobile === undefined) {
-                  navigate(`/menus/${menu.menuId}/${menu.categoryId}`);
+                  navigate(`/menus/create`, { state: { categoryId: selectedCategory } });
                 } else {
-                  handleOpenMenuDetailModal(menu);
+                  handleOpenCreateMenuModal();
                 }
               }}
-              disabled={isChangedToMenuOrder}
-              index={index}
-            />
-          )}
-        />
-      </div>
+            >
+              <Plus className="size-8 text-gray-100 lg:size-10" />
+              <span className="text-gray-0 text-base font-medium lg:text-lg">메뉴 추가</span>
+            </button>
+          ) : null
+        }
+        items={menus}
+        onReorder={(items, sourceId, targetId, where) => {
+          setMenus(items);
+          addToChangeList({ sourceId: String(sourceId), targetId: String(targetId), where });
+        }}
+        canDrag={isChangedToMenuOrder}
+        keyExtractor={(item) => item.menuId}
+        strategy={rectSortingStrategy}
+        renderItem={(menu, index) => (
+          <MenuCard
+            className={isChangedToMenuOrder ? "pointer-events-none" : ""}
+            key={menu.menuId}
+            menu={menu}
+            isChecked={checkedMenus.includes(menu)}
+            onCheckedChange={() => toggleCheckMenu(menu)}
+            onClick={() => {
+              if (isMobile === true || isMobile === undefined) {
+                navigate(`/menus/${menu.menuId}/${menu.categoryId}`);
+              } else {
+                handleOpenMenuDetailModal(menu);
+              }
+            }}
+            disabled={isChangedToMenuOrder}
+            index={index}
+          />
+        )}
+      />
     </div>
   ) : (
     <CategoryEmptyState />

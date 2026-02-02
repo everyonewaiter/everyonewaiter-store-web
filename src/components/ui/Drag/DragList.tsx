@@ -52,6 +52,7 @@ interface DraggableListProps<T> {
   strategy?: SortingStrategy;
   modifiers?: Modifier[];
   className?: string;
+  prepend?: ReactNode;
   onDragStateChange?: (isDragging: boolean) => void;
 }
 
@@ -64,6 +65,7 @@ export function DragList<T>({
   strategy = verticalListSortingStrategy,
   modifiers,
   className,
+  prepend,
   onDragStateChange,
 }: Readonly<DraggableListProps<T>>) {
   const sensors = useSensors(
@@ -114,6 +116,7 @@ export function DragList<T>({
     >
       <SortableContext items={itemIds} strategy={strategy}>
         <div className={className}>
+          {prepend}
           {items.map((item, index) => {
             const id = keyExtractor(item);
             return (

@@ -150,6 +150,7 @@ function CategoryModal({ isOpen, close, categories }: Readonly<CategoryModalProp
                 form.setValue("categories", items);
                 setChangeOrdersList((prev) => [...prev, { sourceId, targetId, where }]);
               }}
+              className="flex flex-col gap-3"
               canDrag={mode === "CHANGE_ORDER"}
               keyExtractor={(item) => item.categoryId}
               renderItem={(category, index) => (
