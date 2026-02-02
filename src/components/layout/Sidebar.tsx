@@ -3,6 +3,8 @@ import { useQuery } from "@tanstack/react-query";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { storesQueries } from "@/api/stores/queries";
 import logoTextHorizontal from "@/assets/images/logo-text-horizontal.svg";
+import logoText from "@/assets/images/logo-text.svg";
+import logo from "@/assets/images/logo.svg";
 import { Skeleton } from "@/components/feedback/Skeleton";
 import { Category, Home, Mobile, Settings, Shop } from "@/components/icons";
 import Dropdown from "@/components/ui/Dropdown";
@@ -72,16 +74,22 @@ function Sidebar({ closeMobile }: Readonly<SidebarProps>) {
     <>
       <button
         onClick={handleCloseMobile}
-        className="flex items-center px-4 pt-5 pb-2.5 md:pt-4 lg:px-6 lg:py-8 lg:pb-5"
+        className="flex h-[60px] items-center gap-3 px-4 pt-5 pb-2.5 md:h-[56px] md:pt-4 lg:h-[88px] lg:px-6 lg:py-8 lg:pb-5"
       >
         <img
           src={logoTextHorizontal}
           alt="logo text horizontal"
           width={220}
           height={40}
-          className="w-39.5 md:w-37 lg:w-55"
-          loading="eager"
+          className="hidden md:block md:w-37 lg:w-55"
           fetchPriority="high"
+          loading="eager"
+        />
+        <img src={logo} alt="logo text horizontal" className="h-9 md:hidden" />
+        <img
+          src={logoText}
+          alt="logo text horizontal"
+          className="w-24 md:hidden md:w-29.5 lg:w-55"
         />
       </button>
       <div className="flex min-w-0 flex-col gap-4 px-4 md:gap-2 md:px-3 lg:px-5">

@@ -4,6 +4,7 @@ const storeInfoSchema = z.object({
   name: z.string(),
   license: z.string(),
   address: z.string(),
+  landline: z.string(),
   origins: z.array(
     z.object({
       id: z.string(),

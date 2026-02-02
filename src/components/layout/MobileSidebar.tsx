@@ -24,7 +24,7 @@ function MobileSidebar({ children }: Readonly<MobileSidebarProps>) {
       </SheetContent>
 
       <div className="flex h-dvh flex-col md:h-full">
-        <header className="relative flex shrink-0 items-center justify-center gap-3 border-b border-b-gray-600 px-5 pt-5 pb-4 md:hidden">
+        <header className="fixed flex w-full shrink-0 items-center justify-center gap-3 border-b border-b-gray-600 bg-white px-5 pt-5 pb-4 md:relative md:hidden">
           <img src={logo} alt="logo text horizontal" className="size-6" />
           <img src={logoText} alt="logo text horizontal" className="md:w-29.5 lg:w-55" />
           {isGuestChildrenPage && (
@@ -38,7 +38,7 @@ function MobileSidebar({ children }: Readonly<MobileSidebarProps>) {
             </SheetTrigger>
           )}
         </header>
-        <div className="flex min-h-0 flex-1">{children}</div>
+        <div className="flex min-h-0 flex-1 pt-15 md:pt-0">{children}</div>
       </div>
     </Sheet>
   );
