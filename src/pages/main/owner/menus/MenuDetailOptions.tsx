@@ -1,4 +1,5 @@
-import { useState, type ChangeEvent } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, type ChangeEvent } from "react";
+import { createPortal } from "react-dom";
 import { useFieldArray, useFormContext } from "react-hook-form";
 import {
   ChevronRight,
@@ -44,6 +45,11 @@ function MenuDetailOptions({
   const [showInfo, setShowInfo] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
   const [selectedPopupMode, setSelectedPopupMode] = useState<"CHANGE_ORDER" | "DELETE" | null>(
+    null
+  );
+  const infoRef = useRef<HTMLSpanElement>(null);
+  const tooltipRef = useRef<HTMLDivElement>(null);
+  const [tooltipPosition, setTooltipPosition] = useState<{ bottom: number; left: number } | null>(
     null
   );
 
@@ -116,6 +122,44 @@ function MenuDetailOptions({
     );
   };
 
+  const updateTooltipPosition = () => {
+    if (!showInfo || !infoRef.current) return;
+    const rect = infoRef.current.getBoundingClientRect();
+    const gap = 8;
+    setTooltipPosition({
+      bottom: window.innerHeight - rect.top + gap,
+      left: rect.left + rect.width / 2,
+    });
+  };
+
+  useLayoutEffect(() => {
+    if (!showInfo) return;
+    updateTooltipPosition();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [showInfo]);
+
+  useEffect(() => {
+    if (!showInfo) return;
+    const handleClickOutside = (e: MouseEvent) => {
+      if (
+        infoRef.current?.contains(e.target as Node) ||
+        tooltipRef.current?.contains(e.target as Node)
+      ) {
+        return;
+      }
+      setTooltipPosition(null);
+      setShowInfo(false);
+    };
+    const timeoutId = globalThis.setTimeout(
+      () => document.addEventListener("click", handleClickOutside),
+      0
+    );
+    return () => {
+      globalThis.clearTimeout(timeoutId);
+      document.removeEventListener("click", handleClickOutside);
+    };
+  }, [showInfo]);
+
   return (
     <div
       onKeyDown={(e) => {
@@ -134,18 +178,52 @@ function MenuDetailOptions({
       onClick={() => setSelectedGroup(type)}
     >
       <div className="relative flex w-full shrink-0 items-center justify-between">
-        <div className="relative flex flex-1 items-center gap-1.5 lg:gap-2">
+        <div className="flex flex-1 items-center gap-1.5 lg:gap-2">
           <span className="text-gray-0 text-sm font-medium lg:text-lg">{text} 옵션</span>
-          <Info
-            className="text-gray-0 size-5 cursor-pointer lg:size-6"
-            onClick={() => setShowInfo((prev) => !prev)}
-          />
-          {showInfo && (
-            <div className="absolute bottom-9 left-7 z-999 rounded-2xl bg-white p-2.5 text-[10px] whitespace-pre-line text-[#505050] drop-shadow-[0px_2px_10px_rgba(0,0,0,0.08)] lg:bottom-11 lg:left-11.5 lg:p-3">
-              {`첫번째 옵션 상세가 기본값으로 설정됩니다.\n순서변경 아이콘 클릭 시 옵션명 및 옵션상세의\n순서를 변경할 수 있습니다.`}
-              <div className="absolute -bottom-3.5 left-6 h-0 w-0 border-t-14 border-r-[14.5px] border-l-[14.5px] border-t-white border-r-transparent border-l-transparent" />
-            </div>
-          )}
+          <span
+            ref={infoRef}
+            role="button"
+            tabIndex={0}
+            className="inline-flex cursor-pointer"
+            onClick={(e) => {
+              e.stopPropagation();
+              setShowInfo((prev) => {
+                if (prev) setTooltipPosition(null);
+                return !prev;
+              });
+            }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.stopPropagation();
+                setShowInfo((prev) => {
+                  if (prev) setTooltipPosition(null);
+                  return !prev;
+                });
+              }
+            }}
+          >
+            <Info className="text-gray-0 size-5 lg:size-6" />
+          </span>
+          {showInfo &&
+            tooltipPosition &&
+            createPortal(
+              <div
+                ref={tooltipRef}
+                className="fixed z-9999 w-max max-w-[calc(100vw-2rem)] rounded-2xl bg-white p-2.5 text-[10px] whitespace-pre-line text-[#505050] drop-shadow-[0px_2px_10px_rgba(0,0,0,0.08)] lg:p-3"
+                style={{
+                  bottom: `${tooltipPosition.bottom}px`,
+                  left: `${tooltipPosition.left}px`,
+                  transform: "translateX(-50%)",
+                }}
+              >
+                {`첫번째 옵션 상세가 기본값으로 설정됩니다.\n순서변경 아이콘 클릭 시 옵션명 및 옵션상세의\n순서를 변경할 수 있습니다.`}
+                <div
+                  className="pointer-events-none absolute -bottom-3.5 left-1/2 h-0 w-0 -translate-x-1/2 border-t-14 border-r-[14.5px] border-l-[14.5px] border-t-white border-r-transparent border-l-transparent"
+                  aria-hidden
+                />
+              </div>,
+              document.body
+            )}
         </div>
         {selectedPopupMode === "CHANGE_ORDER" ? (
           <Button
@@ -207,12 +285,13 @@ function MenuDetailOptions({
           <div className="h-4 shrink-0" />
           <div className="flex min-h-0 flex-1 flex-col justify-between overflow-hidden md:justify-start">
             {fields.length ? (
-              <div className="hide-scrollbar flex min-h-0 flex-col gap-4 overflow-y-auto whitespace-pre-line md:h-79 lg:h-100">
+              <div className="hide-scrollbar min-h-0 overflow-y-auto md:h-79 lg:h-100">
                 <DragList
                   items={fields}
                   onReorder={handleReorder}
                   canDrag={selectedPopupMode === "CHANGE_ORDER"}
                   keyExtractor={(field) => field.id}
+                  className="flex flex-col gap-4"
                   renderItem={(field, index) => {
                     const group = form.watch(
                       `${optionGroupsName}.${index}` as
