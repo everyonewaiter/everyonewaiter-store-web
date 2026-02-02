@@ -227,6 +227,7 @@ function MainMenuPage() {
           </button>
         )}
         <DragList
+          className="contents"
           items={menus}
           onReorder={(items, sourceId, targetId, where) => {
             setMenus(items);
