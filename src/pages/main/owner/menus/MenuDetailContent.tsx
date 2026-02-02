@@ -32,8 +32,6 @@ function MenuDetailContent({
 }: Readonly<MenuDetailContentProps>) {
   const imageRef = useRef<HTMLInputElement>(null);
 
-  console.log(initialCategoryId);
-
   const [mode, setMode] = useState<MenuDetailMode>(entry === "create" ? "create" : "detail");
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [selectedGroup, setSelectedGroup] = useState<MenuOptionGroupType>("MANDATORY");
