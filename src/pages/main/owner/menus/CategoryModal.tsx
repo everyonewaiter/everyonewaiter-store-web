@@ -34,11 +34,13 @@ function CategoryModal({ isOpen, close, categories }: Readonly<CategoryModalProp
 
   const { mutateAsync: moveCategories } = useMutation(categoryMutations.moveCategories());
   const { mutateAsync: createCategory } = useMutation(categoryMutations.createCategory());
+  const { mutateAsync: updateCategory } = useMutation(categoryMutations.updateCategory());
+  const { mutate: deleteCategory } = useMutation(categoryMutations.deleteCategory());
 
   useEffect(() => {
     form.reset({ categories });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [categories]);
+  }, []);
 
   const [mode, setMode] = useState<"CREATE" | "CHANGE_ORDER">("CREATE");
 
@@ -53,9 +55,20 @@ function CategoryModal({ isOpen, close, categories }: Readonly<CategoryModalProp
       const newCategories = formCategories.filter(
         (fc) => !categories.some((c) => c.categoryId === fc.categoryId)
       );
+      const updatedCategories = formCategories.filter((fc) =>
+        categories.some((c) => c.categoryId === fc.categoryId)
+      );
 
       for (const category of newCategories) {
         await createCategory({ storeId: storeId!, data: { name: category.name } });
+      }
+
+      for (const category of updatedCategories) {
+        await updateCategory({
+          storeId: storeId!,
+          categoryId: category.categoryId,
+          data: { name: category.name },
+        });
       }
 
       toast.success("카테고리 저장이 완료되었습니다.");
@@ -90,6 +103,20 @@ function CategoryModal({ isOpen, close, categories }: Readonly<CategoryModalProp
     form.reset({ categories });
     setMode("CREATE");
     setChangeOrdersList([]);
+  };
+
+  /**
+   * 카테고리 삭제 기능
+   * @param categoryId 카테고리 ID
+   */
+  const handleMenuDelete = (categoryId: string) => {
+    deleteCategory(
+      { storeId: storeId!, categoryId: categoryId },
+      {
+        onSuccess: () => toast.success("카테고리 삭제가 완료되었습니다."),
+        onError: (error) => toast.error(errorResponse(error).data.message),
+      }
+    );
   };
 
   return (
@@ -172,7 +199,10 @@ function CategoryModal({ isOpen, close, categories }: Readonly<CategoryModalProp
                         mode === "CREATE" ? "border-status-error" : "border-gray-600"
                       )}
                       onClick={() => {
-                        if (mode === "CREATE") remove(index);
+                        if (mode === "CREATE") {
+                          remove(index);
+                          handleMenuDelete(category.categoryId);
+                        }
                       }}
                     >
                       {mode === "CREATE" ? (
