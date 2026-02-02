@@ -111,7 +111,9 @@ function MainSettingsPage() {
       value: location,
       successHandler: () => {
         form.setValue("printerLocation", location);
-        toast.success("매장 위치가 변경되었습니다.");
+        toast.success(
+          `주방 프린터기 연결 위치가 ${location === "POS" ? "POS" : "홀"}로 변경되었습니다.`
+        );
       },
     });
   };
@@ -124,7 +126,7 @@ function MainSettingsPage() {
     handleUpdateStore({
       key: "ksnetDeviceNo",
       value: deviceNo,
-      successHandler: () => toast.success("기기 번호가 변경되었습니다."),
+      successHandler: () => toast.success("KSNET 단말기 번호가 변경되었습니다."),
       settledHandler: () => setIsSubmitting({ ...isSubmitting, ksnetDeviceNo: false }),
     });
   };
