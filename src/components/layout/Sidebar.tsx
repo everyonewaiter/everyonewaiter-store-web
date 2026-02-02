@@ -1,4 +1,4 @@
-import { useMemo, useState, type ElementType } from "react";
+import type { ElementType } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { storesQueries } from "@/api/stores/queries";
@@ -51,16 +51,7 @@ function Sidebar({ closeMobile }: Readonly<SidebarProps>) {
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const { data: stores, isLoading } = useQuery(storesQueries.getStores());
-  const { setStoreId } = useStoreId();
-  const [selectedStoreId, setSelectedStoreId] = useState<string | null>(null);
-
-  const selectedStore = useMemo(() => {
-    if (selectedStoreId && stores?.stores) {
-      const found = stores.stores.find((store) => store.storeId === selectedStoreId);
-      if (found) return found;
-    }
-    return stores?.stores?.[0] ?? null;
-  }, [stores, selectedStoreId]);
+  const { storeId, setStoreId } = useStoreId();
 
   const handleCloseMobile = () => {
     if (closeMobile) {
@@ -94,7 +85,7 @@ function Sidebar({ closeMobile }: Readonly<SidebarProps>) {
       </button>
       <div className="flex min-w-0 flex-col gap-4 px-4 md:gap-2 md:px-3 lg:px-5">
         <div className="min-w-0">
-          {isLoading || !selectedStore ? (
+          {isLoading || !storeId ? (
             <Skeleton>
               <Skeleton.Input />
             </Skeleton>
@@ -108,13 +99,13 @@ function Sidebar({ closeMobile }: Readonly<SidebarProps>) {
                     }))
                   : []
               }
-              value={selectedStore.storeId}
+              value={storeId}
               onChange={(item) => {
-                setSelectedStoreId(item.id);
                 setStoreId(item.id);
                 navigate("/");
+                closeMobile?.();
               }}
-              defaultText={selectedStore.name}
+              defaultText={stores?.stores?.find((store) => store.storeId === storeId)?.name ?? ""}
               triggerClassName={
                 "bg-primary border-primary text-white text-sm font-semibold lg:text-lg lg:font-bold pl-4 pr-3 lg:pl-5 pr-4 h-12 lg:h-14 w-full min-w-0 overflow-hidden text-ellipsis whitespace-nowrap"
               }
