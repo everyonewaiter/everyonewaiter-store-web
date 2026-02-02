@@ -143,7 +143,7 @@ function CategoryModal({ isOpen, close, categories }: Readonly<CategoryModalProp
         }
       >
         <div className="flex w-full flex-1 flex-col overflow-hidden">
-          <div className="hide-scrollbar flex flex-1 flex-col gap-3 overflow-y-auto pb-4 md:gap-3 md:pb-0">
+          <div className="hide-scrollbar flex flex-1 flex-col gap-3 overflow-y-auto md:gap-3">
             <DragList
               items={fields}
               onReorder={(items, sourceId, targetId, where) => {
@@ -186,29 +186,31 @@ function CategoryModal({ isOpen, close, categories }: Readonly<CategoryModalProp
             />
           </div>
           {mode === "CREATE" && (
-            <Button
-              type="button"
-              color="grey"
-              variant="ghost"
-              responsive
-              responsiveButtons={{
-                lg: {
-                  buttonSize: "lg",
-                  className: "mt-4 w-full border-dashed font-normal!",
-                },
-                md: {
-                  buttonSize: "sm",
-                  className: "w-full border-dashed rounded-xl!",
-                },
-                sm: {
-                  buttonSize: "sm",
-                  className: "w-full border-dashed rounded-xl!",
-                },
-              }}
-              onClick={() => append({ categoryId: String(fields.length + 1), name: "" })}
-            >
-              <Plus className="size-7" /> 카테고리 추가
-            </Button>
+            <div className="pt-5 lg:pt-1">
+              <Button
+                type="button"
+                color="grey"
+                variant="ghost"
+                responsive
+                responsiveButtons={{
+                  lg: {
+                    buttonSize: "lg",
+                    className: "mt-4 w-full border-dashed font-normal!",
+                  },
+                  md: {
+                    buttonSize: "sm",
+                    className: "w-full border-dashed rounded-xl!",
+                  },
+                  sm: {
+                    buttonSize: "sm",
+                    className: "w-full border-dashed rounded-xl!",
+                  },
+                }}
+                onClick={() => append({ categoryId: String(fields.length + 1), name: "" })}
+              >
+                <Plus className="size-7" /> 카테고리 추가
+              </Button>
+            </div>
           )}
         </div>
       </Modal>
