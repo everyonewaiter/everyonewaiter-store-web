@@ -13,7 +13,9 @@ function RootLayout() {
   const location = useLocation();
   const isGuest = location.pathname.startsWith("/guest");
 
-  const { data: stores, isLoading } = useQuery(storesQueries.getStores());
+  const { data: stores, isLoading, isError } = useQuery(storesQueries.getStores());
+
+  if (isLoading || isError) return null;
 
   if (!isLoading) {
     if ((stores?.stores?.length ?? 0) === 0 && !isGuest) {

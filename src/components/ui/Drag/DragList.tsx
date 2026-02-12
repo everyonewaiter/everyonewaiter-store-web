@@ -52,6 +52,7 @@ interface DraggableListProps<T> {
   strategy?: SortingStrategy;
   modifiers?: Modifier[];
   className?: string;
+  prepend?: ReactNode;
   onDragStateChange?: (isDragging: boolean) => void;
 }
 
@@ -64,10 +65,13 @@ export function DragList<T>({
   strategy = verticalListSortingStrategy,
   modifiers,
   className,
+  prepend,
   onDragStateChange,
 }: Readonly<DraggableListProps<T>>) {
   const sensors = useSensors(
-    useSensor(PointerSensor),
+    useSensor(PointerSensor, {
+      activationConstraint: { delay: canDrag ? 0 : 999999, tolerance: 5 },
+    }),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
     })
@@ -102,7 +106,7 @@ export function DragList<T>({
       ? [restrictToVerticalAxis, restrictToParentElement]
       : [restrictToParentElement];
 
-  return canDrag ? (
+  return (
     <DndContext
       sensors={sensors}
       collisionDetection={closestCenter}
@@ -112,6 +116,7 @@ export function DragList<T>({
     >
       <SortableContext items={itemIds} strategy={strategy}>
         <div className={className}>
+          {prepend}
           {items.map((item, index) => {
             const id = keyExtractor(item);
             return (
@@ -123,7 +128,5 @@ export function DragList<T>({
         </div>
       </SortableContext>
     </DndContext>
-  ) : (
-    <>{items.map((item, index) => renderItem(item, index))}</>
   );
 }

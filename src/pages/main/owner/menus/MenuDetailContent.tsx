@@ -1,12 +1,14 @@
-import { useState } from "react";
+import { useEffect, useRef, useState, type ChangeEvent } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import logo from "@/assets/images/logo.svg";
+import Spinner from "@/components/feedback/Spinner";
 import { Form, FormErrorMessage } from "@/components/form/Form";
 import { Close } from "@/components/icons";
 import { Dialog } from "@/components/overlay/Dialog";
 import Button from "@/components/ui/Button/Button";
 import Image from "@/components/ui/Image";
+import useMenuFormSubmit from "@/hooks/menu/useMenuFormSubmit";
 import cn from "@/lib/utils";
 import MenuDetailForm from "@/pages/main/owner/menus/MenuDetailForm";
 import MenuDetailOptions from "@/pages/main/owner/menus/MenuDetailOptions";
@@ -18,8 +20,7 @@ type MenuDetailMode = "create" | "detail" | "edit";
 
 interface MenuDetailContentProps extends ModalProps {
   entry: "create" | "detail";
-  menu: MenuDetail;
-  close: () => void;
+  menu?: MenuDetail;
   initialCategoryId?: string;
 }
 
@@ -29,85 +30,87 @@ function MenuDetailContent({
   close,
   initialCategoryId,
 }: Readonly<MenuDetailContentProps>) {
+  const imageRef = useRef<HTMLInputElement>(null);
+
   const [mode, setMode] = useState<MenuDetailMode>(entry === "create" ? "create" : "detail");
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [selectedGroup, setSelectedGroup] = useState<MenuOptionGroupType>("MANDATORY");
 
-  const isEditing = mode === "edit";
   const isCreating = mode === "create";
-  const isDetail = mode === "detail";
-
-  const canEdit = isCreating || isEditing;
 
   const form = useForm<MenuSchema>({
     resolver: zodResolver(menuSchema),
     mode: "onSubmit",
     reValidateMode: "onChange",
-    defaultValues: isCreating
-      ? {
-          categoryId: initialCategoryId,
-          name: "",
-          description: "",
-          price: "",
-          spicy: 0,
-          state: "DEFAULT",
-          label: "DEFAULT",
-          image: "",
-          printEnabled: true,
-          requiredOptionGroups: [],
-          optionalOptionGroups: [],
-        }
-      : {
-          categoryId: menu?.categoryId ?? "",
-          name: menu?.name ?? "",
-          description: menu?.description,
-          price: menu?.price ? menu.price.toLocaleString("ko-KR") : "",
-          spicy: menu?.spicy ?? 0,
-          state: menu?.state ?? "DEFAULT",
-          label: menu?.label ?? "DEFAULT",
-          image: menu?.image ?? "",
-          printEnabled: menu?.printEnabled ?? true,
-          requiredOptionGroups:
-            menu?.menuOptionGroups
-              .filter((group) => group.type === "MANDATORY")
-              .map((group) => ({
-                name: group.name,
-                type: group.type,
-                printEnabled: group.printEnabled,
-                menuOptions: group.menuOptions.map((option) => ({
-                  name: option.name,
-                  price: option.price.toLocaleString("ko-KR"),
-                })),
-              })) ?? [],
-          optionalOptionGroups:
-            menu?.menuOptionGroups
-              .filter((group) => group.type === "OPTIONAL")
-              .map((group) => ({
-                name: group.name,
-                type: group.type,
-                printEnabled: group.printEnabled,
-                menuOptions: group.menuOptions.map((option) => ({
-                  name: option.name,
-                  price: option.price.toLocaleString("ko-KR"),
-                })),
-              })) ?? [],
-        },
+    defaultValues: {
+      categoryId: initialCategoryId ?? "",
+      name: "",
+      description: "",
+      price: "",
+      spicy: 0,
+      state: "DEFAULT",
+      label: "DEFAULT",
+      image: "",
+      printEnabled: true,
+      requiredOptionGroups: [],
+      optionalOptionGroups: [],
+    },
   });
 
-  const [selectedGroup, setSelectedGroup] = useState<MenuOptionGroupType>("MANDATORY");
-
-  const handleSubmit = form.handleSubmit(() => {
-    if (isCreating) {
-      // TODO: 메뉴 생성 로직 추가
-      // TODO: 메뉴의 가격과 옵션의 가격을 number로 변경
-    } else {
-      // TODO: 메뉴 수정 로직 추가
-      setMode("detail");
+  useEffect(() => {
+    if (menu?.menuId) {
+      form.reset({
+        ...menu,
+        price: menu?.price ? menu.price.toLocaleString("ko-KR") : "",
+        requiredOptionGroups:
+          menu?.menuOptionGroups
+            .filter((group) => group.type === "MANDATORY")
+            .map((group) => ({
+              ...group,
+              menuOptions: group.menuOptions.map((option) => ({
+                name: option.name,
+                price: option.price.toLocaleString("ko-KR"),
+              })),
+            })) ?? [],
+        optionalOptionGroups:
+          menu?.menuOptionGroups
+            .filter((group) => group.type === "OPTIONAL")
+            .map((group) => ({
+              ...group,
+              menuOptions: group.menuOptions.map((option) => ({
+                name: option.name,
+                price: option.price.toLocaleString("ko-KR"),
+              })),
+            })) ?? [],
+      });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [menu]);
+
+  const { isSubmitting, handleSubmit } = useMenuFormSubmit({
+    form,
+    menu: menu as MenuDetail,
+    isCreating,
+    close,
   });
+
+  const canEdit = mode !== "detail" && !isSubmitting;
+
+  const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const previewUrl = URL.createObjectURL(file);
+      form.setValue("image", previewUrl);
+      setImageFile(file);
+    }
+  };
+
+  if (!isCreating && !menu?.menuId) return null;
 
   return (
     <Form {...form}>
-      <form id="menu-detail-form" onSubmit={handleSubmit}>
-        <div className="flex flex-col gap-5 lg:gap-8">
+      <div className="flex h-full flex-col gap-5 lg:gap-8">
+        <div className="shrink-0">
           <div className="flex justify-between">
             <div className="flex flex-1 flex-col gap-1 lg:gap-3">
               <Dialog.Title className="text-gray-0 text-lg font-semibold lg:text-2xl">
@@ -121,17 +124,20 @@ function MenuDetailContent({
               <Close className="text-gray-0 size-6" />
             </button>
           </div>
+        </div>
 
-          <div className="flex w-full flex-col gap-4 md:h-114 md:flex-1 md:flex-row md:justify-between md:gap-2 lg:h-162 lg:gap-4.5">
+        <div className="hide-scrollbar flex min-h-0 flex-1 flex-col gap-5 md:overflow-y-auto lg:flex-none lg:gap-8 lg:overflow-y-hidden">
+          <div className="flex w-full flex-col gap-4 md:flex-1 md:flex-row md:justify-between md:gap-2 lg:h-162 lg:gap-4.5">
             <div className="flex flex-col gap-1 md:flex-[0.29] lg:gap-2">
-              {menu?.image && (
+              {menu?.image && !isCreating && (
                 <Image
                   src={menu?.image ?? ""}
                   alt={menu?.name ?? ""}
-                  className="aspect-320/373 rounded-xl md:aspect-240/280 lg:aspect-364/478 lg:rounded-3xl"
+                  className="aspect-320/373 h-auto rounded-xl object-cover md:aspect-240/280 lg:aspect-364/478 lg:rounded-3xl"
+                  hasBlur
                 />
               )}
-              {(!menu?.image || isCreating) && (
+              {!menu?.image && !form.watch("image") && isCreating && (
                 <div
                   className={cn(
                     "center aspect-320/373 rounded-xl border bg-gray-700 md:aspect-240/280 lg:aspect-364/478 lg:rounded-3xl",
@@ -140,6 +146,13 @@ function MenuDetailContent({
                 >
                   <img src={logo} alt="logo" className="size-25 opacity-5 grayscale" />
                 </div>
+              )}
+              {imageFile && (
+                <img
+                  src={form.watch("image")}
+                  alt="메뉴 이미지 미리보기"
+                  className="aspect-320/373 rounded-xl object-cover md:aspect-240/280 lg:aspect-364/478 lg:rounded-3xl"
+                />
               )}
               {isCreating && (
                 <Button
@@ -157,20 +170,27 @@ function MenuDetailContent({
                       className: "h-8! rounded-lg! border-gray-300! text-xs! font-normal!",
                     },
                   }}
+                  onClick={() => imageRef.current?.click()}
+                  disabled={isSubmitting}
                 >
                   이미지 등록
                 </Button>
               )}
-              {/* TODO: 이미지 등록 로직 구현 */}
-              <input type="file" hidden />
+              <input
+                type="file"
+                accept="image/png, image/jpg, image/jpeg"
+                hidden
+                onChange={handleImageChange}
+                ref={imageRef}
+              />
               {form.formState.errors.image && (
                 <FormErrorMessage>{form.formState.errors.image.message}</FormErrorMessage>
               )}
             </div>
 
             {/* 메뉴 정보 폼 */}
-            <div className="hide-scrollbar flex w-full flex-col gap-3 overflow-y-auto rounded-xl border border-gray-600 p-4 md:flex-[0.33] lg:gap-4 lg:rounded-3xl lg:p-6">
-              <MenuDetailForm canEdit={canEdit} isDetail={isDetail} />
+            <div className="flex h-fit w-full flex-col gap-3 rounded-xl border border-gray-600 p-4 md:flex-[0.33] lg:gap-4 lg:rounded-3xl lg:p-6">
+              <MenuDetailForm canEdit={canEdit} isDetail={mode === "detail"} />
             </div>
 
             {/* 메뉴 옵션 폼 */}
@@ -190,8 +210,8 @@ function MenuDetailContent({
             </div>
           </div>
         </div>
-        <div className="-bottom-5 flex w-full justify-center bg-white pb-5 md:sticky md:z-10 md:pt-5 lg:relative lg:pt-10 lg:pb-0">
-          {isDetail ? (
+        <div className="-bottom-5 flex w-full shrink-0 justify-center bg-white pb-5 md:sticky md:z-10 md:pt-5 lg:relative lg:p-0">
+          {mode === "detail" ? (
             <Button
               color="black"
               type="button"
@@ -207,7 +227,7 @@ function MenuDetailContent({
             </Button>
           ) : (
             <Button
-              type="submit"
+              type="button"
               form="menu-detail-form"
               responsive
               responsiveButtons={{
@@ -215,12 +235,14 @@ function MenuDetailContent({
                 md: { buttonSize: "sm", className: "w-73" },
                 sm: { buttonSize: "sm", className: "w-full h-10!" },
               }}
+              disabled={isSubmitting}
+              onClick={() => handleSubmit(imageFile)}
             >
-              저장하기
+              {isSubmitting ? <Spinner /> : "저장하기"}
             </Button>
           )}
         </div>
-      </form>
+      </div>
     </Form>
   );
 }

@@ -69,7 +69,7 @@ function ResponsiveButton(
               }),
               hideButton(screenSize as ScreenSize),
               buttonStyle(buttonConfig?.buttonSize ?? "md", buttonConfig?.className ?? ""),
-              commonClassName
+              commonClassName,
             )}
             disabled={disabled}
             type={buttonProps.type ?? "button"}

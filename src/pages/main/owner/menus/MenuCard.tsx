@@ -1,5 +1,6 @@
 import loginBg from "@/assets/images/login-bg-md@2x.webp";
 import Checkbox from "@/components/ui/Checkbox";
+import Image from '@/components/ui/Image';
 import cn from "@/lib/utils";
 import type { Menu } from "@/types/domain/menu";
 
@@ -23,6 +24,7 @@ interface MenuCardProps {
   onClick: () => void;
   className?: string;
   disabled?: boolean;
+  index: number;
 }
 
 function MenuCard({
@@ -32,13 +34,14 @@ function MenuCard({
   onClick,
   className,
   disabled,
+  index,
 }: Readonly<MenuCardProps>) {
   return (
     <div
       className={cn(
         "relative aspect-152/210 cursor-pointer overflow-hidden rounded-xl md:aspect-159/220 lg:aspect-329/440 lg:rounded-3xl",
         isChecked && "outline-primary outline",
-        className
+        className,
       )}
       onKeyDown={(e) => {
         if (e.key === "Enter" || e.key === " ") {
@@ -49,13 +52,23 @@ function MenuCard({
       tabIndex={0}
       onClick={onClick}
     >
-      <img src={loginBg} alt={menu.name} className="h-full w-full object-cover" draggable="false" />
+      <Image
+        src={menu.image}
+        alt={menu.name}
+        className="h-full w-full object-cover"
+        draggable="false"
+        fallbackSrc={loginBg}
+        fetchPriority={index < 5 ? "high" : "auto"}
+        loading={index < 5 ? "eager" : "lazy"}
+        hasBlur
+      />
       {!disabled && (
         <div
           className="absolute top-2.5 left-2.5 z-10 lg:top-4 lg:left-4"
           role="presentation"
           onClick={(e) => e.stopPropagation()}
           onKeyDown={(e) => e.stopPropagation()}
+          aria-label="메뉴 선택 체크박스"
         >
           <Checkbox
             className="size-6 lg:size-8"

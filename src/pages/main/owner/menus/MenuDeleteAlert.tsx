@@ -1,4 +1,11 @@
+import { useMutation } from "@tanstack/react-query";
+import { toast } from "sonner";
+import { MENUS_KEY } from "@/api/menus/keys";
+import { menuMutations } from "@/api/menus/mutations";
 import Alert from "@/components/overlay/Alert";
+import { errorResponse } from "@/lib/error-response";
+import { queryClient } from "@/lib/query-client";
+import { useStoreId } from "@/stores/useStoreId";
 import type { Menu } from "@/types/domain/menu";
 import type { ModalProps } from "@/types/overlay";
 
@@ -7,6 +14,10 @@ interface MenuDeleteAlertProps extends ModalProps {
 }
 
 function MenuDeleteAlert({ deleteItems, ...props }: Readonly<MenuDeleteAlertProps>) {
+  const { storeId } = useStoreId();
+  const { mutate: deleteMenu } = useMutation(menuMutations.deleteMenu());
+  const { mutate: multiDeleteMenus } = useMutation(menuMutations.multiDeleteMenus());
+
   const renderText = () => {
     if (deleteItems?.length === 1) {
       return `을`;
@@ -15,7 +26,46 @@ function MenuDeleteAlert({ deleteItems, ...props }: Readonly<MenuDeleteAlertProp
   };
 
   const handleConfirm = () => {
-    // TODO: 메뉴 삭제 로직 구현
+    if (!deleteItems?.length) return;
+
+    if (deleteItems?.length === 1) {
+      deleteMenu(
+        {
+          storeId: storeId!,
+          menuId: deleteItems[0].menuId,
+          categoryId: deleteItems[0].categoryId,
+        },
+        {
+          onSuccess: () => {
+            toast.success("메뉴 삭제가 완료되었습니다.");
+            queryClient.invalidateQueries({ queryKey: MENUS_KEY.menu });
+            props.close();
+          },
+          onError: (error) => {
+            toast.error(errorResponse(error).data.message);
+          },
+        }
+      );
+    } else {
+      multiDeleteMenus(
+        {
+          storeId: storeId!,
+          data: {
+            menuIds: deleteItems.map((item) => item.menuId),
+          },
+        },
+        {
+          onSuccess: () => {
+            toast.success("메뉴 삭제가 완료되었습니다.");
+            queryClient.invalidateQueries({ queryKey: MENUS_KEY.menu });
+            props.close();
+          },
+          onError: (error) => {
+            toast.error(errorResponse(error).data.message);
+          },
+        }
+      );
+    }
   };
 
   return (

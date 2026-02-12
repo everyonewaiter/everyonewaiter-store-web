@@ -1,14 +1,29 @@
+import { useEffect, useState } from "react";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useForm, useWatch } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
+import { CATEGORY_KEY } from "@/api/categories/keys";
+import { categoryMutations } from "@/api/categories/mutations";
+import { categoryQueries } from "@/api/categories/queries";
+import Spinner from "@/components/feedback/Spinner";
 import { Form } from "@/components/form/Form";
 import FormField from "@/components/form/FormField";
 import { Plus } from "@/components/icons";
 import MobileTitle from "@/components/layout/MobileTitle";
 import Button from "@/components/ui/Button/Button";
+import { errorResponse } from "@/lib/error-response";
+import { queryClient } from "@/lib/query-client";
 import cn from "@/lib/utils";
+import { useStoreId } from "@/stores/useStoreId";
 
 function MainMenuCategoryPage() {
   const navigate = useNavigate();
+
+  const { storeId } = useStoreId();
+  const { data } = useQuery(categoryQueries.getCategories({ storeId: storeId! }));
+  const { mutateAsync: createCategory } = useMutation(categoryMutations.createCategory());
+
   const form = useForm({
     mode: "onSubmit",
     reValidateMode: "onChange",
@@ -19,14 +34,38 @@ function MainMenuCategoryPage() {
 
   const categories = useWatch({ control: form.control, name: "categories" });
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    if (data) {
+      form.reset({
+        categories: data?.map((category) => ({
+          id: Number(category.categoryId),
+          name: category.name,
+        })),
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data]);
+
   const handleAddCategory = () => {
     if (categories.at(-1)?.name === "") return;
     form.setValue("categories", [...categories, { id: categories.length + 1, name: "" }]);
   };
 
-  const handleSubmit = form.handleSubmit(() => {
-    // TODO: 카테고리 저장 로직 구현
-    navigate("/menus");
+  const handleSubmit = form.handleSubmit(async () => {
+    setIsSubmitting(true);
+    try {
+      categories.forEach(async (categoryInput) => {
+        await createCategory({ storeId: storeId!, data: { name: categoryInput.name } });
+      });
+      toast.success("카테고리 저장이 완료되었습니다.");
+      queryClient.invalidateQueries({ queryKey: CATEGORY_KEY.category() });
+      navigate("/menus", { replace: true });
+    } catch (error) {
+      setIsSubmitting(false);
+      toast.error(errorResponse(error).data.message);
+    }
   });
 
   return (
@@ -53,7 +92,7 @@ function MainMenuCategoryPage() {
                 <FormField
                   key={category.id}
                   label={`카테고리 ${index + 1}`}
-                  inputProps={{ placeholder: "카테고리를 입력해주세요" }}
+                  inputProps={{ placeholder: "카테고리를 입력해주세요", readOnly: isSubmitting }}
                   {...form.register(`categories.${index}.name`)}
                 />
               ))}
@@ -82,8 +121,9 @@ function MainMenuCategoryPage() {
                 sm: { buttonSize: "sm", className: "w-full" },
               }}
               onClick={handleSubmit}
+              disabled={isSubmitting}
             >
-              확인
+              {isSubmitting ? <Spinner /> : "저장"}
             </Button>
           </div>
         </div>
